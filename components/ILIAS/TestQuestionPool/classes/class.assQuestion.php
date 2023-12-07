@@ -252,14 +252,6 @@ abstract class assQuestion
         return true;
     }
 
-    protected function log(int $active_id, string $langVar): void
-    {
-        if (ilObjAssessmentFolder::_enabledAssessmentLogging()) {
-            $message = $this->lng->txtlng('assessment', $langVar, ilObjAssessmentFolder::_getLogLanguage());
-            assQuestion::logAction($message, $active_id, $this->getId());
-        }
-    }
-
     public function getShuffler(): Transformation
     {
         return $this->shuffler;
@@ -665,21 +657,6 @@ abstract class assQuestion
             }
         );
 
-        if (ilObjAssessmentFolder::_enabledAssessmentLogging()) {
-            assQuestion::logAction(
-                sprintf(
-                    $this->lng->txtlng(
-                        "assessment",
-                        "log_user_answered_question",
-                        ilObjAssessmentFolder::_getLogLanguage()
-                    ),
-                    $reached_points
-                ),
-                $active_id,
-                $this->getId()
-            );
-        }
-
         // update test pass results
         $test = new ilObjTest(
             $this->getObjId(),
@@ -747,20 +724,6 @@ abstract class assQuestion
     protected function savePreviewData(ilAssQuestionPreviewSession $previewSession): void
     {
         $previewSession->setParticipantsSolution($this->getSolutionSubmit());
-    }
-
-    public static function logAction(string $logtext, int $active_id, int $question_id): void
-    {
-        global $DIC;
-        $original_id = $DIC->testQuestionPool()->questionInfo()->getOriginalId($question_id);
-
-        ilObjAssessmentFolder::_addLog(
-            $DIC->user()->getId(),
-            ilObjTest::_getObjectIDFromActiveID($active_id),
-            $logtext,
-            $question_id,
-            $original_id
-        );
     }
 
     public function getSuggestedSolutionPath(): string
@@ -1914,23 +1877,6 @@ abstract class assQuestion
                 );
                 $test->updateTestPassResults($active_id, $pass, $obligationsEnabled);
                 ilCourseObjectiveResult::_updateObjectiveResult(ilObjTest::_getUserIdFromActiveId($active_id), $active_id, $question_id);
-                if (ilObjAssessmentFolder::_enabledAssessmentLogging()) {
-                    global $DIC;
-                    $lng = $DIC['lng'];
-                    $ilUser = $DIC['ilUser'];
-                    $username = ilObjTestAccess::_getParticipantData($active_id);
-                    assQuestion::logAction(sprintf(
-                        $lng->txtlng(
-                            "assessment",
-                            "log_answer_changed_points",
-                            ilObjAssessmentFolder::_getLogLanguage()
-                        ),
-                        $username,
-                        $old_points,
-                        $points,
-                        $ilUser->getFullname() . " (" . $ilUser->getLogin() . ")"
-                    ), $active_id, $question_id);
-                }
             }
 
             return true;
@@ -2089,7 +2035,7 @@ abstract class assQuestion
     {
         global $DIC;
         $questioninfo = $DIC->testQuestionPool()->questionInfo();
-        $scoring = ilObjAssessmentFolder::_getManualScoringTypes();
+        $scoring = ilObjTestFolder::_getManualScoringTypes();
         $questiontype = $questioninfo->getQuestionType($question_id);
         if (in_array($questiontype, $scoring)) {
             return true;
@@ -2155,7 +2101,7 @@ abstract class assQuestion
             $processLockerFactory = new ilAssQuestionProcessLockerFactory($assSettings, $ilDB);
             $processLockerFactory->setQuestionId($question_gui->object->getId());
             $processLockerFactory->setUserId($ilUser->getId());
-            $processLockerFactory->setAssessmentLogEnabled(ilObjAssessmentFolder::_enabledAssessmentLogging());
+            $processLockerFactory->setAssessmentLogEnabled(ilObjTestFolder::_enabledAssessmentLogging());
             $question_gui->object->setProcessLocker($processLockerFactory->getLocker());
         } else {
             global $DIC;
@@ -2887,8 +2833,6 @@ abstract class assQuestion
     {
         $this->removeExistingSolutions($activeId, $pass);
         $this->removeResultRecord($activeId, $pass);
-
-        $this->log($activeId, "log_user_solution_willingly_deleted");
 
         $test = new ilObjTest(
             $this->test_id,
