@@ -1700,7 +1700,7 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
         $form->addItem($hidden);
 
         // content editing mode
-        if (ilObjAssessmentFolder::isAdditionalQuestionContentEditingModePageObjectEnabled()) {
+        if (ilObjTestFolder::isAdditionalQuestionContentEditingModePageObjectEnabled()) {
             $ri = new ilRadioGroupInputGUI($this->lng->txt("tst_add_quest_cont_edit_mode"), "add_quest_cont_edit_mode");
 
             $option_ipe = new ilRadioOption(
@@ -2044,7 +2044,7 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
         }
 
         // content editing mode
-        if (ilObjAssessmentFolder::isAdditionalQuestionContentEditingModePageObjectEnabled()) {
+        if (ilObjTestFolder::isAdditionalQuestionContentEditingModePageObjectEnabled()) {
             $subScreenId[] = 'editMode';
 
             $ri = new ilRadioGroupInputGUI($this->lng->txt("tst_add_quest_cont_edit_mode"), "add_quest_cont_edit_mode");
@@ -2266,7 +2266,7 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
         $this->tabs_gui->activateTab(ilTestTabsManager::TAB_ID_HISTORY);
         $table_gui = new ilTestHistoryTableGUI($this, 'history');
         $table_gui->setTestObject($this->object);
-        $log = ilObjAssessmentFolder::_getLog(0, time(), $this->object->getId(), true);
+        $log = ilObjTestFolder::getLog(0, time(), $this->object->getId(), true);
         $table_gui->setData($log);
         $this->tpl->setVariable('ADM_CONTENT', $table_gui->getHTML());
     }

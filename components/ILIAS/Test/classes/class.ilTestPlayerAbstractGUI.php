@@ -1665,7 +1665,7 @@ abstract class ilTestPlayerAbstractGUI extends ilTestServiceGUI
 
         $skillEvaluation->setNumRequiredBookingsForSkillTriggering((int) $this->assSettings->get(
             'ass_skl_trig_num_answ_barrier',
-            ilObjAssessmentFolder::DEFAULT_SKL_TRIG_NUM_ANSWERS_BARRIER
+            ilObjTestFolder::DEFAULT_SKL_TRIG_NUM_ANSWERS_BARRIER
         ));
 
 
@@ -2187,7 +2187,7 @@ abstract class ilTestPlayerAbstractGUI extends ilTestServiceGUI
         $process_locker_factory = new ilAssQuestionProcessLockerFactory($ass_settings, $this->db);
         $process_locker_factory->setQuestionId($question->getId());
         $process_locker_factory->setUserId($this->user->getId());
-        $process_locker_factory->setAssessmentLogEnabled(ilObjAssessmentFolder::_enabledAssessmentLogging());
+        $process_locker_factory->setAssessmentLogEnabled(ilObjTestFolder::_enabledAssessmentLogging());
         $question->setProcessLocker($process_locker_factory->getLocker());
 
         $question->setObligationsToBeConsidered($this->object->areObligationsEnabled());
