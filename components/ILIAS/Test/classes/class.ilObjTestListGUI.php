@@ -18,6 +18,8 @@
 
 declare(strict_types=1);
 
+use ILIAS\Test\TestDIC;
+
 /**
  * Class ilObjTestListGUI
  *
@@ -60,7 +62,7 @@ class ilObjTestListGUI extends ilObjectListGUI
         string $description = ''
     ): void {
         try {
-            if (ilTestDIC::dic()['main_settings_repository']->getForObjFi($obj_id)
+            if (TestDIC::dic()['main_settings_repository']->getForObjFi($obj_id)
                 ->getAdditionalSettings()->getHideInfoTab()) {
                 $this->enableInfoScreen(false);
             }

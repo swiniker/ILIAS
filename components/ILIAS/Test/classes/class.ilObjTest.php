@@ -18,9 +18,12 @@
 
 declare(strict_types=1);
 
+use ILIAS\Test\TestDIC;
 use ILIAS\Test\InternalRequestService;
 use ILIAS\Test\TestManScoringDoneHelper;
 use ILIAS\Test\MainSettingsRepository;
+use ILIAS\Test\Administration\TestLoggingSettings;
+use ILIAS\Test\Logging\TestLogger;
 use ILIAS\Filesystem\Filesystem;
 use ILIAS\Filesystem\Stream\Streams;
 
@@ -98,16 +101,19 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
 
     private ?int $tmpCopyWizardCopyId = null;
 
-    private TestManScoringDoneHelper $testManScoringDoneHelper;
+    private TestManScoringDoneHelper $test_man_scoring_done_helper;
     protected ilCtrlInterface $ctrl;
     protected ilSetting $settings;
     protected ilBenchmark $bench;
     protected ilTestParticipantAccessFilterFactory $participant_access_filter;
+
+    protected TestLoggingSettings $logging_settings;
     protected ?ilObjTestMainSettings $main_settings = null;
     protected ?MainSettingsRepository $main_settings_repo = null;
     protected ?ilObjTestScoreSettings $score_settings = null;
     protected ?ScoreSettingsRepository $score_settings_repo = null;
 
+    protected ?TestLogger $test_logger = null;
     protected ilTestQuestionSetConfigFactory $question_set_config_factory;
 
     private ilComponentRepository $component_repository;
@@ -138,7 +144,11 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
 
         $local_dic = $this->getLocalDIC();
         $this->participant_access_filter = $local_dic['participantAccessFilterFactory'];
-        $this->testManScoringDoneHelper = $local_dic['manScoringDoneHelper'];
+        $this->test_man_scoring_done_helper = $local_dic['manScoringDoneHelper'];
+        $this->logging_settings = $local_dic['logging_settings'];
+        if ($this->logging_settings->getLoggingEnabled()) {
+            $this->test_logger['test_logger'];
+        }
 
         $this->mark_schema = new ASS_MarkSchema($DIC['ilDB'], $DIC['lng'], $DIC['ilUser']->getId());
         $this->mark_schema->createSimpleSchema(
@@ -171,7 +181,12 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
 
     public function getLocalDIC(): ILIAS\DI\Container
     {
-        return ilTestDIC::dic();
+        return TestDIC::dic();
+    }
+
+    public function getTestLogger(): ?TestLogger
+    {
+        return $this->test_logger;
     }
 
     /**
@@ -4898,12 +4913,12 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
                         $filtered_participants[$active_id] = $participant;
                         break;
                     case 4:
-                        if ($this->testManScoringDoneHelper->isDone((int) $active_id)) {
+                        if ($this->test_man_scoring_done_helper->isDone((int) $active_id)) {
                             $filtered_participants[$active_id] = $participant;
                         }
                         break;
                     case 5:
-                        if (!$this->testManScoringDoneHelper->isDone((int) $active_id)) {
+                        if (!$this->test_man_scoring_done_helper->isDone((int) $active_id)) {
                             $filtered_participants[$active_id] = $participant;
                         }
                         break;
