@@ -18,6 +18,9 @@
 
 declare(strict_types=1);
 
+use ILIAS\Test\TestDIC;
+use ILIAS\Test\Logging\TestLogger;
+
 /**
  * Importer class for files
  *
@@ -32,13 +35,13 @@ class ilTestImporter extends ilXmlImporter
      */
     public static $finallyProcessedTestsRegistry = [];
 
-    private ilLogger $log;
-    private ilDBInterface $db;
+    private readonly TestLogger $logger;
+    private readonly ilDBInterface $db;
 
     public function __construct()
     {
         global $DIC;
-        $this->log = $DIC['ilLog'];
+        $this->logger = TestDIC::dic()['test_logger'];
         $this->db = $DIC['ilDB'];
 
         parent::__construct();
@@ -78,11 +81,11 @@ class ilTestImporter extends ilXmlImporter
         list($xml_file, $qti_file) = $this->parseXmlFileNames();
 
         if (!@file_exists($xml_file)) {
-            $this->log->write(__METHOD__ . ': Cannot find xml definition: ' . $xml_file);
+            $this->logger->info(__METHOD__ . ': Cannot find xml definition: ' . $xml_file);
             return;
         }
         if (!@file_exists($qti_file)) {
-            $this->log->write(__METHOD__ . ': Cannot find xml definition: ' . $qti_file);
+            $this->logger->info(__METHOD__ . ': Cannot find xml definition: ' . $qti_file);
             return;
         }
 
@@ -138,7 +141,7 @@ class ilTestImporter extends ilXmlImporter
         $results_file_path = ilSession::get("tst_import_results_file");
         // import test results
         if ($results_file_path !== null && file_exists($results_file_path)) {
-            $results = new ilTestResultsImportParser($results_file_path, $new_obj, $this->db, $this->log);
+            $results = new ilTestResultsImportParser($results_file_path, $new_obj, $this->db, $this->logger);
             $results->setQuestionIdMapping($a_mapping->getMappingsOfEntity('components/ILIAS/Test', 'quest'));
             $results->setSrcPoolDefIdMapping($a_mapping->getMappingsOfEntity('components/ILIAS/Test', 'rnd_src_pool_def'));
             $results->startParsing();
@@ -276,7 +279,7 @@ class ilTestImporter extends ilXmlImporter
      */
     protected function parseXmlFileNames(): array
     {
-        $this->log->write(__METHOD__ . ': ' . $this->getImportDirectory());
+        $this->logger->info(__METHOD__ . ': ' . $this->getImportDirectory());
 
         $basename = basename($this->getImportDirectory());
 

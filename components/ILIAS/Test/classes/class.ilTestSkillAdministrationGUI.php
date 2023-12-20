@@ -19,6 +19,7 @@
 declare(strict_types=1);
 
 use ILIAS\TestQuestionPool\QuestionInfoService;
+use ILIAS\Test\Logging\TestLogger;
 
 /**
  * @author		Björn Heyser <bheyser@databay.de>
@@ -38,7 +39,7 @@ class ilTestSkillAdministrationGUI
         private ilGlobalTemplateInterface $tpl,
         private ilLanguage $lng,
         private ilDBInterface $db,
-        private ilLogger $log,
+        private TestLogger $logger,
         private ilTree $tree,
         private ilComponentRepository $component_repository,
         private ilObjTest $test_obj,
@@ -165,7 +166,7 @@ class ilTestSkillAdministrationGUI
             $this->tree,
             $this->db,
             $this->lng,
-            $this->log,
+            $this->logger,
             $this->component_repository,
             $this->test_obj,
             $this->questioninfo

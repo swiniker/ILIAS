@@ -742,11 +742,8 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
     {
         $globalCertificatePrerequisites = new ilCertificateActiveValidator();
         if (!$globalCertificatePrerequisites->validate()) {
-            $this->er->raiseError($this->lng->txt('permission_denied'), $this->error->MESSAGE);
+            $this->ilias->raiseError($this->lng->txt('permission_denied'), $this->error->MESSAGE);
         }
-
-        $database = $this->db;
-        $logger = $this->logging_services->root();
 
         $pathFactory = new ilCertificatePathFactory();
         $objectId = $this->object->getId();
@@ -761,7 +758,7 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
             $this->object->buildStatisticsAccessFilteredParticipantList()
         );
 
-        $ilUserCertificateRepository = new ilUserCertificateRepository($database, $logger);
+        $ilUserCertificateRepository = new ilUserCertificateRepository($this->db, $this->logger);
         $pdfGenerator = new ilPdfGenerator($ilUserCertificateRepository);
 
         $total_users = $this->object->evalTotalPersonsArray();
@@ -1494,8 +1491,8 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
 
     public function outCertificate()
     {
-        $ilUserCertificateRepository = new ilUserCertificateRepository($this->db, $this->logging_services);
-        $pdfGenerator = new ilPdfGenerator($ilUserCertificateRepository);
+        $ilUserCertificateRepository = new ilUserCertificateRepository($this->db);
+        $pdfGenerator = new ilPdfGenerator($ilUserCertificateRepository, $this->logger->getComponentLogger());
 
         $pdfAction = new ilCertificatePdfAction(
             $pdfGenerator,

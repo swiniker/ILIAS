@@ -31,6 +31,7 @@ use ILIAS\Data\Factory as DataFactory;
 use Psr\Http\Message\ServerRequestInterface;
 use ILIAS\Refinery\Constraint;
 use ILIAS\TestQuestionPool\QuestionInfoService;
+use ILIAS\Test\TestDIC;
 
 /**
  *
@@ -105,7 +106,7 @@ class ilObjTestSettingsMainGUI extends ilTestSettingsGUI
             $this->tree,
             $this->db,
             $this->lng,
-            $DIC['ilLog'],
+            TestDIC::dic()['test_logger'],
             $this->component_repository,
             $this->test_gui->getTestObject(),
             $this->questioninfo
