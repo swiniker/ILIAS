@@ -18,9 +18,11 @@
 
 declare(strict_types=1);
 
-use ILIAS\Test\MainSettingsRepository;
+namespace ILIAS\Test\MainSettings;
 
-class ilObjTestMainSettingsDatabaseRepository implements MainSettingsRepository
+use ILIAS\Test\MainSettings\MainSettingsRepository;
+
+class MainSettingsDatabaseRepository implements MainSettingsRepository
 {
     public const TABLE_NAME = 'tst_tests';
     public const STORAGE_DATE_FORMAT = 'YmdHis';
@@ -32,19 +34,19 @@ class ilObjTestMainSettingsDatabaseRepository implements MainSettingsRepository
         $this->db = $db;
     }
 
-    public function getForObjFi(int $obj_fi): ilObjTestMainSettings
+    public function getForObjFi(int $obj_fi): MainSettings
     {
         $where_part = 'WHERE obj_fi = ' . $this->db->quote($obj_fi, 'integer');
         return $this->doSelect($where_part);
     }
 
-    public function getFor(int $test_id): ilObjTestMainSettings
+    public function getFor(int $test_id): MainSettings
     {
         $where_part = 'WHERE test_id = ' . $this->db->quote($test_id, 'integer');
         return $this->doSelect($where_part);
     }
 
-    protected function doSelect(string $where_part): ilObjTestMainSettings
+    protected function doSelect(string $where_part): MainSettings
     {
         $query = 'SELECT ' . PHP_EOL
             . 'question_set_type,' . PHP_EOL
@@ -111,21 +113,21 @@ class ilObjTestMainSettingsDatabaseRepository implements MainSettingsRepository
 
         $test_id = (int) $row['test_id'];
 
-        $settings = new ilObjTestMainSettings(
+        $settings = new MainSettings(
             $test_id,
-            new ilObjTestSettingsGeneral(
+            new SettingsGeneral(
                 $test_id,
                 $row['question_set_type'],
                 (bool) $row['anonymity']
             ),
-            new ilObjTestSettingsIntroduction(
+            new SettingsIntroduction(
                 $test_id,
                 (bool) $row['intro_enabled'],
                 $row['introduction'],
                 $row['introduction_page_id'],
                 (bool) $row['conditions_checkbox_enabled'],
             ),
-            new ilObjTestSettingsAccess(
+            new SettingsAccess(
                 $test_id,
                 (bool) $row['starting_time_enabled'],
                 $row['starting_time'] !== 0
@@ -139,7 +141,7 @@ class ilObjTestMainSettingsDatabaseRepository implements MainSettingsRepository
                 $row['password'],
                 (bool) $row['fixed_participants'],
             ),
-            new ilObjTestSettingsTestBehaviour(
+            new SettingsTestBehaviour(
                 $test_id,
                 $row['nr_of_tries'],
                 (bool) $row['block_after_passed'],
@@ -150,7 +152,7 @@ class ilObjTestMainSettingsDatabaseRepository implements MainSettingsRepository
                 $row['kiosk'],
                 (bool) $row['examid_in_test_pass']
             ),
-            new ilObjTestSettingsQuestionBehaviour(
+            new SettingsQuestionBehaviour(
                 $test_id,
                 (int) $row['title_output'],
                 (bool) $row['autosave'],
@@ -166,7 +168,7 @@ class ilObjTestMainSettingsDatabaseRepository implements MainSettingsRepository
                 (bool) $row['follow_qst_answer_fixation'],
                 (bool) $row['obligations_enabled']
             ),
-            new ilObjTestSettingsParticipantFunctionality(
+            new SettingsParticipantFunctionality(
                 $test_id,
                 (bool) $row['use_previous_answers'],
                 (bool) $row['suspend_test_allowed'],
@@ -175,7 +177,7 @@ class ilObjTestMainSettingsDatabaseRepository implements MainSettingsRepository
                 (bool) $row['show_marker'],
                 (bool) $row['show_questionlist']
             ),
-            new ilObjTestSettingsFinishing(
+            new SettingsFinishing(
                 $test_id,
                 (bool) $row['enable_examview'],
                 (bool) $row['showfinalstatement'],
@@ -186,7 +188,7 @@ class ilObjTestMainSettingsDatabaseRepository implements MainSettingsRepository
                 $row['mailnotification'],
                 (bool) $row['mailnottype'],
             ),
-            new ilObjTestSettingsAdditional(
+            new SettingsAdditional(
                 $test_id,
                 (bool) $row['skill_service'],
                 (bool) $row['hide_info_tab']
@@ -196,7 +198,7 @@ class ilObjTestMainSettingsDatabaseRepository implements MainSettingsRepository
         return $settings;
     }
 
-    public function store(ilObjTestMainSettings $settings): void
+    public function store(MainSettings $settings): void
     {
         $values = array_merge(
             $settings->getGeneralSettings()->toStorage(),

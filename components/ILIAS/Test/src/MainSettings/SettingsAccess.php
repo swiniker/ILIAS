@@ -18,6 +18,8 @@
 
 declare(strict_types=1);
 
+namespace ILIAS\Test\MainSettings;
+
 use ILIAS\UI\Component\Input\Field\Factory as FieldFactory;
 use ILIAS\UI\Component\Input\Container\Form\FormInput;
 use ILIAS\UI\Component\Input\Field\OptionalGroup;
@@ -25,7 +27,7 @@ use ILIAS\UI\Component\Input\Field\Group;
 use ILIAS\Refinery\Factory as Refinery;
 use ILIAS\Refinery\Transformation as TransformationInterface;
 
-class ilObjTestSettingsAccess extends TestSettings
+class SettingsAccess extends TestSettings
 {
     private const MAX_PASSWORD_LENGTH = 20;
 
