@@ -29,6 +29,7 @@ use ILIAS\Test\InternalRequestService;
 use ILIAS\Test\QuestionIdentifiers;
 use ILIAS\Test\MainSettings\ilObjTestSettingsMainGUI;
 use ILIAS\Test\ScoreSettings\ilObjTestSettingsScoringGUI;
+use ILIAS\Test\Marks\ilMarkSchemaGUI;
 
 /**
  * Class ilObjTestGUI
@@ -467,7 +468,20 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
                 }
                 $this->prepareOutput();
                 $this->addHeaderAction();
-                $mark_schema_gui = new ilMarkSchemaGUI($this->getTestObject());
+                $mark_schema_gui = new ilMarkSchemaGUI(
+                    $this->getTestObject(),
+                    $this->lng,
+                    $this->ctrl,
+                    $this->tpl,
+                    $this->toolbar,
+                    $this->tabs_manager,
+                    $this->getObject()->getTestLogger(),
+                    $this->request_wrapper,
+                    $this->request,
+                    $this->refinery,
+                    $this->ui_factory,
+                    $this->ui_renderer
+                );
                 $this->ctrl->forwardCommand($mark_schema_gui);
                 break;
 
@@ -528,6 +542,7 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
                     $this,
                     $this->tpl,
                     $this->tabs_gui,
+                    $this->getTestObject()->getTestLogger(),
                     $this->getTestObject()->getScoreSettingsRepository(),
                     $this->getTestObject()->getTestId(),
                     $this->ui_factory,
