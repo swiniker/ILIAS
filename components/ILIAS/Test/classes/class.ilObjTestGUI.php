@@ -29,7 +29,8 @@ use ILIAS\Test\InternalRequestService;
 use ILIAS\Test\QuestionIdentifiers;
 use ILIAS\Test\MainSettings\ilObjTestSettingsMainGUI;
 use ILIAS\Test\ScoreSettings\ilObjTestSettingsScoringGUI;
-use ILIAS\Test\Marks\ilMarkSchemaGUI;
+use ILIAS\Test\ScoreSettings\SettingsResultSummary;
+use ILIAS\Test\Marks\MarkSchemaGUI;
 
 /**
  * Class ilObjTestGUI
@@ -44,15 +45,15 @@ use ILIAS\Test\Marks\ilMarkSchemaGUI;
  * @ilCtrl_Calls ilObjTestGUI: ilTestPlayerFixedQuestionSetGUI, ilTestPlayerRandomQuestionSetGUI
  * @ilCtrl_Calls ilObjTestGUI: ilTestExpresspageObjectGUI, ilAssQuestionPageGUI
  * @ilCtrl_Calls ilObjTestGUI: ilTestDashboardGUI, ilTestResultsGUI
- * @ilCtrl_Calls ilObjTestGUI: ilLearningProgressGUI, ilMarkSchemaGUI
+ * @ilCtrl_Calls ilObjTestGUI: ilLearningProgressGUI, MarkSchemaGUI
  * @ilCtrl_Calls ilObjTestGUI: ilTestEvaluationGUI, ilParticipantsTestResultsGUI
  * @ilCtrl_Calls ilObjTestGUI: ilAssGenFeedbackPageGUI, ilAssSpecFeedbackPageGUI
- * @ilCtrl_Calls ilObjTestGUI: ilInfoScreenGUI, ilObjectCopyGUI, ilTestScoringGUI
+ * @ilCtrl_Calls ilObjTestGUI: ilInfoScreenGUI, ilObjectCopyGUI
  * @ilCtrl_Calls ilObjTestGUI: ilTestScreenGUI
  * @ilCtrl_Calls ilObjTestGUI: ilRepositorySearchGUI, ilTestExportGUI
  * @ilCtrl_Calls ilObjTestGUI: assMultipleChoiceGUI, assClozeTestGUI, assMatchingQuestionGUI
  * @ilCtrl_Calls ilObjTestGUI: assOrderingQuestionGUI, assImagemapQuestionGUI
- * @ilCtrl_Calls ilObjTestGUI: assNumericGUI, assErrorTextGUI, ilTestScoringByQuestionsGUI
+ * @ilCtrl_Calls ilObjTestGUI: assNumericGUI, assErrorTextGUI, TestScoringByQuestionGUI, TestScoringByParticipantGUI
  * @ilCtrl_Calls ilObjTestGUI: assTextSubsetGUI, assOrderingHorizontalGUI
  * @ilCtrl_Calls ilObjTestGUI: assSingleChoiceGUI, assFileUploadGUI, assTextQuestionGUI
  * @ilCtrl_Calls ilObjTestGUI: assKprimChoiceGUI, assLongMenuGUI
@@ -452,13 +453,13 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
                 $this->ctrl->forwardCommand($output_gui);
                 break;
 
-            case "iltestscoringgui":
+            case "iltestscoringbyparticipantgui":
                 if ((!$this->access->checkAccess("read", "", $this->testrequest->getRefId()))) {
                     $this->redirectAfterMissingRead();
                 }
                 $this->prepareOutput();
                 $this->addHeaderAction();
-                $output_gui = new ilTestScoringGUI($this->object);
+                $output_gui = new ilTestScoringByParticipantGUI($this->object);
                 $output_gui->setTestAccess($this->getTestAccess());
                 $this->ctrl->forwardCommand($output_gui);
                 break;
@@ -473,7 +474,7 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
                 }
                 $this->prepareOutput();
                 $this->addHeaderAction();
-                $mark_schema_gui = new ilMarkSchemaGUI(
+                $mark_schema_gui = new MarkSchemaGUI(
                     $this->getTestObject(),
                     $this->lng,
                     $this->ctrl,
@@ -496,7 +497,7 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
                 }
                 $this->prepareOutput();
                 $this->addHeaderAction();
-                $output_gui = new ilTestScoringByQuestionsGUI($this->getTestObject());
+                $output_gui = new TestScoringByQuestionsGUI($this->getTestObject());
                 $output_gui->setTestAccess($this->getTestAccess());
                 $this->ctrl->forwardCommand($output_gui);
                 break;
@@ -1080,12 +1081,6 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
 
         $this->prepareOutput();
         $this->addHeaderAction();
-
-        // @todo: removed deprecated ilCtrl methods, this needs inspection by a maintainer.
-        // $this->ctrl->setCmdClass('ilParticipantsTestResultsGUI');
-        // $this->ctrl->setCmd('showParticipants');
-
-
         $gui = new ilParticipantsTestResultsGUI(
             $this->ctrl,
             $this->lng,
@@ -1780,23 +1775,23 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
      */
     public function confirmRemoveQuestionsObject()
     {
-        $removeQuestionIds = (array) $_POST["q_id"];
+        $question_ids_to_remove = $this->testrequest->getQuestionIds();
 
         $questions = $this->object->getQuestionTitlesAndIndexes();
 
-        $this->object->removeQuestions($removeQuestionIds);
+        $this->getTestObject()->removeQuestions($question_ids_to_remove);
 
-        $this->object->saveCompleteStatus($this->test_question_set_config_factory->getQuestionSetConfig());
+        $this->getTestObject()->saveCompleteStatus($this->test_question_set_config_factory->getQuestionSetConfig());
 
-        $this->tpl->setOnScreenMessage('success', $this->lng->txt("tst_questions_removed"));
+        $this->tpl->setOnScreenMessage('success', $this->lng->txt('tst_questions_removed'));
 
         if ($this->testrequest->raw('test_express_mode')) {
             $prev = null;
             $return_to = null;
-            $deleted_tmp = $removeQuestionIds;
+            $deleted_tmp = $question_ids_to_remove;
             $first = array_shift($deleted_tmp);
             foreach ($questions as $key => $value) {
-                if (!in_array($key, $removeQuestionIds)) {
+                if (!in_array($key, $question_ids_to_remove)) {
                     $prev = $key;
                     if (!$first) {
                         $return_to = $prev;
@@ -1804,8 +1799,8 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
                     } else {
                         continue;
                     }
-                } elseif ($key == $first) {
-                    if ($prev) {
+                } elseif ($key === $first) {
+                    if ($prev !== null) {
                         $return_to = $prev;
                         break;
                     }
@@ -1814,8 +1809,8 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
             }
 
             if (
-                count($questions) == count($removeQuestionIds) ||
-                !$return_to
+                count($questions) === count($question_ids_to_remove)
+                || !$return_to
             ) {
                 $this->ctrl->setParameter($this, 'q_id', '');
                 $this->ctrl->redirect($this, 'showPage');
@@ -1823,10 +1818,11 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
 
             $this->ctrl->setParameter($this, 'q_id', $return_to);
             $this->ctrl->redirect($this, "showPage");
-        } else {
-            $this->ctrl->setParameter($this, 'q_id', '');
-            $this->ctrl->redirect($this, 'questions');
+            return;
         }
+
+        $this->ctrl->setParameter($this, 'q_id', '');
+        $this->ctrl->redirect($this, 'questions');
     }
 
     /**
@@ -2148,10 +2144,10 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
         }
 
         if ($this->testrequest->raw("up") > 0) {
-            $this->object->questionMoveUp($this->testrequest->raw("up"));
+            $this->getTestObject()->questionMoveUp($this->testrequest->raw("up"));
         }
         if ($this->testrequest->raw("down") > 0) {
-            $this->object->questionMoveDown($this->testrequest->raw("down"));
+            $this->getTestObject()->questionMoveDown($this->testrequest->raw("down"));
         }
 
         if ($this->testrequest->raw("add")) {
@@ -2721,16 +2717,16 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
         $info->addSection($this->lng->txt("tst_score_reporting"));
         $score_reporting_text = "";
         switch ($this->object->getScoreReporting()) {
-            case ilObjTestSettingsResultSummary::SCORE_REPORTING_FINISHED:
+            case SettingsResultSummary::SCORE_REPORTING_FINISHED:
                 $score_reporting_text = $this->lng->txt("tst_report_after_test");
                 break;
-            case ilObjTestSettingsResultSummary::SCORE_REPORTING_IMMIDIATLY:
+            case SettingsResultSummary::SCORE_REPORTING_IMMIDIATLY:
                 $score_reporting_text = $this->lng->txt("tst_report_after_first_question");
                 break;
-            case ilObjTestSettingsResultSummary::SCORE_REPORTING_DATE:
+            case SettingsResultSummary::SCORE_REPORTING_DATE:
                 $score_reporting_text = $this->lng->txt("tst_report_after_date");
                 break;
-            case ilObjTestSettingsResultSummary::SCORE_REPORTING_AFTER_PASSED:
+            case SettingsResultSummary::SCORE_REPORTING_AFTER_PASSED:
                 $score_reporting_text = $this->lng->txt("tst_report_after_passed");
                 break;
             default:

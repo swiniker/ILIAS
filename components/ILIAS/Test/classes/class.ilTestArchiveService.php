@@ -18,6 +18,9 @@
 
 declare(strict_types=1);
 
+use ILIAS\UI\Factory as UIFactory;
+use ILIAS\UI\Renderer as UIRenderer;
+
 /**
  * @author		Björn Heyser <bheyser@databay.de>
  * @version		$Id$

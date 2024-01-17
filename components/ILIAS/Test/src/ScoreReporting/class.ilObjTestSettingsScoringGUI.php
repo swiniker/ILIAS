@@ -132,7 +132,7 @@ class ilObjTestSettingsScoringGUI extends ilTestSettingsGUI
                         $this->showForm($form);
                         break;
                     default:
-                        throw new Exception('unknown command: ' . $cmd);
+                        throw new \Exception('unknown command: ' . $cmd);
                 }
         }
     }
@@ -247,7 +247,7 @@ class ilObjTestSettingsScoringGUI extends ilTestSettingsGUI
         }
 
         if (
-            $this->test_object->getScoreReporting() == ilObjTestSettingsResultSummary::SCORE_REPORTING_DATE
+            $this->test_object->getScoreReporting() == SettingsResultSummary::SCORE_REPORTING_DATE
             && $this->test_object->getReportingDate() > time()
         ) {
             return false;

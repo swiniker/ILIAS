@@ -64,11 +64,11 @@ class ilTestPlaceholderValuesTest extends ilCertificateBaseTestCase
         $testObject->method('getTitle')
             ->willReturn(' Some Title');
 
-        $markSchema = $this->getMockBuilder('ASS_MarkSchema')
+        $markSchema = $this->getMockBuilder(ILIAS\Test\Marks\MarkSchema::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $matchingMark = $this->getMockBuilder('ASS_Mark')
+        $matchingMark = $this->getMockBuilder(ILIAS\Test\Marks\Mark::class)
             ->getMock();
 
         $matchingMark->method('getShortName')

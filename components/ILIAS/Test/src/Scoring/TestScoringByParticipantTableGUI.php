@@ -18,6 +18,8 @@
 
 declare(strict_types=1);
 
+namespace ILIAS\Test\Scoring;
+
 /**
 *
 * @author	Björn Heyser <bheyser@databay.de>
@@ -26,7 +28,7 @@ declare(strict_types=1);
 * @ingroup	ModulesTest
 */
 
-class ilTestManScoringParticipantsTableGUI extends ilTable2GUI
+class TestScoringByParticipantTableGUI extends \ilTable2GUI
 {
     public const PARENT_DEFAULT_CMD = 'showManScoringParticipantsTable';
     public const PARENT_APPLY_FILTER_CMD = 'applyManScoringParticipantsFilter';
@@ -34,7 +36,7 @@ class ilTestManScoringParticipantsTableGUI extends ilTable2GUI
 
     public const PARENT_EDIT_SCORING_CMD = 'showManScoringParticipantScreen';
 
-    public function __construct(ilTestScoringGUI $parent_obj)
+    public function __construct(TestScoringByParticipantGUI $parent_obj)
     {
         $this->setPrefix('manScorePartTable');
         $this->setId('manScorePartTable');
@@ -84,14 +86,14 @@ class ilTestManScoringParticipantsTableGUI extends ilTable2GUI
     {
         $this->setDisableFilterHiding(true);
 
-        $participantStatus = new ilSelectInputGUI($this->lng->txt('tst_participant_status'), 'participant_status');
+        $participantStatus = new \ilSelectInputGUI($this->lng->txt('tst_participant_status'), 'participant_status');
 
-        $statusOptions = array();
-        $statusOptions[ilTestScoringGUI::PART_FILTER_ALL_USERS] = $this->lng->txt("all_users");
-        $statusOptions[ilTestScoringGUI::PART_FILTER_MANSCORING_NONE] = $this->lng->txt("manscoring_none");
-        $statusOptions[ilTestScoringGUI::PART_FILTER_MANSCORING_DONE] = $this->lng->txt("manscoring_done");
-        $statusOptions[ilTestScoringGUI::PART_FILTER_ACTIVE_ONLY] = $this->lng->txt("usr_active_only");
-        $statusOptions[ilTestScoringGUI::PART_FILTER_INACTIVE_ONLY] = $this->lng->txt("usr_inactive_only");
+        $statusOptions = [];
+        $statusOptions[TestScoringByParticipantGUI::PART_FILTER_ALL_USERS] = $this->lng->txt("all_users");
+        $statusOptions[TestScoringByParticipantGUI::PART_FILTER_MANSCORING_NONE] = $this->lng->txt("manscoring_none");
+        $statusOptions[TestScoringByParticipantGUI::PART_FILTER_MANSCORING_DONE] = $this->lng->txt("manscoring_done");
+        $statusOptions[TestScoringByParticipantGUI::PART_FILTER_ACTIVE_ONLY] = $this->lng->txt("usr_active_only");
+        $statusOptions[TestScoringByParticipantGUI::PART_FILTER_INACTIVE_ONLY] = $this->lng->txt("usr_inactive_only");
 
         $participantStatus->setOptions($statusOptions);
 
@@ -100,7 +102,7 @@ class ilTestManScoringParticipantsTableGUI extends ilTable2GUI
         $participantStatus->readFromSession();
 
         if (!$participantStatus->getValue()) {
-            $participantStatus->setValue((string) ilTestScoringGUI::PART_FILTER_MANSCORING_NONE);
+            $participantStatus->setValue((string) TestScoringByParticipantGUI::PART_FILTER_MANSCORING_NONE);
         }
     }
 
