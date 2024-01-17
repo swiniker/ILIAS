@@ -30,7 +30,7 @@ use ILIAS\Test\QuestionIdentifiers;
 use ILIAS\Test\Settings\MainSettings\ilObjTestSettingsMainGUI;
 use ILIAS\Test\Settings\ScoreReporting\ilObjTestSettingsScoringGUI;
 use ILIAS\Test\Settings\ScoreReporting\SettingsResultSummary;
-use ILIAS\Test\Marks\MarkSchemaGUI;
+use ILIAS\Test\Scoring\Marks\MarkSchemaGUI;
 
 /**
  * Class ilObjTestGUI
