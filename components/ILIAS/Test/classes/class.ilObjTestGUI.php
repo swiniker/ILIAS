@@ -28,9 +28,9 @@ use ILIAS\Skill\Service\SkillService;
 use ILIAS\Test\InternalRequestService;
 use ILIAS\GlobalScreen\Services as GlobalScreen;
 use ILIAS\Test\QuestionIdentifiers;
-use ILIAS\Test\MainSettings\ilObjTestSettingsMainGUI;
-use ILIAS\Test\ScoreSettings\ilObjTestSettingsScoringGUI;
-use ILIAS\Test\ScoreSettings\SettingsResultSummary;
+use ILIAS\Test\Settings\MainSettings\ilObjTestSettingsMainGUI;
+use ILIAS\Test\Settings\ScoreReporting\ilObjTestSettingsScoringGUI;
+use ILIAS\Test\Settings\ScoreReporting\SettingsResultSummary;
 use ILIAS\Test\Marks\MarkSchemaGUI;
 
 /**
