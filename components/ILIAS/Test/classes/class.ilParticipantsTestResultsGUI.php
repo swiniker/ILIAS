@@ -301,20 +301,25 @@ class ilParticipantsTestResultsGUI
      */
     protected function confirmDeleteSelectedUserDataCmd(): void
     {
-        if (isset($_POST["chbUser"]) && is_array($_POST["chbUser"]) && count($_POST["chbUser"])) {
-            $access_filter = $this->participant_access_filter_factory->getManageParticipantsUserFilter($this->getTestObj()->getRefId());
-
-            $participant_data = new ilTestParticipantData($this->db, $this->lng);
-            $participant_data->setParticipantAccessFilter($access_filter);
-            $participant_data->setActiveIdsFilter($_POST["chbUser"]);
-
-            $participant_data->load($this->getTestObj()->getTestId());
-
-            $this->getTestObj()->removeTestResults($participant_data);
-
-            $this->main_tpl->setOnScreenMessage('success', $this->lng->txt("tst_selected_user_data_deleted"), true);
+        $to_be_deleted = $this->testrequest->raw('chbUser');
+        if ($to_be_deleted === null
+            || is_array($to_be_deleted)
+            || $to_be_deleted === []) {
+            $this->main_tpl->setOnScreenMessage('failure', $this->lng->txt('select_one_user'), true);
+            $this->ctrl->redirect($this, self::CMD_SHOW_PARTICIPANTS);
         }
 
+        $access_filter = $this->participant_access_filter_factory->getManageParticipantsUserFilter($this->getTestObj()->getRefId());
+
+        $participant_data = new ilTestParticipantData($this->db, $this->lng);
+        $participant_data->setParticipantAccessFilter($access_filter);
+        $participant_data->setActiveIdsFilter($_POST["chbUser"]);
+
+        $participant_data->load($this->getTestObj()->getTestId());
+
+        $this->getTestObj()->removeTestResults($participant_data);
+
+        $this->main_tpl->setOnScreenMessage('success', $this->lng->txt("tst_selected_user_data_deleted"), true);
         $this->ctrl->redirect($this, self::CMD_SHOW_PARTICIPANTS);
     }
 

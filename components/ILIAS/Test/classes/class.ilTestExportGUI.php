@@ -18,8 +18,12 @@
 
 declare(strict_types=1);
 
+use ILIAS\Test\InternalRequestService;
 use ILIAS\TestQuestionPool\QuestionInfoService;
 use ILIAS\Test\Logging\TestLogger;
+
+use ILIAS\UI\Factory as UIFactory;
+use ILIAS\UI\Renderer as UIRenderer;
 
 /**
  * Export User Interface Class
@@ -40,11 +44,16 @@ class ilTestExportGUI extends ilExportGUI
         private readonly ilDBInterface $db,
         private readonly TestLogger $logger,
         private readonly ilObjectDataCache $obj_cache,
+        private readonly ilObjUser $user,
+        private readonly ilTabsGUI $tabs,
+        private readonly UIFactory $ui_factory,
+        private readonly UIRenderer $ui_renderer,
         private readonly ilComponentRepository $component_repository,
-        private readonly Generator $active_export_plugins,
+        Generator $active_export_plugins,
         private readonly ilTestHTMLGenerator $html_generator,
         private readonly array $selected_files,
         private readonly QuestionInfoService $questioninfo,
+        private readonly InternalRequestService $testrequest
     ) {
         parent::__construct($parent_gui, null);
 
@@ -122,6 +131,15 @@ class ilTestExportGUI extends ilExportGUI
             $archiveService = new ilTestArchiveService(
                 $this->obj,
                 $this->lng,
+                $this->db,
+                $this->ctrl,
+                $this->user,
+                $this->tabs,
+                $this->toolbar,
+                $this->tpl,
+                $this->ui_factory,
+                $this->ui_renderer,
+                $this->access,
                 $this->obj_cache,
                 $this->html_generator
             );
@@ -130,7 +148,21 @@ class ilTestExportGUI extends ilExportGUI
 
             $test_id = $this->obj->getId();
             $test_ref = $this->obj->getRefId();
-            $archive_exp = new ilTestArchiver($test_id, $test_ref);
+            $archive_exp = new ilTestArchiver(
+                $this->lng,
+                $this->db,
+                $this->ctrl,
+                $this->user,
+                $this->tabs,
+                $this->toolbar,
+                $this->tpl,
+                $this->ui_factory,
+                $this->ui_renderer,
+                $this->access,
+                $this->testrequest,
+                $test_id,
+                $test_ref
+            );
 
             $scoring = new ilTestScoring($this->obj, $this->db);
             $best_solution = $scoring->calculateBestSolutionForTest();
@@ -171,7 +203,20 @@ class ilTestExportGUI extends ilExportGUI
             );
         }
 
-        $archiver = new ilTestArchiver($this->getParentGUI()->getTestObject()->getId());
+        $archiver = new ilTestArchiver(
+            $this->lng,
+            $this->db,
+            $this->ctrl,
+            $this->user,
+            $this->tabs,
+            $this->toolbar,
+            $this->tpl,
+            $this->ui_factory,
+            $this->ui_renderer,
+            $this->access,
+            $this->testrequest,
+            $this->getParentGUI()->getTestObject()->getId()
+        );
         $archive_dir = $archiver->getZipExportDirectory();
         $archive_files = [];
 
@@ -258,8 +303,20 @@ class ilTestExportGUI extends ilExportGUI
             $this->ctrl->redirect($this, 'listExportFiles');
         }
 
-        $archiver = new ilTestArchiver($this->getParentGUI()->getTestObject()->getId());
-
+        $archiver = new ilTestArchiver(
+            $this->lng,
+            $this->db,
+            $this->ctrl,
+            $this->user,
+            $this->tabs,
+            $this->toolbar,
+            $this->tpl,
+            $this->ui_factory,
+            $this->ui_renderer,
+            $this->access,
+            $this->testrequest,
+            $this->getParentGUI()->getTestObject()->getId()
+        );
         $filename = basename($this->selected_files[0]);
         $exportFile = $this->obj->getExportDirectory() . '/' . $filename;
         $archiveFile = $archiver->getZipExportDirectory() . '/' . $filename;
@@ -277,7 +334,20 @@ class ilTestExportGUI extends ilExportGUI
 
     public function delete(): void
     {
-        $archiver = new ilTestArchiver($this->getParentGUI()->getTestObject()->getId());
+        $archiver = new ilTestArchiver(
+            $this->lng,
+            $this->db,
+            $this->ctrl,
+            $this->user,
+            $this->tabs,
+            $this->toolbar,
+            $this->tpl,
+            $this->ui_factory,
+            $this->ui_renderer,
+            $this->access,
+            $this->testrequest,
+            $this->getParentGUI()->getTestObject()->getId()
+        );
         $archiveDir = $archiver->getZipExportDirectory();
 
         $export_dir = $this->obj->getExportDirectory();

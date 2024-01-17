@@ -18,10 +18,9 @@
 
 declare(strict_types=1);
 
-use ILIAS\HTTP\Services as HTTPServices;
-use ILIAS\GlobalScreen\Services as GSServices;
+use ILIAS\Test\Logging\TestAdministrationInteractionTypes;
+
 use ILIAS\Filesystem\Stream\Streams;
-use ILIAS\DI\LoggingServices;
 
 /**
  * Output class for assessment test evaluation
@@ -1880,7 +1879,11 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
                 $this->object->getId()
             );
 
-            $this->finishTestPass($active_id, $this->object->getId());
+            $this->finishTestPass(
+                $participant_data->getUserIdByActiveId($active_id),
+                $active_id,
+                $this->object->getId()
+            );
         }
 
 
@@ -1954,19 +1957,34 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
                 $this->object->getId()
             );
 
-            $this->finishTestPass($participant->getActiveId(), $this->object->getId());
+            $this->finishTestPass($participant->getUsrId(), $participant->getActiveId(), $this->object->getId());
         }
 
 
         $this->redirectBackToParticipantsScreen();
     }
 
-    protected function finishTestPass(int $active_id, int $obj_id)
+    protected function finishTestPass(int $user_id, int $active_id, int $obj_id)
     {
         $process_locker = $this->processLockerFactory->withContextId($active_id)->getLocker();
 
         $test_pass_finisher = new ilTestPassFinishTasks($this->testSessionFactory->getSession($active_id), $obj_id);
         $test_pass_finisher->performFinishTasks($process_locker);
+
+        if ($this->logger->getLoggingEnabled()) {
+            $this->logger->logTestAdministrationInteraction(
+                new TestAdministrationInteraction(
+                    $this->lng,
+                    $this->object->getRefId(),
+                    $this->user,
+                    TestAdministrationInteractionTypes::TEST_RUN_OF_PARTICIPANT_CLOSED,
+                    time(),
+                    [
+                        'user' => $user_id
+                    ]
+                )
+            );
+        }
     }
 
     protected function redirectBackToParticipantsScreen()
