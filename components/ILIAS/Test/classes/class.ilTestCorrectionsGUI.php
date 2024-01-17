@@ -18,6 +18,8 @@
 
 declare(strict_types=1);
 
+use ILIAS\Test\Scoring\TestScoring;
+
 use ILIAS\UI\Factory as UIFactory;
 use ILIAS\UI\Renderer as UIRenderer;
 use ILIAS\Refinery\Factory as RefineryFactory;
@@ -159,7 +161,7 @@ class ilTestCorrectionsGUI
         $questionGUI->object->setPoints($questionGUI->object->getMaximumPoints());
         $questionGUI->object->saveToDb();
 
-        $scoring = new ilTestScoring($this->testOBJ, $this->database);
+        $scoring = new TestScoring($this->testOBJ, $this->database);
         $scoring->setPreserveManualScores(false);
         $scoring->setQuestionId($questionGUI->object->getId());
         $scoring->recalculateSolutions();
@@ -182,7 +184,7 @@ class ilTestCorrectionsGUI
 
         $questionGUI->populateCorrectionsFormProperties($form);
 
-        $scoring = new ilTestScoring($this->testOBJ, $this->database);
+        $scoring = new TestScoring($this->testOBJ, $this->database);
         $scoring->setQuestionId($questionGUI->object->getId());
 
         if ($scoring->getNumManualScorings()) {
@@ -221,7 +223,7 @@ class ilTestCorrectionsGUI
 
         $this->setCorrectionTabsContext($questionGUI, 'question');
 
-        $scoring = new ilTestScoring($this->testOBJ, $this->database);
+        $scoring = new TestScoring($this->testOBJ, $this->database);
         $scoring->setQuestionId($questionGUI->object->getId());
 
         $confirmation = sprintf(
@@ -343,7 +345,7 @@ class ilTestCorrectionsGUI
             $question_gui->object->saveToDb();
         }
 
-        $scoring = new ilTestScoring($this->testOBJ, $this->database);
+        $scoring = new TestScoring($this->testOBJ, $this->database);
         $scoring->setPreserveManualScores(true);
         $scoring->recalculateSolutions();
 
@@ -382,7 +384,7 @@ class ilTestCorrectionsGUI
     protected function performQuestionRemoval(): void
     {
         $questionGUI = $this->getQuestion((int) $this->testrequest->raw('qid'));
-        $scoring = new ilTestScoring($this->testOBJ, $this->database);
+        $scoring = new TestScoring($this->testOBJ, $this->database);
 
         $participantData = new ilTestParticipantData($this->database, $this->language);
         $participantData->load($this->testOBJ->getTestId());
