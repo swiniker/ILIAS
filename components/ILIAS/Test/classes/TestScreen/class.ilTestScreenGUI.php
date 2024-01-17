@@ -28,7 +28,7 @@ use ILIAS\UI\Factory as UIFactory;
 use ILIAS\UI\Renderer as UIRenderer;
 use ILIAS\HTTP\Services as HTTPServices;
 
-use ILIAS\Test\MainSettings\MainSettings;
+use ILIAS\Test\Settings\MainSettings\MainSettings;
 
 /**
  * Class ilTestScreenGUI

@@ -23,7 +23,7 @@ use ILIAS\UI\Renderer as UIRenderer;
 use ILIAS\Skill\Service\SkillService;
 use ILIAS\Test\InternalRequestService;
 use ILIAS\Test\Logging\TestLogger;
-use ILIAS\Test\ScoreSettings\SettingsResultSummary;
+use ILIAS\Test\Settings\ScoreReporting\SettingsResultSummary;
 
 /**
  * Class ilTestResultsGUI
