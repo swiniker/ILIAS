@@ -29,6 +29,9 @@ use ILIAS\Test\Settings\MainSettingsRepository;
 use ILIAS\Test\Logging\TestLogger;
 use ILIAS\Test\Logging\TestLogViewer;
 use ILIAS\Test\Logging\TestAdministrationInteractionTypes;
+use ILIAS\Test\Logging\TestAdministrationInteraction;
+use ILIAS\Test\Logging\TestScoringInteraction;
+use ILIAS\Test\Logging\TestScoringInteractionTypes;
 use ILIAS\Test\Scoring\Marks\MarkSchema;
 use ILIAS\Test\Scoring\Marks\MarkSchemaAware;
 use ILIAS\Test\Settings\MainSettings\MainSettings;
@@ -223,7 +226,7 @@ class ilObjTest extends ilObject implements MarkSchemaAware
                 new TestAdministrationInteraction(
                     $this->lng,
                     $this->getRefId(),
-                    $this->user,
+                    $this->user->getId(),
                     TestAdministrationInteractionTypes::NEW_TEST_CREATED,
                     time(),
                     []
@@ -1092,7 +1095,7 @@ class ilObjTest extends ilObject implements MarkSchemaAware
                 new TestAdministrationInteraction(
                     $this->lng,
                     $this->getRefId(),
-                    $this->user,
+                    $this->user->getId(),
                     TestAdministrationInteractionTypes::QUESTION_REMOVED,
                     time(),
                     [
@@ -1155,7 +1158,7 @@ class ilObjTest extends ilObject implements MarkSchemaAware
                 new TestAdministrationInteraction(
                     $this->lng,
                     $this->getRefId(),
-                    $this->user,
+                    $this->user->getId(),
                     TestAdministrationInteractionTypes::PARTICIPANT_DATA_REMOVED,
                     time(),
                     [
@@ -1189,7 +1192,7 @@ class ilObjTest extends ilObject implements MarkSchemaAware
                 new TestAdministrationInteraction(
                     $this->lng,
                     $this->getRefId(),
-                    $this->user,
+                    $this->user->getId(),
                     TestAdministrationInteractionTypes::PARTICIPANT_DATA_REMOVED,
                     time(),
                     [
@@ -6724,6 +6727,24 @@ class ilObjTest extends ilObject implements MarkSchemaAware
         }
 
         $this->db->insert('tst_manual_fb', $update_default);
+
+        if ($this->logger->getLoggingEnabled()) {
+            $this->logger->logScoringInteraction(
+                new TestScoringInteraction(
+                    $this->lng,
+                    $this->getRefId(),
+                    $question_id,
+                    $this->user->getId(),
+                    self::_getUserIdFromActiveId($active_id),
+                    TestScoringInteractionTypes::QUESTION_GRADED,
+                    time(),
+                    [
+                        'finalized_evaluation' => $finalized ? '{{ true }}' : '{{ false }}',
+                        'feedback' => $feedback ? ilRTE::_replaceMediaObjectImageSrc($feedback, 0) : ''
+                    ]
+                )
+            );
+        }
     }
 
     /**
@@ -7682,7 +7703,7 @@ class ilObjTest extends ilObject implements MarkSchemaAware
                 new TestAdministrationInteraction(
                     $this->lng,
                     $this->getRefId(),
-                    $this->user,
+                    $this->user->getId(),
                     TestAdministrationInteractionTypes::EXTRA_TIME_ADDED,
                     time(),
                     [
