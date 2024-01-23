@@ -27,9 +27,9 @@ class MainSettingsDatabaseRepository implements MainSettingsRepository
     public const TABLE_NAME = 'tst_tests';
     public const STORAGE_DATE_FORMAT = 'YmdHis';
 
-    protected ilDBInterface $db;
+    protected \ilDBInterface $db;
 
-    public function __construct(ilDBInterface $db)
+    public function __construct(\ilDBInterface $db)
     {
         $this->db = $db;
     }

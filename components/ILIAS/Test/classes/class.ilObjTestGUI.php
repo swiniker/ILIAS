@@ -27,8 +27,8 @@ use ILIAS\Skill\Service\SkillService;
 
 use ILIAS\Test\InternalRequestService;
 use ILIAS\Test\QuestionIdentifiers;
-use ILIAS\Test\Settings\MainSettings\ilObjTestSettingsMainGUI;
-use ILIAS\Test\Settings\ScoreReporting\ilObjTestSettingsScoringGUI;
+use ILIAS\Test\Settings\MainSettings\SettingsMainGUI;
+use ILIAS\Test\Settings\ScoreReporting\SettingsScoringGUI;
 use ILIAS\Test\Settings\ScoreReporting\SettingsResultSummary;
 use ILIAS\Test\Scoring\Marks\MarkSchemaGUI;
 
@@ -45,7 +45,7 @@ use ILIAS\Test\Scoring\Marks\MarkSchemaGUI;
  * @ilCtrl_Calls ilObjTestGUI: ilTestPlayerFixedQuestionSetGUI, ilTestPlayerRandomQuestionSetGUI
  * @ilCtrl_Calls ilObjTestGUI: ilTestExpresspageObjectGUI, ilAssQuestionPageGUI
  * @ilCtrl_Calls ilObjTestGUI: ilTestDashboardGUI, ilTestResultsGUI
- * @ilCtrl_Calls ilObjTestGUI: ilLearningProgressGUI, MarkSchemaGUI
+ * @ilCtrl_Calls ilObjTestGUI: ilLearningProgressGUI, ILIAS\Test\Scoring\Marks\MarkSchemaGUI
  * @ilCtrl_Calls ilObjTestGUI: ilTestEvaluationGUI, ilParticipantsTestResultsGUI
  * @ilCtrl_Calls ilObjTestGUI: ilAssGenFeedbackPageGUI, ilAssSpecFeedbackPageGUI
  * @ilCtrl_Calls ilObjTestGUI: ilInfoScreenGUI, ilObjectCopyGUI
@@ -53,12 +53,12 @@ use ILIAS\Test\Scoring\Marks\MarkSchemaGUI;
  * @ilCtrl_Calls ilObjTestGUI: ilRepositorySearchGUI, ilTestExportGUI
  * @ilCtrl_Calls ilObjTestGUI: assMultipleChoiceGUI, assClozeTestGUI, assMatchingQuestionGUI
  * @ilCtrl_Calls ilObjTestGUI: assOrderingQuestionGUI, assImagemapQuestionGUI
- * @ilCtrl_Calls ilObjTestGUI: assNumericGUI, assErrorTextGUI, TestScoringByQuestionGUI, TestScoringByParticipantGUI
+ * @ilCtrl_Calls ilObjTestGUI: assNumericGUI, assErrorTextGUI, ILIAS\Test\Scoring\Manual\TestScoringByQuestionGUI, TestScoringByParticipantGUI
  * @ilCtrl_Calls ilObjTestGUI: assTextSubsetGUI, assOrderingHorizontalGUI
  * @ilCtrl_Calls ilObjTestGUI: assSingleChoiceGUI, assFileUploadGUI, assTextQuestionGUI
  * @ilCtrl_Calls ilObjTestGUI: assKprimChoiceGUI, assLongMenuGUI
  * @ilCtrl_Calls ilObjTestGUI: ilObjQuestionPoolGUI, ilEditClipboardGUI
- * @ilCtrl_Calls ilObjTestGUI: ilObjTestSettingsMainGUI, ilObjTestSettingsScoringGUI
+ * @ilCtrl_Calls ilObjTestGUI: ILIAS\Test\Settings\MainSettings\SettingsMainGUI, ILIAS\Test\Settings\ScoreReporting\SettingsScoringGUI
  * @ilCtrl_Calls ilObjTestGUI: ilCommonActionDispatcherGUI
  * @ilCtrl_Calls ilObjTestGUI: ilTestFixedQuestionSetConfigGUI, ilTestRandomQuestionSetConfigGUI
  * @ilCtrl_Calls ilObjTestGUI: ilAssQuestionHintsGUI, ilAssQuestionFeedbackEditingGUI, ilLocalUnitConfigurationGUI, assFormulaQuestionGUI
@@ -464,7 +464,7 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
                 $this->ctrl->forwardCommand($output_gui);
                 break;
 
-            case 'ilmarkschemagui':
+            case strtolower(MarkSchemaGUI::class):
                 if ((!$this->access->checkAccess("read", "", $this->testrequest->getRefId()))) {
                     $this->redirectAfterMissingRead();
                 }
@@ -476,13 +476,14 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
                 $this->addHeaderAction();
                 $mark_schema_gui = new MarkSchemaGUI(
                     $this->getTestObject(),
+                    $this->user,
                     $this->lng,
                     $this->ctrl,
                     $this->tpl,
                     $this->toolbar,
-                    $this->tabs_manager,
+                    $this->tabs_gui,
                     $this->getObject()->getTestLogger(),
-                    $this->request_wrapper,
+                    $this->post_wrapper,
                     $this->request,
                     $this->refinery,
                     $this->ui_factory,
@@ -502,13 +503,13 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
                 $this->ctrl->forwardCommand($output_gui);
                 break;
 
-            case 'ilobjtestsettingsmaingui':
+            case strtolower(SettingsMainGUI::class):
                 if ((!$this->access->checkAccess("read", "", $this->testrequest->getRefId()))) {
                     $this->redirectAfterMissingRead();
                 }
 
                 $this->addHeaderAction();
-                $gui = new ilObjTestSettingsMainGUI(
+                $gui = new SettingsMainGUI(
                     $this->tpl,
                     $this->tabs_gui,
                     $this->toolbar,
@@ -532,13 +533,13 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
                 $this->ctrl->forwardCommand($gui);
                 break;
 
-            case 'ilobjtestsettingsscoringresultsgui':
+            case strtolower(SettingsScoringGUI::class):
                 if ((!$this->access->checkAccess("read", "", $this->testrequest->getRefId()))) {
                     $this->redirectAfterMissingRead();
                 }
                 $this->prepareOutput();
                 $this->addHeaderAction();
-                $gui = new ilObjTestSettingsScoringGUI(
+                $gui = new SettingsScoringGUI(
                     $this->ctrl,
                     $this->access,
                     $this->lng,
@@ -1160,9 +1161,9 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
         $this->ctrl->forwardCommand($gui);
     }
 
-    private function redirectTo_ilObjTestSettingsMainGUI_showForm_Object()
+    private function redirectTo_SettingsMainGUI_showForm_Object()
     {
-        $this->ctrl->redirectByClass('ilObjTestSettingsMainGUI', ilObjTestSettingsMainGUI::CMD_SHOW_FORM);
+        $this->ctrl->redirectByClass(SettingsMainGUI::class, SettingsMainGUI::CMD_SHOW_FORM);
     }
 
     private function prepareSubGuiOutput()
@@ -1243,7 +1244,7 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
         // always send a message
         $this->tpl->setOnScreenMessage('success', $this->lng->txt("object_added"), true);
         $this->ctrl->setParameter($this, 'ref_id', $new_object->getRefId());
-        $this->ctrl->redirectByClass('ilObjTestSettingsMainGUI');
+        $this->ctrl->redirectByClass(SettingsMainGUI::class);
     }
 
     public function backToRepositoryObject()
@@ -1448,8 +1449,6 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
         $newObj->putInTree($this->testrequest->getRefId());
         // get default permissions and set the permissions for the questionpool object
         $newObj->setPermissions($this->testrequest->getRefId());
-        // empty mark schema
-        $newObj->resetMarkSchema();
 
         // Handle selection of "no questionpool" as qpl_id = -1 -> use test object id instead.
         // possible hint: chek if empty strings in $_POST["qpl_id"] relates to a bug or not
@@ -2809,7 +2808,7 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
             case "postpone":
             case "outUserPassDetails":
             case "checkPassword":
-                $this->locator->addItem($this->object->getTitle(), $this->ctrl->getLinkTargetByClass(ilTestScreenGUI::class, 'testScreen'), '', $this->testrequest->getRefId());
+                $this->locator->addItem($this->object->getTitle(), $this->ctrl->getLinkTargetByClass([self::class, ilTestScreenGUI::class], 'testScreen'), '', $this->testrequest->getRefId());
                 break;
             case "eval_stat":
             case "evalAllUsers":
@@ -2825,7 +2824,7 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
             case "cancelImport":
                 break;
             default:
-                $this->locator->addItem($this->object->getTitle(), $this->ctrl->getLinkTargetByClass(ilTestScreenGUI::class, 'testScreen'), '', $this->testrequest->getRefId());
+                $this->locator->addItem($this->object->getTitle(), $this->ctrl->getLinkTargetByClass([self::class, ilTestScreenGUI::class], 'testScreen'), '', $this->testrequest->getRefId());
                 break;
         }
     }
