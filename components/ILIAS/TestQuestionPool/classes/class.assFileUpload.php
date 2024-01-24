@@ -1143,4 +1143,9 @@ class assFileUpload extends assQuestion implements ilObjQuestionScoringAdjustabl
         }
         return $this->file_upload->hasUploads();
     }
+
+    public function toLog(): array
+    {
+        return [];
+    }
 }

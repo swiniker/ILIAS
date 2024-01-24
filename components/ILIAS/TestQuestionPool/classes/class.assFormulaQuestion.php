@@ -1440,4 +1440,9 @@ class assFormulaQuestion extends assQuestion implements iQuestionCondition, Ques
             return $this->getResults();
         }
     }
+
+    public function toLog(): array
+    {
+        return [];
+    }
 }

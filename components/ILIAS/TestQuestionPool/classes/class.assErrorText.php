@@ -1136,4 +1136,9 @@ class assErrorText extends assQuestion implements ilObjQuestionScoringAdjustable
             $item
         )) . '</span>';
     }
+
+    public function toLog(): array
+    {
+        return [];
+    }
 }
