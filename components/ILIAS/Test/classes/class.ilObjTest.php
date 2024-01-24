@@ -224,7 +224,7 @@ class ilObjTest extends ilObject implements MarkSchemaAware
                 new TestAdministrationInteraction(
                     $this->lng,
                     $this->getRefId(),
-                    $this->user->getId(),
+                    $this->user,
                     TestAdministrationInteractionTypes::NEW_TEST_CREATED,
                     time(),
                     []
@@ -1131,7 +1131,7 @@ class ilObjTest extends ilObject implements MarkSchemaAware
                 new TestAdministrationInteraction(
                     $this->lng,
                     $this->getRefId(),
-                    $this->user->getId(),
+                    $this->user,
                     TestAdministrationInteractionTypes::QUESTION_REMOVED,
                     time(),
                     [
@@ -1194,7 +1194,7 @@ class ilObjTest extends ilObject implements MarkSchemaAware
                 new TestAdministrationInteraction(
                     $this->lng,
                     $this->getRefId(),
-                    $this->user->getId(),
+                    $this->user,
                     TestAdministrationInteractionTypes::PARTICIPANT_DATA_REMOVED,
                     time(),
                     [
@@ -1228,7 +1228,7 @@ class ilObjTest extends ilObject implements MarkSchemaAware
                 new TestAdministrationInteraction(
                     $this->lng,
                     $this->getRefId(),
-                    $this->user->getId(),
+                    $this->user,
                     TestAdministrationInteractionTypes::PARTICIPANT_DATA_REMOVED,
                     time(),
                     [
@@ -1363,17 +1363,9 @@ class ilObjTest extends ilObject implements MarkSchemaAware
         return $duplicate_id;
     }
 
-    /**
-     * Insert a question in the list of questions
-     *
-     * @param ilTestQuestionSetConfig $testQuestionSetConfig
-     * @param integer $question_id The database id of the inserted question
-     * @param boolean $linkOnly
-     * @return integer $duplicate_id
-     */
-    public function insertQuestion(ilTestQuestionSetConfig $testQuestionSetConfig, $question_id, $linkOnly = false): int
+    public function insertQuestion(ilTestQuestionSetConfig $test_question_set_config, int $question_id, bool $link_only = false): int
     {
-        if ($linkOnly) {
+        if ($link_only) {
             $duplicate_id = $question_id;
         } else {
             $duplicate_id = $this->duplicateQuestionForTest($question_id);
@@ -1393,19 +1385,36 @@ class ilObjTest extends ilObject implements MarkSchemaAware
         }
 
         $next_id = $this->db->nextId('tst_test_question');
-        $affectedRows = $this->db->manipulateF(
+        $this->db->manipulateF(
             "INSERT INTO tst_test_question (test_question_id, test_fi, question_fi, sequence, tstamp) VALUES (%s, %s, %s, %s, %s)",
             ['integer', 'integer','integer','integer','integer'],
             [$next_id, $this->getTestId(), $duplicate_id, $sequence, time()]
         );
         // remove test_active entries, because test has changed
-        $affectedRows = $this->db->manipulateF(
+        $this->db->manipulateF(
             "DELETE FROM tst_active WHERE test_fi = %s",
             ['integer'],
             [$this->getTestId()]
         );
         $this->loadQuestions();
-        $this->saveCompleteStatus($testQuestionSetConfig);
+        $this->saveCompleteStatus($test_question_set_config);
+
+        if ($this->logger->getLoggingEnabled()) {
+            $this->logger->logTestAdministrationInteraction(
+                new TestAdministrationInteraction(
+                    $this->lng,
+                    $this->getRefId(),
+                    $this->user,
+                    TestAdministrationInteractionTypes::QUESTION_ADDED,
+                    time(),
+                    [
+                        'question' => (assQuestion::instantiateQuestion($question_id))->toLog(),
+                        'order' => $this->questions
+                    ]
+                )
+            );
+        }
+
         return $duplicate_id;
     }
 
@@ -1789,8 +1798,8 @@ class ilObjTest extends ilObject implements MarkSchemaAware
         int $active_id,
         ?int $pass = null,
         bool $ordered_sequence = false,
-        bool $considerHiddenQuestions = true,
-        bool $considerOptionalQuestions = true
+        bool $consider_hidden_questions = true,
+        bool $consider_optional_questions = true
     ): array {
         $results = $this->getResultsForActiveId($active_id);
 
@@ -1801,8 +1810,8 @@ class ilObjTest extends ilObject implements MarkSchemaAware
         $test_sequence_factory = new ilTestSequenceFactory($this, $this->db, $this->questioninfo);
         $test_sequence = $test_sequence_factory->getSequenceByActiveIdAndPass($active_id, $pass);
 
-        $test_sequence->setConsiderHiddenQuestionsEnabled($considerHiddenQuestions);
-        $test_sequence->setConsiderOptionalQuestionsEnabled($considerOptionalQuestions);
+        $test_sequence->setConsiderHiddenQuestionsEnabled($consider_hidden_questions);
+        $test_sequence->setConsiderOptionalQuestionsEnabled($consider_optional_questions);
 
         $test_sequence->loadFromDb();
         $test_sequence->loadQuestions();
@@ -3123,6 +3132,21 @@ class ilObjTest extends ilObject implements MarkSchemaAware
             $counter++;
         }
         $this->saveQuestionsToDb();
+
+        if ($this->logger->getLoggingEnabled()) {
+            $this->logger->logTestAdministrationInteraction(
+                new TestAdministrationInteraction(
+                    $this->lng,
+                    $this->getRefId(),
+                    $this->user,
+                    TestAdministrationInteractionTypes::QUESTION_MOVED,
+                    time(),
+                    [
+                        'order' => $this->questions
+                    ]
+                )
+            );
+        }
     }
 
 
@@ -6803,7 +6827,7 @@ class ilObjTest extends ilObject implements MarkSchemaAware
                     $this->lng,
                     $this->getRefId(),
                     $question_id,
-                    $this->user->getId(),
+                    $this->user,
                     self::_getUserIdFromActiveId($active_id),
                     TestScoringInteractionTypes::QUESTION_GRADED,
                     time(),
@@ -7198,49 +7222,6 @@ class ilObjTest extends ilObject implements MarkSchemaAware
         return $this->template_id;
     }
 
-    public function moveQuestionAfterOLD($previous_question_id, $new_question_id)
-    {
-        $new_array = [];
-        $position = 1;
-
-        $query = 'SELECT question_fi  FROM tst_test_question WHERE test_fi = %s';
-        $types = ['integer'];
-        $values = [$this->getTestId()];
-
-        $new_question_id += 1;
-
-        $inserted = false;
-        $res = $this->db->queryF($query, $types, $values);
-        while ($row = $this->db->fetchAssoc($res)) {
-            $qid = $row['question_fi'];
-
-            if ($qid == $new_question_id) {
-                continue;
-            } elseif ($qid == $previous_question_id) {
-                $new_array[$position++] = $qid;
-                $new_array[$position++] = $new_question_id;
-                $inserted = true;
-            } else {
-                $new_array[$position++] = $qid;
-            }
-        }
-
-        $update_query = 'UPDATE tst_test_question SET sequence = %s WHERE test_fi = %s AND question_fi = %s';
-        $update_types = ['integer', 'integer', 'integer'];
-
-        foreach ($new_array as $position => $qid) {
-            $this->db->manipulateF(
-                $update_query,
-                $update_types,
-                $vals = [
-                            $position,
-                            $this->getTestId(),
-                            $qid
-                        ]
-            );
-        }
-    }
-
     public function reindexFixedQuestionOrdering(): ilTestReindexedSequencePositionMap
     {
         $question_set_config = $this->question_set_config_factory->getQuestionSetConfig();
@@ -7257,7 +7238,7 @@ class ilObjTest extends ilObject implements MarkSchemaAware
 
         $i = 0;
 
-        foreach ($orders as $id => $position) {
+        foreach (array_keys($orders) as $id) {
             $i++;
 
             $obligatory = (
@@ -7275,6 +7256,22 @@ class ilObjTest extends ilObject implements MarkSchemaAware
                 $query,
                 ['integer', 'integer', 'integer'],
                 [$i, $obligatory, $id]
+            );
+        }
+
+        if ($this->logger->getLoggingEnabled()) {
+            $this->logger->logTestAdministrationInteraction(
+                new TestAdministrationInteraction(
+                    $this->lng,
+                    $this->getRefId(),
+                    $this->user,
+                    TestAdministrationInteractionTypes::QUESTION_MOVED,
+                    time(),
+                    [
+                        'order' => $orders,
+                        'obligations' => $obligations
+                    ]
+                )
             );
         }
 
@@ -7782,7 +7779,7 @@ class ilObjTest extends ilObject implements MarkSchemaAware
                 new TestAdministrationInteraction(
                     $this->lng,
                     $this->getRefId(),
-                    $this->user->getId(),
+                    $this->user,
                     TestAdministrationInteractionTypes::EXTRA_TIME_ADDED,
                     time(),
                     [

@@ -209,7 +209,7 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
 
         $eval = new ilTestEvaluationData($this->db, $this->object);
         $eval->setFilterArray($filter_array);
-        $foundParticipants = $eval->getParticipants();
+        $found_participants = $eval->getParticipants();
 
         $participantData = new ilTestParticipantData($this->db, $this->lng);
         $participantData->setActiveIdsFilter($eval->getParticipantIds());
@@ -223,12 +223,12 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
         $counter = 1;
         if (count($participantData->getActiveIds()) > 0) {
             foreach ($participantData->getActiveIds() as $active_id) {
-                if (!isset($foundParticipants[$active_id]) || !($foundParticipants[$active_id] instanceof ilTestEvaluationUserData)) {
+                if (!isset($found_participants[$active_id]) || !($found_participants[$active_id] instanceof ilTestEvaluationUserData)) {
                     continue;
                 }
 
                 /* @var $userdata ilTestEvaluationUserData */
-                $userdata = $foundParticipants[$active_id];
+                $userdata = $found_participants[$active_id];
 
                 $remove = false;
                 if ($passedonly) {
@@ -315,8 +315,8 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
 
             if (!$this->object->getAnonymity()) {
                 try {
-                    $globalCertificatePrerequisites = new ilCertificateActiveValidator();
-                    if ($globalCertificatePrerequisites->validate()) {
+                    $global_certificate_prerequisites = new ilCertificateActiveValidator();
+                    if ($global_certificate_prerequisites->validate()) {
                         $options[] = $this->ui_factory->button()->shy($this->lng->txt('exp_type_certificate'), $this->ctrl->getLinkTarget($this, 'certificate'));
                     }
                 } catch (ilException $e) {
@@ -555,8 +555,8 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
 
         $eval = $this->object->getCompleteEvaluationData();
         $data = [];
-        $foundParticipants = $eval->getParticipants();
-        if (count($foundParticipants)) {
+        $found_participants = $eval->getParticipants();
+        if (count($found_participants)) {
             $options = [
                 $this->ui_factory->button()->shy($this->lng->txt('exp_type_excel'), $this->ctrl->getLinkTarget($this, 'excel_all_test_runs_a')),
                 $this->ui_factory->button()->shy($this->lng->txt('exp_type_spss'), $this->ctrl->getLinkTarget($this, 'csv_a'))
@@ -567,7 +567,7 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
 
             $data[] = array(
                 'result' => $this->lng->txt("tst_eval_total_persons"),
-                'value' => count($foundParticipants)
+                'value' => count($found_participants)
             );
             $total_finished = $eval->getTotalFinishedParticipants();
             $data[] = array(
@@ -590,7 +590,7 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
             $total_passed_reached = 0;
             $total_passed_max = 0;
             $total_passed_time = 0;
-            foreach ($foundParticipants as $userdata) {
+            foreach ($found_participants as $userdata) {
                 if ($userdata->getPassed()) {
                     $total_passed++;
                     $total_passed_reached += $userdata->getReached();
@@ -631,7 +631,7 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
             $answered = 0;
             $reached = 0;
             $max = 0;
-            foreach ($foundParticipants as $userdata) {
+            foreach ($found_participants as $userdata) {
                 for ($i = 0; $i <= $userdata->getLastPass(); $i++) {
                     if (is_object($userdata->getPass($i))) {
                         $question = $userdata->getPass($i)->getAnsweredQuestionByQuestionId($question_id);
@@ -739,8 +739,8 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
 
     public function exportCertificate()
     {
-        $globalCertificatePrerequisites = new ilCertificateActiveValidator();
-        if (!$globalCertificatePrerequisites->validate()) {
+        $global_certificate_prerequisites = new ilCertificateActiveValidator();
+        if (!$global_certificate_prerequisites->validate()) {
             $this->ilias->raiseError($this->lng->txt('permission_denied'), $this->error->MESSAGE);
         }
 
@@ -825,10 +825,10 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
         }
 
         $this->ctrl->saveParameter($this, "active_id");
-        $testSession = $this->testSessionFactory->getSession($active_id);
+        $test_session = $this->testSessionFactory->getSession($active_id);
 
         // protect actives from other tests
-        if ($testSession->getTestId() != $this->object->getTestId()) {
+        if ($test_session->getTestId() != $this->object->getTestId()) {
             ilObjTestGUI::accessViolationRedirect();
         }
 
@@ -882,11 +882,11 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
         $template->setVariable('RESULTS_TOOLBAR', $this->ctrl->getHTML($toolbar));
 
         if ($this->isGradingMessageRequired() && $this->object->getNrOfTries() == 1) {
-            $gradingMessageBuilder = $this->getGradingMessageBuilder($active_id);
-            $gradingMessageBuilder->buildList();
+            $grading_message_builder = $this->getGradingMessageBuilder($active_id);
+            $grading_message_builder->buildList();
 
             $template->setCurrentBlock('grading_message');
-            $template->setVariable('GRADING_MESSAGE', $gradingMessageBuilder->getList());
+            $template->setVariable('GRADING_MESSAGE', $grading_message_builder->getList());
             $template->parseCurrentBlock();
         }
 
@@ -1011,10 +1011,10 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
             ilObjTestGUI::accessViolationRedirect();
         }
 
-        $testSession = $this->testSessionFactory->getSession($active_id);
+        $test_session = $this->testSessionFactory->getSession($active_id);
 
         // protect actives from other tests
-        if ($testSession->getTestId() != $this->object->getTestId()) {
+        if ($test_session->getTestId() != $this->object->getTestId()) {
             ilObjTestGUI::accessViolationRedirect();
         }
 
@@ -1035,38 +1035,38 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
         $toolbar->build();
         $template->setVariable('RESULTS_TOOLBAR', $this->ctrl->getHTML($toolbar));
 
-        $testResultHeaderLabelBuilder = new ilTestResultHeaderLabelBuilder($this->lng, $ilObjDataCache);
+        $test_result_header_label_builder = new ilTestResultHeaderLabelBuilder($this->lng, $ilObjDataCache);
         if ($this->getObjectiveOrientedContainer()->isObjectiveOrientedPresentationRequired()) {
-            $testResultHeaderLabelBuilder->setObjectiveOrientedContainerId($testSession->getObjectiveOrientedContainerId());
-            $testResultHeaderLabelBuilder->setUserId($testSession->getUserId());
-            $testResultHeaderLabelBuilder->setTestObjId($this->object->getId());
-            $testResultHeaderLabelBuilder->setTestRefId($this->object->getRefId());
-            $testResultHeaderLabelBuilder->initObjectiveOrientedMode();
+            $test_result_header_label_builder->setObjectiveOrientedContainerId($test_session->getObjectiveOrientedContainerId());
+            $test_result_header_label_builder->setUserId($test_session->getUserId());
+            $test_result_header_label_builder->setTestObjId($this->object->getId());
+            $test_result_header_label_builder->setTestRefId($this->object->getRefId());
+            $test_result_header_label_builder->initObjectiveOrientedMode();
         }
 
-        $testPassesSelector = new ilTestPassesSelector($this->db, $this->object);
-        $testPassesSelector->setActiveId($testSession->getActiveId());
-        $testPassesSelector->setLastFinishedPass($testSession->getLastFinishedPass());
+        $test_passes_selector = new ilTestPassesSelector($this->db, $this->object);
+        $test_passes_selector->setActiveId($test_session->getActiveId());
+        $test_passes_selector->setLastFinishedPass($test_session->getLastFinishedPass());
 
-        $passOverViewTableGUI = $this->buildPassOverviewTableGUI($this);
-        $passOverViewTableGUI->setActiveId($testSession->getActiveId());
-        $passOverViewTableGUI->setResultPresentationEnabled(true);
-        $passOverViewTableGUI->setPassDetailsCommand('outParticipantsPassDetails');
-        $passOverViewTableGUI->init();
-        $passOverViewTableGUI->setData($this->getPassOverviewTableData($testSession, $testPassesSelector->getExistingPasses(), true));
-        $passOverViewTableGUI->setTitle($testResultHeaderLabelBuilder->getPassOverviewHeaderLabel());
-        $template->setVariable("PASS_OVERVIEW", $passOverViewTableGUI->getHTML());
+        $pass_overview_table_gui = $this->buildPassOverviewTableGUI($this);
+        $pass_overview_table_gui->setActiveId($test_session->getActiveId());
+        $pass_overview_table_gui->setResultPresentationEnabled(true);
+        $pass_overview_table_gui->setPassDetailsCommand('outParticipantsPassDetails');
+        $pass_overview_table_gui->init();
+        $pass_overview_table_gui->setData($this->getPassOverviewTableData($test_session, $test_passes_selector->getExistingPasses(), true));
+        $pass_overview_table_gui->setTitle($test_result_header_label_builder->getPassOverviewHeaderLabel());
+        $template->setVariable("PASS_OVERVIEW", $pass_overview_table_gui->getHTML());
 
         if ($this->isGradingMessageRequired()) {
-            $gradingMessageBuilder = $this->getGradingMessageBuilder($active_id);
-            $gradingMessageBuilder->buildList();
+            $grading_message_builder = $this->getGradingMessageBuilder($active_id);
+            $grading_message_builder->buildList();
 
             $template->setCurrentBlock('grading_message');
-            $template->setVariable('GRADING_MESSAGE', $gradingMessageBuilder->getList());
+            $template->setVariable('GRADING_MESSAGE', $grading_message_builder->getList());
             $template->parseCurrentBlock();
         }
 
-        $user_data = $this->getAdditionalUsrDataHtmlAndPopulateWindowTitle($testSession, $active_id, true);
+        $user_data = $this->getAdditionalUsrDataHtmlAndPopulateWindowTitle($test_session, $active_id, true);
         $user_id = $this->object->_getUserIdFromActiveId($active_id);
 
         if (!$this->getObjectiveOrientedContainer()->isObjectiveOrientedPresentationRequired()) {
@@ -1090,49 +1090,50 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
         $this->tabs->clearSubTabs();
         $this->tabs->setBackTarget($this->lng->txt('tst_results_back_overview'), $this->ctrl->getLinkTarget($this));
 
-        $testSession = $this->testSessionFactory->getSession();
+        $test_session = $this->testSessionFactory->getSession();
 
         if (!$this->object->getShowPassDetails()) {
             $this->ctrl->redirectByClass("ilobjtestgui", "infoScreen");
         }
 
-        $active_id = $testSession->getActiveId();
-        $user_id = $testSession->getUserId();
+        $active_id = $test_session->getActiveId();
+        $user_id = $test_session->getUserId();
 
         $this->ctrl->saveParameter($this, "pass");
         $pass = $this->testrequest->int("pass");
 
-        $testResultHeaderLabelBuilder = new ilTestResultHeaderLabelBuilder($this->lng, $this->obj_cache);
+        $test_result_header_label_builder = new ilTestResultHeaderLabelBuilder($this->lng, $this->obj_cache);
 
-        $objectivesList = null;
+        $objectives_list = null;
 
-        $considerHiddenQuestions = true;
-        $considerOptionalQuestions = true;
+        $consider_hidden_questions = true;
+        $consider_optional_questions = true;
 
         if ($this->getObjectiveOrientedContainer()->isObjectiveOrientedPresentationRequired()) {
-            $considerHiddenQuestions = false;
+            $consider_hidden_questions = false;
+            $consider_optional_questions = true;
 
-            $testSequence = $this->testSequenceFactory->getSequenceByActiveIdAndPass($active_id, $pass);
-            $testSequence->loadFromDb();
-            $testSequence->loadQuestions();
+            $test_sequence = $this->testSequenceFactory->getSequenceByActiveIdAndPass($active_id, $pass);
+            $test_sequence->loadFromDb();
+            $test_sequence->loadQuestions();
 
-            if ($this->object->isRandomTest() && !$testSequence->isAnsweringOptionalQuestionsConfirmed()) {
-                $considerOptionalQuestions = false;
+            if ($this->object->isRandomTest() && !$test_sequence->isAnsweringOptionalQuestionsConfirmed()) {
+                $consider_optional_questions = false;
             }
 
-            $objectivesAdapter = ilLOTestQuestionAdapter::getInstance($testSession);
+            $objectivesAdapter = ilLOTestQuestionAdapter::getInstance($test_session);
 
-            $objectivesList = $this->buildQuestionRelatedObjectivesList($objectivesAdapter, $testSequence);
-            $objectivesList->loadObjectivesTitles();
+            $objectives_list = $this->buildQuestionRelatedObjectivesList($objectivesAdapter, $test_sequence);
+            $objectives_list->loadObjectivesTitles();
 
-            $testResultHeaderLabelBuilder->setObjectiveOrientedContainerId($testSession->getObjectiveOrientedContainerId());
-            $testResultHeaderLabelBuilder->setUserId($testSession->getUserId());
-            $testResultHeaderLabelBuilder->setTestObjId($this->object->getId());
-            $testResultHeaderLabelBuilder->setTestRefId($this->object->getRefId());
-            $testResultHeaderLabelBuilder->initObjectiveOrientedMode();
+            $test_result_header_label_builder->setObjectiveOrientedContainerId($test_session->getObjectiveOrientedContainerId());
+            $test_result_header_label_builder->setUserId($test_session->getUserId());
+            $test_result_header_label_builder->setTestObjId($this->object->getId());
+            $test_result_header_label_builder->setTestRefId($this->object->getRefId());
+            $test_result_header_label_builder->initObjectiveOrientedMode();
         }
 
-        $result_array = $this->getFilteredTestResult($active_id, $pass, $considerHiddenQuestions, $considerOptionalQuestions);
+        $result_array = $this->getFilteredTestResult($active_id, $pass, $consider_hidden_questions, $consider_optional_questions);
 
         $command_solution_details = "";
         if ($this->object->getShowSolutionListComparison()) {
@@ -1159,7 +1160,7 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
         if ($this->object->isShowExamIdInTestResultsEnabled()) {
             if ($this->object->isShowExamIdInTestResultsEnabled()) {
                 $tpl->setVariable('EXAM_ID', ilObjTest::lookupExamId(
-                    $testSession->getActiveId(),
+                    $test_session->getActiveId(),
                     $pass
                 ));
                 $tpl->setVariable('EXAM_ID_TXT', $this->lng->txt('exam_id'));
@@ -1168,9 +1169,9 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
 
         if (!$this->getObjectiveOrientedContainer()->isObjectiveOrientedPresentationRequired() &&
             $this->isGradingMessageRequired() && $this->object->getNrOfTries() == 1) {
-            $gradingMessageBuilder = $this->getGradingMessageBuilder($active_id);
-            $gradingMessageBuilder->buildMessage();
-            $gradingMessageBuilder->sendMessage();
+            $grading_message_builder = $this->getGradingMessageBuilder($active_id);
+            $grading_message_builder->buildMessage();
+            $grading_message_builder->sendMessage();
         }
 
         $data = $this->object->getCompleteEvaluationData();
@@ -1181,7 +1182,7 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
         $tpl->setVariable("TOTAL_RESULT", $result);
         $tpl->parseCurrentBlock();
 
-        $tpl->setVariable("TEXT_RESULTS", $testResultHeaderLabelBuilder->getPassDetailsHeaderLabel($pass + 1));
+        $tpl->setVariable("TEXT_RESULTS", $test_result_header_label_builder->getPassDetailsHeaderLabel($pass + 1));
         $tpl->setVariable("FORMACTION", $this->ctrl->getFormAction($this));
 
         $this->populateExamId($tpl, $active_id, (int) $pass);
@@ -1218,12 +1219,12 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
 
     public function outUserResultsOverview()
     {
-        $testSession = $this->testSessionFactory->getSession();
-        $active_id = $testSession->getActiveId();
+        $test_session = $this->testSessionFactory->getSession();
+        $active_id = $test_session->getActiveId();
         $user_id = $this->user->getId();
         $uname = $this->object->userLookupFullName($user_id, true);
 
-        if (!$this->object->canShowTestResults($testSession)) {
+        if (!$this->object->canShowTestResults($test_session)) {
             $this->ctrl->redirectByClass("ilobjtestgui", "infoScreen");
         }
 
@@ -1241,36 +1242,36 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
 
         $templatehead->setVariable('RESULTS_TOOLBAR', $this->ctrl->getHTML($toolbar));
 
-        $passDetailsEnabled = $this->object->getShowPassDetails();
+        $pass_details_enabled = $this->object->getShowPassDetails();
 
-        $testResultHeaderLabelBuilder = new ilTestResultHeaderLabelBuilder($this->lng, $this->obj_cache);
+        $test_result_header_label_builder = new ilTestResultHeaderLabelBuilder($this->lng, $this->obj_cache);
         if ($this->getObjectiveOrientedContainer()->isObjectiveOrientedPresentationRequired()) {
-            $testResultHeaderLabelBuilder->setObjectiveOrientedContainerId($testSession->getObjectiveOrientedContainerId());
-            $testResultHeaderLabelBuilder->setUserId($testSession->getUserId());
-            $testResultHeaderLabelBuilder->setTestObjId($this->object->getId());
-            $testResultHeaderLabelBuilder->setTestRefId($this->object->getRefId());
-            $testResultHeaderLabelBuilder->initObjectiveOrientedMode();
+            $test_result_header_label_builder->setObjectiveOrientedContainerId($test_session->getObjectiveOrientedContainerId());
+            $test_result_header_label_builder->setUserId($test_session->getUserId());
+            $test_result_header_label_builder->setTestObjId($this->object->getId());
+            $test_result_header_label_builder->setTestRefId($this->object->getRefId());
+            $test_result_header_label_builder->initObjectiveOrientedMode();
         }
 
         $template->setCurrentBlock("pass_overview");
 
-        $testPassesSelector = new ilTestPassesSelector($this->db, $this->object);
-        $testPassesSelector->setActiveId($testSession->getActiveId());
-        $testPassesSelector->setLastFinishedPass($testSession->getLastFinishedPass());
+        $test_passes_selector = new ilTestPassesSelector($this->db, $this->object);
+        $test_passes_selector->setActiveId($test_session->getActiveId());
+        $test_passes_selector->setLastFinishedPass($test_session->getLastFinishedPass());
 
-        $passOverViewTableGUI = $this->buildPassOverviewTableGUI($this);
-        $passOverViewTableGUI->setActiveId($testSession->getActiveId());
-        $passOverViewTableGUI->setResultPresentationEnabled(true);
-        if ($passDetailsEnabled) {
-            $passOverViewTableGUI->setPassDetailsCommand('outUserPassDetails');
+        $pass_overview_table_gui = $this->buildPassOverviewTableGUI($this);
+        $pass_overview_table_gui->setActiveId($test_session->getActiveId());
+        $pass_overview_table_gui->setResultPresentationEnabled(true);
+        if ($pass_details_enabled) {
+            $pass_overview_table_gui->setPassDetailsCommand('outUserPassDetails');
         }
         if ($this->object->isPassDeletionAllowed()) {
-            $passOverViewTableGUI->setPassDeletionCommand('confirmDeletePass');
+            $pass_overview_table_gui->setPassDeletionCommand('confirmDeletePass');
         }
-        $passOverViewTableGUI->init();
-        $passOverViewTableGUI->setData($this->getPassOverviewTableData($testSession, $testPassesSelector->getReportablePasses(), true));
-        $passOverViewTableGUI->setTitle($testResultHeaderLabelBuilder->getPassOverviewHeaderLabel());
-        $overview = $passOverViewTableGUI->getHTML();
+        $pass_overview_table_gui->init();
+        $pass_overview_table_gui->setData($this->getPassOverviewTableData($test_session, $test_passes_selector->getReportablePasses(), true));
+        $pass_overview_table_gui->setTitle($test_result_header_label_builder->getPassOverviewHeaderLabel());
+        $overview = $pass_overview_table_gui->getHTML();
         if ($this->getObjectiveOrientedContainer()->isObjectiveOrientedPresentationRequired()) {
             $lo_status = new ilTestLearningObjectivesStatusGUI(
                 $this->lng,
@@ -1280,19 +1281,19 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
                 $this->testrequest
             );
             $lo_status->setCrsObjId($this->getObjectiveOrientedContainer()->getObjId());
-            $lo_status->setUsrId($testSession->getUserId());
+            $lo_status->setUsrId($test_session->getUserId());
             $overview .= "<br />" . $lo_status->getHTML();
         }
         $template->setVariable("PASS_OVERVIEW", $overview);
         $template->parseCurrentBlock();
 
         if ($this->isGradingMessageRequired()) {
-            $gradingMessageBuilder = $this->getGradingMessageBuilder($active_id);
-            $gradingMessageBuilder->buildMessage();
-            $gradingMessageBuilder->sendMessage();
+            $grading_message_builder = $this->getGradingMessageBuilder($active_id);
+            $grading_message_builder->buildMessage();
+            $grading_message_builder->sendMessage();
         }
 
-        $user_data = $this->getAdditionalUsrDataHtmlAndPopulateWindowTitle($testSession, $active_id, true);
+        $user_data = $this->getAdditionalUsrDataHtmlAndPopulateWindowTitle($test_session, $active_id, true);
 
         if (!$this->getObjectiveOrientedContainer()->isObjectiveOrientedPresentationRequired()) {
             if ($this->object->getAnonymity()) {
@@ -1323,44 +1324,44 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
         }
         $user_id = $this->user->getId();
 
-        $testSession = $this->testSessionFactory->getSession();
-        $active_id = $testSession->getActiveId();
+        $test_session = $this->testSessionFactory->getSession();
+        $active_id = $test_session->getActiveId();
 
         $template->setVariable("TEXT_RESULTS", $this->lng->txt("tst_passes"));
 
-        $testPassesSelector = new ilTestPassesSelector($this->db, $this->object);
-        $testPassesSelector->setActiveId($testSession->getActiveId());
-        $testPassesSelector->setLastFinishedPass($testSession->getLastFinishedPass());
+        $test_passes_selector = new ilTestPassesSelector($this->db, $this->object);
+        $test_passes_selector->setActiveId($test_session->getActiveId());
+        $test_passes_selector->setLastFinishedPass($test_session->getLastFinishedPass());
 
-        $passOverViewTableGUI = $this->buildPassOverviewTableGUI($this);
-        $passOverViewTableGUI->setActiveId($testSession->getActiveId());
-        $passOverViewTableGUI->setResultPresentationEnabled(false);
-        $passOverViewTableGUI->setPassDetailsCommand('outUserListOfAnswerPasses');
-        $passOverViewTableGUI->init();
-        $passOverViewTableGUI->setData($this->getPassOverviewTableData($testSession, $testPassesSelector->getClosedPasses(), false));
-        $template->setVariable("PASS_OVERVIEW", $passOverViewTableGUI->getHTML());
+        $pass_overview_table_gui = $this->buildPassOverviewTableGUI($this);
+        $pass_overview_table_gui->setActiveId($test_session->getActiveId());
+        $pass_overview_table_gui->setResultPresentationEnabled(false);
+        $pass_overview_table_gui->setPassDetailsCommand('outUserListOfAnswerPasses');
+        $pass_overview_table_gui->init();
+        $pass_overview_table_gui->setData($this->getPassOverviewTableData($test_session, $test_passes_selector->getClosedPasses(), false));
+        $template->setVariable("PASS_OVERVIEW", $pass_overview_table_gui->getHTML());
 
         $signature = '';
         if ($pass !== null) {
-            $testResultHeaderLabelBuilder = new ilTestResultHeaderLabelBuilder($this->lng, $this->obj_cache);
+            $test_result_header_label_builder = new ilTestResultHeaderLabelBuilder($this->lng, $this->obj_cache);
 
-            $objectivesList = null;
+            $objectives_list = null;
 
             if ($this->getObjectiveOrientedContainer()->isObjectiveOrientedPresentationRequired()) {
-                $testSequence = $this->testSequenceFactory->getSequenceByActiveIdAndPass($active_id, $pass);
-                $testSequence->loadFromDb();
-                $testSequence->loadQuestions();
+                $test_sequence = $this->testSequenceFactory->getSequenceByActiveIdAndPass($active_id, $pass);
+                $test_sequence->loadFromDb();
+                $test_sequence->loadQuestions();
 
-                $objectivesAdapter = ilLOTestQuestionAdapter::getInstance($testSession);
+                $objectivesAdapter = ilLOTestQuestionAdapter::getInstance($test_session);
 
-                $objectivesList = $this->buildQuestionRelatedObjectivesList($objectivesAdapter, $testSequence);
-                $objectivesList->loadObjectivesTitles();
+                $objectives_list = $this->buildQuestionRelatedObjectivesList($objectivesAdapter, $test_sequence);
+                $objectives_list->loadObjectivesTitles();
 
-                $testResultHeaderLabelBuilder->setObjectiveOrientedContainerId($testSession->getObjectiveOrientedContainerId());
-                $testResultHeaderLabelBuilder->setUserId($testSession->getUserId());
-                $testResultHeaderLabelBuilder->setTestObjId($this->object->getId());
-                $testResultHeaderLabelBuilder->setTestRefId($this->object->getRefId());
-                $testResultHeaderLabelBuilder->initObjectiveOrientedMode();
+                $test_result_header_label_builder->setObjectiveOrientedContainerId($test_session->getObjectiveOrientedContainerId());
+                $test_result_header_label_builder->setUserId($test_session->getUserId());
+                $test_result_header_label_builder->setTestObjId($this->object->getId());
+                $test_result_header_label_builder->setTestRefId($this->object->getRefId());
+                $test_result_header_label_builder->initObjectiveOrientedMode();
             }
 
             $result_array = $this->object->getTestResult(
@@ -1372,19 +1373,19 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
 
             $signature = $this->getResultsSignature();
             $user_id = $this->object->_getUserIdFromActiveId($active_id);
-            $showAllAnswers = true;
-            if ($this->object->isExecutable($testSession, $user_id)) {
-                $showAllAnswers = false;
+            $show_all_answers = true;
+            if ($this->object->isExecutable($test_session, $user_id)) {
+                $show_all_answers = false;
             }
             $this->setContextResultPresentation(false);
-            $answers = $this->getPassListOfAnswers($result_array, $active_id, $pass, false, $showAllAnswers, false, false, false, $objectivesList, $testResultHeaderLabelBuilder);
+            $answers = $this->getPassListOfAnswers($result_array, $active_id, $pass, false, $show_all_answers, false, false, false, $objectives_list, $test_result_header_label_builder);
             $template->setVariable("PASS_DETAILS", $answers);
         }
         $template->setVariable("FORMACTION", $this->ctrl->getFormAction($this));
         $template->setVariable("PRINT_TEXT", $this->lng->txt("print"));
         $template->setVariable("PRINT_URL", "javascript:window.print();");
 
-        $user_data = $this->getAdditionalUsrDataHtmlAndPopulateWindowTitle($testSession, $active_id, true);
+        $user_data = $this->getAdditionalUsrDataHtmlAndPopulateWindowTitle($test_session, $active_id, true);
         $template->setVariable("USER_DATA", $user_data);
         $template->setVariable("TEXT_LIST_OF_ANSWERS", $this->lng->txt("tst_list_of_answers"));
         if (strlen($signature)) {
@@ -1393,7 +1394,7 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
         if (!is_null($pass) && $this->object->isShowExamIdInTestResultsEnabled()) {
             $template->setCurrentBlock('exam_id_footer');
             $template->setVariable('EXAM_ID_VAL', ilObjTest::lookupExamId(
-                $testSession->getActiveId(),
+                $test_session->getActiveId(),
                 $pass
             ));
             $template->setVariable('EXAM_ID_TXT', $this->lng->txt('exam_id'));
@@ -1434,11 +1435,10 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
         $this->tabs->activateTab(ilTestTabsManager::TAB_ID_STATISTICS);
 
         $data = $this->object->getCompleteEvaluationData();
-        $color_class = array("tblrow1", "tblrow2");
         $counter = 0;
         $this->tpl->addBlockFile("ADM_CONTENT", "adm_content", "tpl.il_as_tst_eval_single_answers.html", "components/ILIAS/Test");
-        $foundParticipants = $data->getParticipants();
-        if (count($foundParticipants) == 0) {
+        $found_participants = $data->getParticipants();
+        if (count($found_participants) == 0) {
             $this->tpl->setOnScreenMessage('info', $this->lng->txt("tst_no_evaluation_data"));
             return;
         } else {
@@ -1447,7 +1447,7 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
                 $answered = 0;
                 $reached = 0;
                 $max = 0;
-                foreach ($foundParticipants as $userdata) {
+                foreach ($found_participants as $userdata) {
                     $pass = $userdata->getScoredPass();
                     if (is_object($userdata->getPass($pass))) {
                         $question = $userdata->getPass($pass)->getAnsweredQuestionByQuestionId($question_id);
@@ -1761,28 +1761,32 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
         $this->redirectToPassDeletionContext($context);
     }
 
-    protected function getFilteredTestResult(int $active_id, int $pass, bool $considerHiddenQuestions, bool $considerOptionalQuestions): array
-    {
+    protected function getFilteredTestResult(
+        int $active_id,
+        int $pass,
+        bool $consider_hidden_questions,
+        bool $consider_optional_questions = true
+    ): array {
         $component_repository = $this->component_repository;
         $ilDB = $this->db;
 
-        $resultData = $this->object->getTestResult($active_id, $pass, false, $considerHiddenQuestions);
-        $questionIds = [];
-        foreach ($resultData as $resultItemKey => $resultItemValue) {
-            if ($resultItemKey === 'test' || $resultItemKey === 'pass') {
+        $result_data = $this->object->getTestResult($active_id, $pass, false, $consider_hidden_questions);
+        $question_ids = [];
+        foreach ($result_data as $result_item_key => $result_item_value) {
+            if ($result_item_key === 'test' || $result_item_key === 'pass') {
                 continue;
             }
 
-            $questionIds[] = $resultItemValue['qid'];
+            $question_ids[] = $result_item_value['qid'];
         }
 
         $table_gui = $this->buildPassDetailsOverviewTableGUI($this, 'outUserPassDetails');
 
-        $questionList = new ilAssQuestionList($ilDB, $this->lng, $component_repository);
-        $questionList->setParentObjId($this->object->getId());
-        $questionList->setParentObjectType($this->object->getType());
-        $questionList->setIncludeQuestionIdsFilter($questionIds);
-        $questionList->setQuestionInstanceTypeFilter(null);
+        $question_list = new ilAssQuestionList($ilDB, $this->lng, $component_repository);
+        $question_list->setParentObjId($this->object->getId());
+        $question_list->setParentObjectType($this->object->getType());
+        $question_list->setIncludeQuestionIdsFilter($question_ids);
+        $question_list->setQuestionInstanceTypeFilter(null);
 
         foreach ($table_gui->getFilterItems() as $item) {
             if (substr($item->getPostVar(), 0, strlen('tax_')) == 'tax_') {
@@ -1792,30 +1796,30 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
                     continue;
                 }
 
-                $taxId = substr($item->getPostVar(), strlen('tax_'));
-                $questionList->addTaxonomyFilter($taxId, $item->getValue(), $this->object->getId(), 'tst');
+                $tax_id = substr($item->getPostVar(), strlen('tax_'));
+                $question_list->addTaxonomyFilter($tax_id, $item->getValue(), $this->object->getId(), 'tst');
             } elseif ($item->getValue() !== false) {
-                $questionList->addFieldFilter($item->getPostVar(), $item->getValue());
+                $question_list->addFieldFilter($item->getPostVar(), $item->getValue());
             }
         }
 
-        $questionList->load();
+        $question_list->load();
 
-        $filteredTestResult = [];
+        $filtered_test_result = [];
 
-        foreach ($resultData as $resultItemKey => $resultItemValue) {
-            if ($resultItemKey === 'test' || $resultItemKey === 'pass') {
+        foreach ($result_data as $result_item_key => $result_item_value) {
+            if ($result_item_key === 'test' || $result_item_key === 'pass') {
                 continue;
             }
 
-            if (!$questionList->isInList($resultItemValue['qid'])) {
+            if (!$question_list->isInList($result_item_value['qid'])) {
                 continue;
             }
 
-            $filteredTestResult[] = $resultItemValue;
+            $filtered_test_result[] = $result_item_value;
         }
 
-        return $filteredTestResult;
+        return $filtered_test_result;
     }
 
     public function finishTestPassForSingleUser()
@@ -1868,12 +1872,12 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
         $participant_data->load($this->object->getTestId());
 
         if (in_array($active_id, $participant_data->getActiveIds())) {
-            $testSession = new ilTestSession($this->db, $this->user);
-            $testSession->loadFromDb($active_id);
+            $test_session = new ilTestSession($this->db, $this->user);
+            $test_session->loadFromDb($active_id);
 
             $this->object->updateTestPassResults(
                 $active_id,
-                $testSession->getPass(),
+                $test_session->getPass(),
                 $this->object->areObligationsEnabled(),
                 null,
                 $this->object->getId()
