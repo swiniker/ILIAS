@@ -16,9 +16,13 @@
  *
  *********************************************************************/
 
+declare(strict_types=1);
+
+use ILIAS\TestQuestionPool\Questions\QuestionPartiallySaveable;
+
 use ILIAS\Refinery\Transformation;
-use ILIAS\TA\Questions\assQuestionSuggestedSolution;
-use ILIAS\TA\Questions\assQuestionSuggestedSolutionsDatabaseRepository;
+use ILIAS\TestQuestionPool\Questions\SuggestedSolution\SuggestedSolution;
+use ILIAS\TestQuestionPool\Questions\SuggestedSolution\SuggestedSolutionsDatabaseRepository;
 use ILIAS\DI\Container;
 use ILIAS\Skill\Service\SkillUsageService;
 
@@ -52,7 +56,7 @@ abstract class assQuestion
     protected int $id;
     protected string $title;
     protected string $comment;
-    protected string $owner;
+    protected int $owner;
     protected string $author;
     protected int $thumb_size;
 
@@ -64,7 +68,7 @@ abstract class assQuestion
     /**
      * The maximum available points for the question
      */
-    protected float $points;
+    protected float $points = 0.0;
 
     /**
      * Indicates whether the answers will be shuffled or not
@@ -196,7 +200,7 @@ abstract class assQuestion
         $this->id = -1;
         $this->test_id = -1;
         $this->suggested_solutions = [];
-        $this->shuffle = 1;
+        $this->shuffle = true;
         $this->nr_of_tries = 0;
         $this->setExternalId(null);
 
@@ -475,10 +479,10 @@ abstract class assQuestion
         $output = [];
         foreach ($this->suggested_solutions as $solution) {
             switch ($solution->getType()) {
-                case assQuestionSuggestedSolution::TYPE_LM:
-                case assQuestionSuggestedSolution::TYPE_LM_CHAPTER:
-                case assQuestionSuggestedSolution::TYPE_LM_PAGE:
-                case assQuestionSuggestedSolution::TYPE_GLOSARY_TERM:
+                case SuggestedSolution::TYPE_LM:
+                case SuggestedSolution::TYPE_LM_CHAPTER:
+                case SuggestedSolution::TYPE_LM_PAGE:
+                case SuggestedSolution::TYPE_GLOSARY_TERM:
                     $output[] = '<a href="'
                         . assQuestion::_getInternalLinkHref($solution->getInternalLink())
                         . '">'
@@ -486,7 +490,7 @@ abstract class assQuestion
                         . '</a>';
                     break;
 
-                case assQuestionSuggestedSolution::TYPE_FILE:
+                case SuggestedSolution::TYPE_FILE:
                     $possible_texts = array_values(
                         array_filter(
                             [
@@ -654,7 +658,7 @@ abstract class assQuestion
      */
     final public function persistWorkingState(int $active_id, $pass, bool $obligationsEnabled = false, bool $authorized = true): bool
     {
-        if (!$this instanceof ilAssQuestionPartiallySaveable && !$this->validateSolutionSubmit()) {
+        if (!$this instanceof QuestionPartiallySaveable && !$this->validateSolutionSubmit()) {
             return false;
         }
 
@@ -1371,7 +1375,7 @@ abstract class assQuestion
     }
 
 
-    public function getSuggestedSolution(int $subquestion_index = 0): ?assQuestionSuggestedSolution
+    public function getSuggestedSolution(int $subquestion_index = 0): ?SuggestedSolution
     {
         if (array_key_exists($subquestion_index, $this->suggested_solutions)) {
             return $this->suggested_solutions[$subquestion_index];
@@ -1610,10 +1614,6 @@ abstract class assQuestion
 
     public function getPoints(): float
     {
-        if (strcmp($this->points, "") == 0) {
-            return 0.0;
-        }
-
         return $this->points;
     }
 
@@ -2890,8 +2890,8 @@ abstract class assQuestion
         return new ilTestQuestionConfig();
     }
 
-    protected ?assQuestionSuggestedSolutionsDatabaseRepository $suggestedsolution_repo = null;
-    protected function getSuggestedSolutionsRepo(): assQuestionSuggestedSolutionsDatabaseRepository
+    protected ?SuggestedSolutionsDatabaseRepository $suggestedsolution_repo = null;
+    protected function getSuggestedSolutionsRepo(): SuggestedSolutionsDatabaseRepository
     {
         if (is_null($this->suggestedsolution_repo)) {
             $dic = ilQuestionPoolDIC::dic();
