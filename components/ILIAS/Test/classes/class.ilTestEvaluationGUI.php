@@ -1917,28 +1917,8 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
         $participant_data->setParticipantAccessFilter($access_filter);
         $participant_data->load($this->object->getTestId());
 
-<<<<<<< HEAD
         if (!in_array($active_id, $participant_data->getActiveIds())) {
             $this->redirectBackToParticipantsScreen();
-=======
-        if (in_array($active_id, $participant_data->getActiveIds())) {
-            $test_session = new ilTestSession($this->db, $this->user);
-            $test_session->loadFromDb($active_id);
-
-            $this->object->updateTestPassResults(
-                $active_id,
-                $test_session->getPass(),
-                $this->object->areObligationsEnabled(),
-                null,
-                $this->object->getId()
-            );
-
-            $this->finishTestPass(
-                $participant_data->getUserIdByActiveId($active_id),
-                $active_id,
-                $this->object->getId()
-            );
->>>>>>> 2a4f6d130c1 (Test: Remove ilTestOutputGUI)
         }
 
         $test_session = new ilTestSession($this->db, $this->user);
@@ -1957,7 +1937,11 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
             $this->object->getId()
         );
 
-        $this->finishTestPass($active_id, $this->object->getId());
+        $this->finishTestPass(
+            $participant_data->getUserIdByActiveId($active_id),
+            $active_id,
+            $this->object->getId()
+        );
 
         $this->redirectBackToParticipantsScreen();
     }
