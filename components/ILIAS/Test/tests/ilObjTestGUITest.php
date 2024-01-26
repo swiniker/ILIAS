@@ -142,7 +142,7 @@ class ilObjTestGUITest extends ilTestBaseTestCase
         $ctrl_mock
             ->expects($this->once())
             ->method('redirect')
-            ->with($this->testObj, 'questions')
+            ->with($this->testObj, 'showQuestions')
         ;
         $this->setGlobalVariable('ilCtrl', $ctrl_mock);
 
@@ -157,7 +157,7 @@ class ilObjTestGUITest extends ilTestBaseTestCase
         $ctrl_mock
             ->expects($this->once())
             ->method('redirect')
-            ->with($this->testObj, 'questions')
+            ->with($this->testObj, 'showQuestions')
         ;
         $this->setGlobalVariable('ilCtrl', $ctrl_mock);
 
@@ -172,7 +172,7 @@ class ilObjTestGUITest extends ilTestBaseTestCase
         $ctrl_mock
             ->expects($this->once())
             ->method('redirect')
-            ->with($this->testObj, 'questions')
+            ->with($this->testObj, 'showQuestions')
         ;
         $this->setGlobalVariable('ilCtrl', $ctrl_mock);
 
@@ -187,7 +187,7 @@ class ilObjTestGUITest extends ilTestBaseTestCase
         $ctrl_mock
             ->expects($this->once())
             ->method('redirect')
-            ->with($this->testObj, 'questions')
+            ->with($this->testObj, 'showQuestions')
         ;
         $this->setGlobalVariable('ilCtrl', $ctrl_mock);
 

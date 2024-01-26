@@ -87,10 +87,10 @@ class ilTestQuestionPoolImporter extends ilXmlImporter
         $DIC['ilLog']->write(__METHOD__ . ': xml file: ' . $xml_file . ", qti file:" . $qti_file);
 
         if (ilSession::get("qpl_import_idents") !== null) {
-            $idents = ilSession::get("qpl_import_idents");
+            $idents = ilSession::get("qpl_import_idents") ?? [];
             ilSession::clear("qpl_import_idents");
         } else {
-            $idents = null;
+            $idents = [];
         }
 
         $qtiParser = new ilQTIParser($qti_file, ilQTIParser::IL_MO_PARSE_QTI, $newObj->getId(), $idents);

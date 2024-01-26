@@ -187,7 +187,7 @@ class ilQTIParser extends ilSaxParser
 
     protected \ILIAS\TestQuestionPool\QuestionFilesService $questionfiles;
 
-    public function __construct(?string $a_xml_file, int $a_mode = self::IL_MO_PARSE_QTI, int $a_qpl_id = 0, $a_import_idents = "")
+    public function __construct(?string $a_xml_file, int $a_mode = self::IL_MO_PARSE_QTI, int $a_qpl_id = 0, array $a_import_idents = [])
     {
         global $DIC;
 
@@ -197,7 +197,7 @@ class ilQTIParser extends ilSaxParser
 
         $this->qpl_id = $a_qpl_id;
         $this->lng = $DIC->language();
-        if (is_array($a_import_idents)) {
+        if ($a_import_idents !== []) {
             $this->import_idents = &$a_import_idents;
         }
 
