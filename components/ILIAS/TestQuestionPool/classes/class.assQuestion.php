@@ -2875,7 +2875,7 @@ abstract class assQuestion implements Question
     public function toQuestionAdministrationInteraction(
         int $test_id,
         TestQuestionAdministrationInteractionTypes $interaction_type
-    ): TestQuestionAdministrationInteractionb {
+    ): TestQuestionAdministrationInteraction {
         return new TestQuestionAdministrationInteraction(
             $this->lng,
             $test_id,
@@ -2887,7 +2887,7 @@ abstract class assQuestion implements Question
         );
     }
 
-    abstract protected function toLog(): array;
+    abstract public function toLog(): array;
 
     protected function answerToLog(
         int $active_id,
