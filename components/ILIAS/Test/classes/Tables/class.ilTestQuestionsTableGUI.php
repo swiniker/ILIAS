@@ -256,7 +256,7 @@ class ilTestQuestionsTableGUI extends ilTable2GUI
         );
 
         if ($this->isQuestionManagingEnabled()) {
-            $editHref = $this->getQuestionEditLink($a_set, $a_set['type_tag'] . 'GUI', 'editQuestion');
+            $editHref = $this->getQuestionEditLink($a_set, get_class($this->getParentObject()), 'editQuestion');
             $actions[] = $this->ui_factory->link()->standard($this->lng->txt('edit_question'), $editHref);
 
             $editPageHref = $this->getQuestionEditLink($a_set, 'ilAssQuestionPageGUI', 'edit');
@@ -311,51 +311,26 @@ class ilTestQuestionsTableGUI extends ilTable2GUI
 
         $this->ctrl->setParameterByClass(
             $target_class,
-            'eqpl',
-            current(ilObject::_getAllReferences($row_data['obj_fi']))
-        );
-
-        $this->ctrl->setParameterByClass(
-            $target_class,
-            'eqid',
-            $row_data['question_id']
-        );
-
-        $this->ctrl->setParameterByClass(
-            $target_class,
             'q_id',
             $row_data['question_id']
         );
 
-        $this->ctrl->setParameterByClass(
-            $target_class,
-            'calling_test',
-            (string) $this->parent_ref_id
-        );
-
         $question_href = $this->ctrl->getLinkTargetByClass(
             $target_class,
-            $this->getParentCmd()
+            'previewQuestion'
         );
-        $this->ctrl->setParameterByClass($target_class, 'eqpl', '');
-        $this->ctrl->setParameterByClass($target_class, 'eqid', '');
         $this->ctrl->setParameterByClass($target_class, 'q_id', '');
-        $this->ctrl->setParameterByClass($target_class, 'calling_test', '');
 
         return $question_href;
     }
 
-    protected function getQuestionEditLink(array $row_data, string $target_class, string $cmd, array $target_class_path = []): string
+    protected function getQuestionEditLink(array $row_data, $target_class, string $cmd): string
     {
-        $target_class_path = array_merge(self::CLASS_PATH_FOR_QUESTION_EDIT_LINKS, [$target_class]);
-        return $this->getEditLink($row_data, $target_class, $cmd, $target_class_path);
+        return $this->getEditLink($row_data, $target_class, $cmd);
     }
 
-    protected function getEditLink(array $row_data, string $target_class, string $cmd, array $target_class_path = []): string
+    protected function getEditLink(array $row_data, string $target_class, string $cmd): string
     {
-        if ($target_class_path === []) {
-            $target_class_path = $target_class;
-        }
         $this->ctrl->setParameterByClass(
             $target_class,
             'ref_id',
@@ -367,17 +342,11 @@ class ilTestQuestionsTableGUI extends ilTable2GUI
             'q_id',
             $row_data['question_id']
         );
-        $this->ctrl->setParameterByClass(
-            $target_class,
-            'calling_test',
-            $_GET['ref_id']
-        );
 
-        $link = $this->ctrl->getLinkTargetByClass($target_class_path, $cmd);
+        $link = $this->ctrl->getLinkTargetByClass($target_class, $cmd);
 
         $this->ctrl->setParameterByClass($target_class, 'ref_id', '');
         $this->ctrl->setParameterByClass($target_class, 'q_id', '');
-        $this->ctrl->setParameterByClass($target_class, 'calling_test', '');
         return $link;
     }
 
