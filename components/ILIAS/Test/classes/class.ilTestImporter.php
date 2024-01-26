@@ -96,7 +96,7 @@ class ilTestImporter extends ilXmlImporter
         // this method from ilObjTestGUI and ilTestImporter
         $new_obj->getMarkSchema()->flush();
 
-        $idents = ilSession::get('tst_import_idents');
+        $idents = ilSession::get('tst_import_idents') ?? [];
 
         // start parsing of QTI files
         $qtiParser = new ilQTIParser($qti_file, ilQTIParser::IL_MO_PARSE_QTI, $question_parent_obj_id, $idents);

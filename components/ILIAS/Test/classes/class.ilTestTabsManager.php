@@ -473,7 +473,7 @@ class ilTestTabsManager
             if ($this->getTestOBJ()->isFixedTest()) {
                 $target = $this->ctrl->getLinkTargetByClass(
                     'ilObjTestGUI',
-                    'questions'
+                    'showQuestions'
                 );
             }
 
@@ -485,7 +485,7 @@ class ilTestTabsManager
                 'assQuestions',
                 $target,
                 [
-                    'questions', 'browseForQuestions', 'questionBrowser', 'createQuestion',
+                    'showQuestions', 'browseForQuestions', 'questionBrowser', 'createQuestion',
                     'filter', 'resetFilter', 'insertQuestions',
                     'back', 'removeQuestions', 'moveQuestions',
                     'insertQuestionsBefore', 'insertQuestionsAfter', 'confirmRemoveQuestions',
@@ -702,7 +702,7 @@ class ilTestTabsManager
             // edit page
             $this->tabs->setBackTarget(
                 $this->lng->txt('backtocallingtest'),
-                $this->ctrl->getLinkTargetByClass($this->ctrl->getCmdClass(), 'questions')
+                $this->ctrl->getLinkTargetByClass($this->ctrl->getCmdClass(), 'showQuestions')
             );
             $this->tabs->addTarget(
                 'tst_browse_for_questions',
@@ -719,7 +719,7 @@ class ilTestTabsManager
     {
         if ($this->isWriteAccessGranted()) {
             // edit page
-            $this->tabs->setBackTarget($this->lng->txt('backtocallingtest'), $this->ctrl->getLinkTargetByClass('ilObjTestGUI', 'questions'));
+            $this->tabs->setBackTarget($this->lng->txt('backtocallingtest'), $this->ctrl->getLinkTargetByClass('ilObjTestGUI', 'showQuestions'));
             $this->tabs->addTarget(
                 'random_selection',
                 $this->ctrl->getLinkTargetByClass('ilObjTestGUI', 'randomQuestions'),
@@ -737,7 +737,7 @@ class ilTestTabsManager
         $this->tabs->addSubTab(
             self::SUBTAB_ID_QST_LIST_VIEW,
             $this->lng->txt('edit_test_questions'),
-            $this->ctrl->getLinkTargetByClass('ilObjTestGUI', 'questions')
+            $this->ctrl->getLinkTargetByClass('ilObjTestGUI', 'showQuestions')
         );
 
         // print view subtab

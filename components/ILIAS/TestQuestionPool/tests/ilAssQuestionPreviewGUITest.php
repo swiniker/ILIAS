@@ -45,10 +45,9 @@ class ilAssQuestionPreviewGUITest extends assBaseTestCase
         $tpl = $this->createMock(ilGlobalTemplateInterface::class);
         $lng = $this->createMock(ilLanguage::class);
         $db = $this->createMock(ilDBInterface::class);
-        $user = $this->createMock(ilObjUser::class);
         $randomGroup = $this->createMock(RandomGroup::class);
 
-        $this->object = new ilAssQuestionPreviewGUI($ctrl, $rbac_system, $tabs, $tpl, $lng, $db, $user, $randomGroup);
+        $this->object = new ilAssQuestionPreviewGUI($ctrl, $rbac_system, $tabs, $tpl, $lng, $db, $randomGroup);
     }
 
     public function testConstruct(): void
