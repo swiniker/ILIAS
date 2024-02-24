@@ -222,7 +222,7 @@ class ilAssQuestionFeedbackEditingGUI
             return false;
         }
 
-        if (!assQuestion::_isWriteable($this->question_obj->getOriginalId(), $this->question_obj->getCurrentUser()->getId())) {
+        if ($this->question_obj->isWriteable()) {
             return false;
         }
 
