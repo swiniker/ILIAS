@@ -18,6 +18,9 @@
 
 declare(strict_types=1);
 
+use ILIAS\TestQuestionPool\QuestionPoolDIC;
+use ILIAS\TestQuestionPool\Questions\Files\QuestionFiles;
+
 /**
  * QTI Parser
  *
@@ -185,14 +188,14 @@ class ilQTIParser extends ilSaxParser
 
     protected ?string $questionSetType = null;
 
-    protected \ILIAS\TestQuestionPool\QuestionFilesService $questionfiles;
+    protected GeneralQuestionPropertiesRepository $questionfiles;
 
     public function __construct(?string $a_xml_file, int $a_mode = self::IL_MO_PARSE_QTI, int $a_qpl_id = 0, array $a_import_idents = [])
     {
         global $DIC;
 
         $this->parser_mode = $a_mode;
-        $this->questionfiles = $DIC->testQuestionPool()->questionFiles();
+        $this->questionfiles = QuestionPoolDIC::dic()['question_files'];
         parent::__construct($a_xml_file);
 
         $this->qpl_id = $a_qpl_id;

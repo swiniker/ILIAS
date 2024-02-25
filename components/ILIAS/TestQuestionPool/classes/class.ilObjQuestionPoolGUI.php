@@ -18,8 +18,10 @@
 
 declare(strict_types=1);
 
+use ILIAS\TestQuestionPool\QuestionPoolDIC;
+use ILIAS\TestQuestionPool\RequestDataCollector;
 use ILIAS\TestQuestionPool\Presentation\QuestionTable;
-use ILIAS\TestQuestionPool\QuestionInfoService as QuestionInfoService;
+use ILIAS\TestQuestionPool\Questions\GeneralQuestionPropertiesRepository;
 use ILIAS\Test\QuestionIdentifiers;
 
 use ILIAS\DI\RBACServices;
@@ -61,11 +63,9 @@ class ilObjQuestionPoolGUI extends ilObjectGUI implements ilCtrlBaseClassInterfa
     public const DEFAULT_CMD = 'questions';
 
     private HttpRequest $http_request;
-    private QuestionInfoService $questioninfo;
     private \ILIAS\Filesystem\Util\Archive\LegacyArchives $archives;
     protected Service $taxonomy;
     public ?ilObject $object;
-    protected ILIAS\TestQuestionPool\InternalRequestService $qplrequest;
     protected ilDBInterface $db;
     protected RBACServices $rbac;
     protected ilComponentLogger $log;
@@ -79,6 +79,9 @@ class ilObjQuestionPoolGUI extends ilObjectGUI implements ilCtrlBaseClassInterfa
     protected URLBuilder $url_builder;
     protected URLBuilderToken $action_parameter_token;
     protected URLBuilderToken $row_id_token;
+
+    protected RequestDataCollector $qplrequest;
+    protected GeneralQuestionPropertiesRepository $questionrepository;
 
     public function __construct()
     {
@@ -95,12 +98,16 @@ class ilObjQuestionPoolGUI extends ilObjectGUI implements ilCtrlBaseClassInterfa
         $this->component_repository = $DIC['component.repository'];
         $this->navigation_history = $DIC['ilNavigationHistory'];
         $this->ui_service = $DIC->uiService();
-        $this->questioninfo = $DIC->testQuestionPool()->questionInfo();
-        $this->qplrequest = $DIC->testQuestionPool()->internal()->request();
         $this->taxonomy = $DIC->taxonomy();
         $this->http_request = $DIC->http()->request();
-        $this->data_factory = new DataFactory();
         $this->archives = $DIC->legacyArchives();
+
+        $this->data_factory = new DataFactory();
+
+        $local_dic = QuestionPoolDIC::dic();
+        $this->qplrequest = $local_dic['request_data_collector'];
+        $this->questionrepository = $local_dic['general_question_properties_repository'];
+
         parent::__construct('', $this->qplrequest->getRefId(), true, false);
 
         $this->ctrl->saveParameter($this, [
@@ -290,7 +297,7 @@ class ilObjQuestionPoolGUI extends ilObjectGUI implements ilCtrlBaseClassInterfa
 
                 $question = $q_gui->object;
 
-                if ($this->questioninfo->isInActiveTest($question->getObjId())) {
+                if ($this->questionrepository->isInActiveTest($question->getObjId())) {
                     $this->tpl->setOnScreenMessage(
                         'failure',
                         $this->lng->txt('question_is_part_of_running_test'),
@@ -363,7 +370,7 @@ class ilObjQuestionPoolGUI extends ilObjectGUI implements ilCtrlBaseClassInterfa
                 $questionGUI->object->setObjId($this->object->getId());
                 $questionGUI->setQuestionTabs();
 
-                if ($this->questioninfo->isInActiveTest($questionGUI->object->getObjId())) {
+                if ($this->questionrepository->isInActiveTest($questionGUI->object->getObjId())) {
                     $this->tpl->setOnScreenMessage(
                         'failure',
                         $this->lng->txt('question_is_part_of_running_test'),
@@ -413,7 +420,7 @@ class ilObjQuestionPoolGUI extends ilObjectGUI implements ilCtrlBaseClassInterfa
                 $questionGUI->object->setObjId($this->object->getId());
                 $questionGUI->setQuestionTabs();
 
-                if ($this->questioninfo->isInActiveTest($questionGUI->object->getObjId())) {
+                if ($this->questionrepository->isInActiveTest($questionGUI->object->getObjId())) {
                     $this->tpl->setOnScreenMessage(
                         'failure',
                         $this->lng->txt('question_is_part_of_running_test'),
@@ -437,7 +444,7 @@ class ilObjQuestionPoolGUI extends ilObjectGUI implements ilCtrlBaseClassInterfa
                     $lng,
                     $this->help,
                     $this->qplrequest,
-                    $this->questioninfo
+                    $this->questionrepository
                 );
                 $ilCtrl->forwardCommand($gui);
 
@@ -623,7 +630,7 @@ class ilObjQuestionPoolGUI extends ilObjectGUI implements ilCtrlBaseClassInterfa
                 if (in_array(
                     $cmd,
                     ['editQuestion', 'save', 'suggestedsolution']
-                ) && $this->questioninfo->isInActiveTest($questionGUI->object->getObjId())
+                ) && $this->questionrepository->isInActiveTest($questionGUI->object->getObjId())
                 ) {
                     $this->tpl->setOnScreenMessage(
                         'failure',
@@ -1556,9 +1563,9 @@ class ilObjQuestionPoolGUI extends ilObjectGUI implements ilCtrlBaseClassInterfa
                 $q_gui->object->setObjId($this->object->getId());
                 $title = $q_gui->object->getTitle();
                 if (!$title) {
-                    $title = $this->lng->txt('new') . ': ' . $this->questioninfo->getQuestionTypeName(
+                    $title = $this->lng->txt('new') . ': ' . $this->questionrepository->getForQuestionId(
                         $q_gui->object->getId()
-                    );
+                    )->getTypeName();
                 }
                 $ilLocator->addItem($title, $this->ctrl->getLinkTargetByClass(get_class($q_gui), 'editQuestion'));
             } else {
@@ -1584,9 +1591,9 @@ class ilObjQuestionPoolGUI extends ilObjectGUI implements ilCtrlBaseClassInterfa
                 $q_gui->object->setObjId($this->object->getId());
                 $title = $q_gui->object->getTitle();
                 if (!$title) {
-                    $title = $this->lng->txt('new') . ': ' . $this->questioninfo->getQuestionTypeName(
+                    $title = $this->lng->txt('new') . ': ' . $this->questionrepository->getForQuestionId(
                         $q_gui->object->getId()
-                    );
+                    )->getTypeName($this->lng);
                 }
                 $this->tpl->setTitle(
                     strip_tags(
