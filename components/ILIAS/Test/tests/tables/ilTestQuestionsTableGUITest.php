@@ -62,7 +62,7 @@ class ilTestQuestionsTableGUITest extends ilTestBaseTestCase
             $this->createMock(ilAccessHandler::class),
             $DIC['ui.factory'],
             $DIC['ui.renderer'],
-            $this->createMock(\ILIAS\TestQuestionPool\QuestionInfoService::class)
+            $this->createMock(\ILIAS\TestQuestionPool\Questions\GeneralQuestionPropertiesRepository::class)
         );
     }
 
