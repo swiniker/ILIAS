@@ -19,7 +19,7 @@
 declare(strict_types=1);
 
 use ILIAS\Test\InternalRequestService;
-use ILIAS\TestQuestionPool\QuestionInfoService;
+use ILIAS\TestQuestionPool\Questions\GeneralQuestionPropertiesRepository;
 use ILIAS\Test\Logging\TestLogger;
 use ILIAS\Test\Scoring\Manual\TestScoring;
 
@@ -53,7 +53,7 @@ class ilTestExportGUI extends ilExportGUI
         Generator $active_export_plugins,
         private readonly ilTestHTMLGenerator $html_generator,
         private readonly array $selected_files,
-        private readonly QuestionInfoService $questioninfo,
+        private readonly GeneralQuestionPropertiesRepository $questionrepository,
         private readonly InternalRequestService $testrequest
     ) {
         parent::__construct($parent_gui, null);
@@ -93,7 +93,7 @@ class ilTestExportGUI extends ilExportGUI
             $this->logger,
             $this->tree,
             $this->component_repository,
-            $this->questioninfo
+            $this->questionrepository
         );
         $test_exp = $export_factory->getExporter('xml');
         $test_exp->setResultExportingEnabledForTestExport(true);
@@ -110,7 +110,7 @@ class ilTestExportGUI extends ilExportGUI
             $this->logger,
             $this->tree,
             $this->component_repository,
-            $this->questioninfo
+            $this->questionrepository
         );
         $test_exp = $export_factory->getExporter('results');
         $test_exp->buildExportFile();
