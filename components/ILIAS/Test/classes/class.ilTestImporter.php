@@ -89,13 +89,6 @@ class ilTestImporter extends ilXmlImporter
             return;
         }
 
-        /* @var ilObjTest $new_obj */
-
-        // FIXME: Copied from ilObjTestGUI::importVerifiedFileObject
-        // TODO: move all logic to ilObjTest::importVerifiedFile and call
-        // this method from ilObjTestGUI and ilTestImporter
-        $new_obj->getMarkSchema()->flush();
-
         $idents = ilSession::get('tst_import_idents') ?? [];
 
         // start parsing of QTI files

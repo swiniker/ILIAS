@@ -32,8 +32,8 @@ use ILIAS\Test\Logging\TestAdministrationInteraction;
 use ILIAS\Test\Logging\TestScoringInteraction;
 use ILIAS\Test\Logging\TestScoringInteractionTypes;
 use ILIAS\Test\Scoring\Marks\MarksRepository;
+use ILIAS\Test\Scoring\Marks\Mark;
 use ILIAS\Test\Scoring\Marks\MarkSchema;
-use ILIAS\Test\Scoring\Marks\MarkSchemaAware;
 use ILIAS\Test\Scoring\Manual\TestScoring;
 use ILIAS\Test\Settings\MainSettings\MainSettingsRepository;
 use ILIAS\Test\Settings\MainSettings\MainSettingsDatabaseRepository;
@@ -55,7 +55,7 @@ use ILIAS\TestQuestionPool\Questions\GeneralQuestionPropertiesRepository;
  * @defgroup ModulesTest Modules/Test
  * @extends ilObject
  */
-class ilObjTest extends ilObject implements MarkSchemaAware
+class ilObjTest extends ilObject
 {
     public const QUESTION_SET_TYPE_FIXED = 'FIXED_QUEST_SET';
     public const QUESTION_SET_TYPE_RANDOM = 'RANDOM_QUEST_SET';
@@ -2303,7 +2303,7 @@ class ilObjTest extends ilObject implements MarkSchemaAware
         $result_mark = "";
         $passed = "";
 
-        if ($mark_obj) {
+        if ($mark_obj !== null) {
             $result_mark = $mark_obj->getShortName();
 
             if ($mark_obj->getPassed() && $obligationsAnswered) {
@@ -2358,7 +2358,7 @@ class ilObjTest extends ilObject implements MarkSchemaAware
 
             $obligationsAnswered = $test_result["test"]["obligations_answered"];
 
-            if ($mark) {
+            if ($mark !== null) {
                 if ($mark->getPassed() && $obligationsAnswered) {
                     array_push($totalpoints_array, $test_result["test"]["total_reached_points"]);
                 }
@@ -2727,7 +2727,7 @@ class ilObjTest extends ilObject implements MarkSchemaAware
             $percentage = $tst_user_data->getReachedPointsInPercent();
             $mark = $this->getMarkSchema()->getMatchingMark($percentage);
 
-            if (is_object($mark)) {
+            if ($mark !== null) {
                 $tst_user_data->setMark($mark->getShortName());
                 $tst_user_data->setMarkOfficial($mark->getOfficialName());
 
@@ -3300,9 +3300,7 @@ class ilObjTest extends ilObject implements MarkSchemaAware
         $result_summary_settings = $score_settings->getResultSummarySettings();
         $result_details_settings = $score_settings->getResultDetailsSettings();
 
-        $mark_schema = $this->getMarkSchema();
-        $mark_schema->flush();
-
+        $mark_steps = [];
         foreach ($assessment->qtimetadata as $metadata) {
             switch ($metadata["label"]) {
                 case "solution_details":
@@ -3559,11 +3557,11 @@ class ilObjTest extends ilObject implements MarkSchemaAware
                 preg_match("/<percentage>(.*?)<\/percentage>/", $xmlmark, $matches);
                 $mark_percentage = (float) $matches[1];
                 preg_match("/<passed>(.*?)<\/passed>/", $xmlmark, $matches);
-                $mark_passed = (int) $matches[1];
-                $mark_schema->addMarkStep($mark_short, $mark_official, $mark_percentage, $mark_passed);
+                $mark_passed = (bool) $matches[1];
+                $mark_steps[] = new Mark($mark_short, $mark_official, $mark_percentage, $mark_passed);
             }
         }
-
+        $this->mark_schema = $this->getMarkSchema()->withMarkSteps($mark_steps);
         $this->saveToDb();
         $this->getObjectProperties()->storePropertyTitleAndDescription(
             $this->getObjectProperties()->getPropertyTitleAndDescription()
@@ -4337,22 +4335,6 @@ class ilObjTest extends ilObject implements MarkSchemaAware
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function checkMarks(): string|bool
-    {
-        return $this->getMarkSchema()->checkMarks();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getMarkSchemaForeignId(): int
-    {
-        return $this->getTestId();
-    }
-
-    /**
      */
     public function onMarkSchemaSaved(): void
     {
@@ -4366,30 +4348,30 @@ class ilObjTest extends ilObject implements MarkSchemaAware
     /**
      * @return {@inheritdoc}
      */
-    public function canEditMarks(): bool
+    public function marksEditable(): bool
     {
         $total = $this->evalTotalPersons();
-        if ($total > 0) {
-            if ($this->getReportingDate()) {
-                if (preg_match("/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/", $this->getReportingDate(), $matches)) {
-                    $epoch_time = mktime(
-                        (int) $matches[4],
-                        (int) $matches[5],
-                        (int) $matches[6],
-                        (int) $matches[2],
-                        (int) $matches[3],
-                        (int) $matches[1]
-                    );
-                    $now = time();
-                    if ($now < $epoch_time) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        } else {
+        if ($total === 0) {
             return true;
         }
+
+        if ($this->getReportingDate() === null
+            || preg_match("/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/", $this->getReportingDate(), $matches) === false) {
+            return false;
+        }
+
+        $epoch_time = mktime(
+            (int) $matches[4],
+            (int) $matches[5],
+            (int) $matches[6],
+            (int) $matches[2],
+            (int) $matches[3],
+            (int) $matches[1]
+        );
+        if (time() < $epoch_time) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -5244,7 +5226,7 @@ class ilObjTest extends ilObject implements MarkSchemaAware
                 }
                 $mark_obj = $this->getMarkSchema()->getMatchingMark($percentvalue * 100);
                 $passed = "";
-                if ($mark_obj) {
+                if ($mark_obj !== null) {
                     $mark = $mark_obj->getOfficialName();
                 }
                 if ($this->getAnonymity()) {
@@ -6347,7 +6329,7 @@ class ilObjTest extends ilObject implements MarkSchemaAware
             $unserialized_marks = $unserialized_marks->getMarkSteps();
         }
 
-        $this->getMarkSchema()->setMarkSteps($unserialized_marks);
+        $this->mark_schema = $this->getMarkSchema()->withMarkSteps($unserialized_marks);
 
         $this->storeActivationSettings([
             'is_activation_limited' => $testsettings['activation_limited'],
