@@ -23,6 +23,7 @@ use ILIAS\Test\RequestDataCollector;
 use ILIAS\Test\QuestionIdentifiers;
 use ILIAS\Test\Settings\MainSettings\SettingsMainGUI;
 use ILIAS\Test\Settings\ScoreReporting\SettingsScoringGUI;
+use ILIAS\Test\Settings\ScoreReporting\SettingsScoring;
 use ILIAS\Test\Settings\ScoreReporting\SettingsResultSummary;
 use ILIAS\Test\Scoring\Marks\MarkSchemaGUI;
 use ILIAS\TestQuestionPool\Questions\GeneralQuestionPropertiesRepository;
@@ -506,6 +507,7 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
                     $this->tabs_gui,
                     $this->getObject()->getTestLogger(),
                     $this->post_wrapper,
+                    $this->request_wrapper,
                     $this->request,
                     $this->refinery,
                     $this->ui_factory,
@@ -2626,7 +2628,7 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
         $info->addProperty(
             $this->lng->txt("tst_text_count_system"),
             $this->lng->txt(
-                ($this->getTestObject()->getCountSystem() == ilObjTestSettingsScoring::COUNT_PARTIAL_SOLUTIONS) ? "tst_count_partial_solutions" : "tst_count_correct_solutions"
+                ($this->getTestObject()->getCountSystem() == SettingsScoring::COUNT_PARTIAL_SOLUTIONS) ? "tst_count_partial_solutions" : "tst_count_correct_solutions"
             )
         );
         if ($this->getTestObject()->isRandomTest()) {
