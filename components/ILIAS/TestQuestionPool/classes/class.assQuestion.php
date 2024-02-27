@@ -31,7 +31,6 @@ use ILIAS\Test\Logging\TestParticipantInteraction;
 use ILIAS\Test\Logging\TestQuestionAdministrationInteraction;
 use ILIAS\Test\Logging\TestParticipantInteractionTypes;
 use ILIAS\Test\Logging\TestQuestionAdministrationInteractionTypes;
-use ILIAS\Test\TestParticipantInfoService;
 
 use ILIAS\Refinery\Transformation;
 use ILIAS\DI\Container;
@@ -55,12 +54,14 @@ abstract class assQuestion implements Question
     protected const MINIMUM_THUMB_SIZE = 20;
     public const TRIM_PATTERN = '/^[\p{C}\p{Z}]+|[\p{C}\p{Z}]+$/u';
 
+    protected static $force_pass_results_update_enabled = false;
 
     protected GeneralQuestionPropertiesRepository $questionrepository;
     protected RequestDataCollector $questionpool_request;
     protected QuestionFiles $question_files;
     protected \ilAssQuestionProcessLocker $processLocker;
     protected ilTestQuestionConfig $testQuestionConfig;
+    protected SuggestedSolutionsDatabaseRepository $suggestedsolution_repo;
 
     protected ILIAS $ilias;
     protected ilGlobalPageTemplate $tpl;
@@ -74,6 +75,7 @@ abstract class assQuestion implements Question
     protected LoggingServices $log;
     protected Container $dic;
 
+    private ?ilTestQuestionConfig $test_question_config = null;
     protected \ilAssQuestionLifecycle $lifecycle;
     public \ilAssQuestionFeedback $feedbackOBJ;
     protected \ilAssQuestionPage $page;
@@ -157,16 +159,31 @@ abstract class assQuestion implements Question
         $this->skillUsageService = $DIC->skills()->usage();
     }
 
-    protected static $forcePassResultsUpdateEnabled = false;
+    abstract public function getQuestionType(): string;
 
-    public static function setForcePassResultUpdateEnabled(bool $forcePassResultsUpdateEnabled): void
+    abstract public function isComplete(): bool;
+
+    abstract public function saveWorkingData(int $active_id, ?int $pass = null, bool $authorized = true): bool;
+
+    abstract public function calculateReachedPoints(
+        int $active_id,
+        ?int $pass = null,
+        bool $authorized_solution = true
+    ): float;
+
+    abstract public function getAdditionalTableName(): string;
+    abstract public function getAnswerTableName(): string|array;
+
+    abstract public function toLog(): array;
+
+    public static function setForcePassResultUpdateEnabled(bool $force_pass_results_update_enabled): void
     {
-        self::$forcePassResultsUpdateEnabled = $forcePassResultsUpdateEnabled;
+        self::$force_pass_results_update_enabled = $force_pass_results_update_enabled;
     }
 
     public static function isForcePassResultUpdateEnabled(): bool
     {
-        return self::$forcePassResultsUpdateEnabled;
+        return self::$force_pass_results_update_enabled;
     }
 
     protected function getQuestionAction(): string
@@ -228,14 +245,16 @@ abstract class assQuestion implements Question
     * Receives parameters from a QTI parser and creates a valid ILIAS question object
     *
     * @param object $item The QTI item object
-    * @param integer $questionpool_id The id of the parent questionpool
-    * @param integer $tst_id The id of the parent test if the question is part of a test
-    * @param object $tst_object A reference to the parent test object
-    * @param integer $question_counter A reference to a question counter to count the questions of an imported question pool
-    * @param array $import_mapping An array containing references to included ILIAS objects
     */
-    public function fromXML($item, int $questionpool_id, ?int $tst_id, &$tst_object, int &$question_counter, array $import_mapping, array &$solutionhints = []): array
-    {
+    public function fromXML(
+        $item,
+        int $questionpool_id,
+        ?int $tst_id,
+        &$tst_object,
+        int &$question_counter,
+        array $import_mapping,
+        array &$solutionhints = []
+    ): array {
         $classname = $this->getQuestionType() . "Import";
         $import = new $classname($this);
         $import_mapping = $import->fromXML($item, $questionpool_id, $tst_id, $tst_object, $question_counter, $import_mapping);
@@ -267,13 +286,6 @@ abstract class assQuestion implements Question
         $export = new $classname($this);
         return $export->toXML($a_include_header, $a_include_binary, $a_shuffle, $test_output, $force_image_references);
     }
-
-    /**
-    * Returns true, if a question is complete for use
-    *
-    * @return boolean True, if the question is complete for use, otherwise false
-    */
-    abstract public function isComplete(): bool;
 
     public function setTitle(string $title = ""): void
     {
@@ -423,10 +435,6 @@ abstract class assQuestion implements Question
         return $this->external_id;
     }
 
-    /**
-     * @return string HTML
-     * @throws ilWACException
-     */
     public static function _getSuggestedSolutionOutput(int $question_id): string
     {
         $question = self::instantiateQuestion($question_id);
@@ -436,10 +444,6 @@ abstract class assQuestion implements Question
         return $question->getSuggestedSolutionOutput();
     }
 
-    /**
-     * @return string HTML
-     * @throws ilWACException
-     */
     public function getSuggestedSolutionOutput(): string
     {
         $output = [];
@@ -515,13 +519,6 @@ abstract class assQuestion implements Question
         return $this->points;
     }
 
-    /**
-     *  returns the reached points ...
-     * - calculated by concrete question type class
-     * - adjusted by hint point deduction
-     * - adjusted by scoring options
-     * ... for given testactive and testpass
-     */
     final public function getAdjustedReachedPoints(int $active_id, int $pass, bool $authorized_solution = true): float
     {
         // determine reached points for submitted solution
@@ -614,7 +611,7 @@ abstract class assQuestion implements Question
             $this->getObjId(),
             false
         );
-        $test->updateTestPassResults($active_id, $pass, $obligationsEnabled, $this->getProcessLocker());
+        $test->updateTestPassResults($active_id, $pass, $obligations_enabled, $this->getProcessLocker());
         ilCourseObjectiveResult::_updateObjectiveResult($this->current_user->getId(), $active_id, $this->getId());
     }
 
@@ -662,16 +659,6 @@ abstract class assQuestion implements Question
     {
         return true;
     }
-
-    /**
-     * Saves the learners input of the question to the database.
-     *
-     * @param int $active_id Active id of the user
-     * @param int $pass Test pass
-     * @param bool $authorized
-     * @return bool $status
-     */
-    abstract public function saveWorkingData(int $active_id, int $pass, bool $authorized = true): bool;
 
     protected function savePreviewData(ilAssQuestionPreviewSession $preview_session): void
     {
@@ -728,7 +715,6 @@ abstract class assQuestion implements Question
         return $this->export_image_path;
     }
 
-    // hey: prevPassSolutions - accept and prefer intermediate only from current pass
     public function getTestOutputSolutions(int $activeId, int $pass): array
     {
         if ($this->getTestPresentationConfig()->isSolutionInitiallyPrefilled()) {
@@ -736,10 +722,12 @@ abstract class assQuestion implements Question
         }
         return $this->getUserSolutionPreferingIntermediate($activeId, $pass);
     }
-    // hey.
 
-    public function getUserSolutionPreferingIntermediate(int $active_id, $pass = null): array
-    {
+
+    public function getUserSolutionPreferingIntermediate(
+        int $active_id,
+        ?int $pass = null
+    ): array {
         $solution = $this->getSolutionValues($active_id, $pass, false);
 
         if (!count($solution)) {
@@ -751,11 +739,12 @@ abstract class assQuestion implements Question
 
     /**
      * Loads solutions of a given user from the database an returns it
-     * @param int|string $active_id
-     * @return array Assoc result from tst_solutions.*
      */
-    public function getSolutionValues($active_id, $pass = null, bool $authorized = true): array
-    {
+    public function getSolutionValues(
+        int $active_id,
+        ?int $pass = null,
+        bool $authorized = true
+    ): array {
         if ($pass === null && is_numeric($active_id)) {
             $pass = $this->getSolutionMaxPass((int) $active_id);
         }
@@ -802,16 +791,6 @@ abstract class assQuestion implements Question
 
         return $values;
     }
-
-    /**
-     * @return string|array Or Array? @see Deletion methods here
-     */
-    abstract public function getAdditionalTableName();
-
-    /**
-     * @return string|array Or Array? @see Deletion methods here
-     */
-    abstract public function getAnswerTableName();
 
     public function deleteAnswers(int $question_id): void
     {
@@ -1205,9 +1184,9 @@ abstract class assQuestion implements Question
         return $this->getId();
     }
 
-    public function saveQuestionDataToDb(int $original_id = -1): void
+    public function saveQuestionDataToDb(?int $original_id = null): void
     {
-        if ($this->getId() == -1) {
+        if ($this->getId() === -1) {
             $next_id = $this->db->nextId('qpl_questions');
             $this->db->insert("qpl_questions", [
                 "question_id" => ["integer", $next_id],
@@ -1221,7 +1200,7 @@ abstract class assQuestion implements Question
                 "points" => ["float", $this->getMaximumPoints()],
                 "nr_of_tries" => ["integer", $this->getNrOfTries()],
                 "created" => ["integer", time()],
-                "original_id" => ["integer", ($original_id != -1) ? $original_id : null],
+                "original_id" => ["integer", $original_id],
                 "tstamp" => ["integer", time()],
                 "external_id" => ["text", $this->getExternalId()],
                 'add_cont_edit_mode' => ['text', $this->getAdditionalContentEditingMode()]
@@ -1229,23 +1208,24 @@ abstract class assQuestion implements Question
             $this->setId($next_id);
             // create page object of question
             $this->createPageObject();
-        } else {
-            // Vorhandenen Datensatz aktualisieren
-            $this->db->update("qpl_questions", [
-                "obj_fi" => ["integer", $this->getObjId()],
-                "title" => ["text", $this->getTitle()],
-                "description" => ["text", $this->getComment()],
-                "author" => ["text", $this->getAuthor()],
-                "question_text" => ["clob", ilRTE::_replaceMediaObjectImageSrc($this->getQuestion(), 0)],
-                "points" => ["float", $this->getMaximumPoints()],
-                "nr_of_tries" => ["integer", $this->getNrOfTries()],
-                "tstamp" => ["integer", time()],
-                'complete' => ['integer', $this->isComplete()],
-                "external_id" => ["text", $this->getExternalId()]
-            ], [
-            "question_id" => ["integer", $this->getId()]
-            ]);
+            return;
         }
+
+        // Vorhandenen Datensatz aktualisieren
+        $this->db->update("qpl_questions", [
+            "obj_fi" => ["integer", $this->getObjId()],
+            "title" => ["text", $this->getTitle()],
+            "description" => ["text", $this->getComment()],
+            "author" => ["text", $this->getAuthor()],
+            "question_text" => ["clob", ilRTE::_replaceMediaObjectImageSrc($this->getQuestion(), 0)],
+            "points" => ["float", $this->getMaximumPoints()],
+            "nr_of_tries" => ["integer", $this->getNrOfTries()],
+            "tstamp" => ["integer", time()],
+            'complete' => ['integer', $this->isComplete()],
+            "external_id" => ["text", $this->getExternalId()]
+        ], [
+        "question_id" => ["integer", $this->getId()]
+        ]);
     }
 
     public function duplicate(
@@ -1357,7 +1337,7 @@ abstract class assQuestion implements Question
         return $target;
     }
 
-    public function saveToDb(): void
+    public function saveToDb(?int $original_id = null): void
     {
         // remove unused media objects from ILIAS
         $this->cleanupMediaObjectUsage();
@@ -1742,19 +1722,6 @@ abstract class assQuestion implements Question
         return ilObjQuestionPool::_isWriteable($this->getObjId(), $this->getCurrentUser()->getId());
     }
 
-    /**
-     * Returns the points, a learner has reached answering the question.
-     * The points are calculated from the given answers.
-     *
-     * @abstract
-     * @access public
-     * @param integer $active_id
-     * @param integer $pass
-     * @param boolean $returndetails (deprecated !!)
-     * @return integer/array $points/$details (array $details is deprecated !!)
-     */
-    abstract public function calculateReachedPoints($active_id, $pass = null, $authorized_solution = true, $returndetails = false): float|array;
-
     public function deductHintPointsFromReachedPoints(ilAssQuestionPreviewSession $preview_session, $reached_points): ?float
     {
         $hint_tracking = new ilAssQuestionPreviewHintTracking($this->db, $preview_session);
@@ -1772,9 +1739,9 @@ abstract class assQuestion implements Question
         return $this->ensureNonNegativePoints($reached_points);
     }
 
-    protected function ensureNonNegativePoints($points)
+    protected function ensureNonNegativePoints(float $points): float
     {
-        return $points > 0 ? $points : 0;
+        return $points > 0.0 ? $points : 0.0;
     }
 
     public function isPreviewSolutionCorrect(ilAssQuestionPreviewSession $preview_session): bool
@@ -1936,13 +1903,6 @@ abstract class assQuestion implements Question
     {
         $this->question = $question;
     }
-
-    /**
-    * Returns the question type of the question
-    *
-    * @return string The question type of the question
-    */
-    abstract public function getQuestionType(): string;
 
     public function getQuestionTypeID(): int
     {
@@ -2106,34 +2066,36 @@ abstract class assQuestion implements Question
     public static function instantiateQuestionGUI(int $question_id): assQuestionGUI
     {
         //Shouldn't you live in assQuestionGUI, Mister?
-
         global $DIC;
         $ilCtrl = $DIC['ilCtrl'];
         $ilDB = $DIC['ilDB'];
         $lng = $DIC['lng'];
         $ilUser = $DIC['ilUser'];
-        $questionrepository = QuestionPoolDIC::dic()['general_question_properties_repository'];
-        if ($question_id > 0) {
-            $question_type = $questionrepository->getForQuestionId($question_id)->getClassName();
+        $ilLog = $DIC['ilLog'];
 
-            $question_type_gui = $question_type . 'GUI';
-            $question_gui = new $question_type_gui($question_id);
-
-            $feedbackObjectClassname = self::getFeedbackClassNameByQuestionType($question_type);
-            $question_gui->getObject()->feedbackOBJ = new $feedbackObjectClassname($question_gui->getObject(), $ilCtrl, $ilDB, $lng);
-
-            $assSettings = new ilSetting('assessment');
-            $processLockerFactory = new ilAssQuestionProcessLockerFactory($assSettings, $ilDB);
-            $processLockerFactory->setQuestionId($question_gui->getObject()->getId());
-            $processLockerFactory->setUserId($ilUser->getId());
-            $processLockerFactory->setAssessmentLogEnabled(ilObjTestFolder::_enabledAssessmentLogging());
-            $question_gui->getObject()->setProcessLocker($processLockerFactory->getLocker());
-        } else {
-            global $DIC;
-            $ilLog = $DIC['ilLog'];
+        if ($question_id <= 0) {
             $ilLog->write('Instantiate question called without question id. (instantiateQuestionGUI@assQuestion)', $ilLog->WARNING);
             throw new InvalidArgumentException('Instantiate question called without question id. (instantiateQuestionGUI@assQuestion)');
         }
+
+        $questionrepository = QuestionPoolDIC::dic()['general_question_properties_repository'];
+        $question_type = $questionrepository->getForQuestionId($question_id)->getClassName();
+
+        $question_type_gui = $question_type . 'GUI';
+        $question_gui = new $question_type_gui($question_id);
+
+        $feedback_object_classname = self::getFeedbackClassNameByQuestionType($question_type);
+        $question = $question_gui->getObject();
+        $question->feedbackOBJ = new $feedback_object_classname($question, $ilCtrl, $ilDB, $lng);
+
+        $assSettings = new ilSetting('assessment');
+        $processLockerFactory = new ilAssQuestionProcessLockerFactory($assSettings, $ilDB);
+        $processLockerFactory->setQuestionId($question_gui->getObject()->getId());
+        $processLockerFactory->setUserId($ilUser->getId());
+        $processLockerFactory->setAssessmentLogEnabled(ilObjTestFolder::_enabledAssessmentLogging());
+        $question->setProcessLocker($processLockerFactory->getLocker());
+        $question_gui->setObject($question);
+
         return $question_gui;
     }
 
@@ -2931,35 +2893,20 @@ abstract class assQuestion implements Question
         );
     }
 
-    // fau: testNav - new function getTestQuestionConfig()
-    // hey: prevPassSolutions - get caching independent from configuration (config once)
-    //					renamed: getTestPresentationConfig() -> does the caching
-    //					completed: extracted instance building
-    //					avoids configuring cached instances on every access
-    //					allows a stable reconfigure of the instance from outside
-    private ?ilTestQuestionConfig $testQuestionConfigInstance = null;
-
     public function getTestPresentationConfig(): ilTestQuestionConfig
     {
-        if ($this->testQuestionConfigInstance === null) {
-            $this->testQuestionConfigInstance = $this->buildTestPresentationConfig();
+        if ($this->test_question_config === null) {
+            $this->test_question_config = $this->buildTestPresentationConfig();
         }
 
-        return $this->testQuestionConfigInstance;
+        return $this->test_question_config;
     }
 
-    /**
-     * build basic test question configuration instance
-     *
-     * method can be overwritten to configure an instance
-     * use parent call for building when possible
-     */
     protected function buildTestPresentationConfig(): ilTestQuestionConfig
     {
         return new ilTestQuestionConfig();
     }
 
-    protected ?SuggestedSolutionsDatabaseRepository $suggestedsolution_repo = null;
     protected function getSuggestedSolutionsRepo(): SuggestedSolutionsDatabaseRepository
     {
         return $this->suggestedsolution_repo;
@@ -2988,11 +2935,6 @@ abstract class assQuestion implements Question
     public static function extendedTrim(string $value): string
     {
         return preg_replace(self::TRIM_PATTERN, '', $value);
-    }
-
-    public function getLastParticipantInteraction(): ?TestParticipantInteraction
-    {
-        return new TestParticipantInteraction();
     }
 
     public function answerToParticipantInteraction(
@@ -3028,8 +2970,6 @@ abstract class assQuestion implements Question
             $this->toLog()
         );
     }
-
-    abstract public function toLog(): array;
 
     protected function answerToLog(
         int $active_id,

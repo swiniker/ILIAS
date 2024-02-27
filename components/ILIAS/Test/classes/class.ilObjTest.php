@@ -3050,24 +3050,14 @@ class ilObjTest extends ilObject
             return null;
         }
 
-        $question_type_gui = $question_type . 'GUI';
-        $question = new $question_type_gui();
-
         if ($question_id > 0) {
-            $question->getObject()->loadFromDb($question_id);
-
-            $feedbackObjectClassname = assQuestion::getFeedbackClassNameByQuestionType($question_type);
-            $question->getObject()->feedbackOBJ = new $feedbackObjectClassname($question->getObject(), $this->ctrl, $this->db, $this->lng);
-
-            $assSettings = new ilSetting('assessment');
-            $processLockerFactory = new ilAssQuestionProcessLockerFactory($assSettings, $this->db);
-            $processLockerFactory->setQuestionId($question->getObject()->getId());
-            $processLockerFactory->setUserId($this->user->getId());
-            $processLockerFactory->setAssessmentLogEnabled(ilObjTestFolder::_enabledAssessmentLogging());
-            $question->getObject()->setProcessLocker($processLockerFactory->getLocker());
+            $question_gui = assQuestion::instantiateQuestionGUI($question_id);
+        } else {
+            $question_type_gui = $question_type . 'GUI';
+            $question_gui = new $question_type_gui();
         }
 
-        return $question;
+        return $question_gui;
     }
 
     /**
@@ -5661,7 +5651,7 @@ class ilObjTest extends ilObject
         return false;
     }
 
-    public function &getTestQuestions(): array
+    public function getTestQuestions(): array
     {
         $tags_trafo = $this->refinery->string()->stripTags();
 
