@@ -18,9 +18,11 @@
 
 declare(strict_types=1);
 
-use ILIAS\HTTP\GlobalHttpState;
+use ILIAS\TestQuestionPool\Questions\GeneralQuestionPropertiesRepository;
+
 use ILIAS\UI\Factory as UIFactory;
 use ILIAS\UI\Renderer as UIRenderer;
+use ILIAS\HTTP\GlobalHttpState;
 
 /**
  * @author		Björn Heyser <bheyser@databay.de>
@@ -34,6 +36,7 @@ class ilTestArchiveService
 
     public function __construct(
         private readonly ilObjTest $test_obj,
+        private readonly GeneralQuestionPropertiesRepository $questionrepository,
         private readonly ilLanguage $lng,
         private readonly ilDBInterface $db,
         private readonly ilCtrl $ctrl,
@@ -87,6 +90,7 @@ class ilTestArchiveService
             $this->ui_renderer,
             $this->http,
             $this->access,
+            $this->questionrepository,
             $this->testrequest,
             $this->test_obj->getId()
         );
