@@ -1162,7 +1162,6 @@ class ilObjQuestionPool extends ilObject
         global $DIC;
         $ilDB = $DIC['ilDB'];
         $lng = $DIC['lng'];
-        $ilLog = $DIC['ilLog'];
         $component_factory = $DIC['component.factory'];
 
         $lng->loadLanguageModule('assessment');
