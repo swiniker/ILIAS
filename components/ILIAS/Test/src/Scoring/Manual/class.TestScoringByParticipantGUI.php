@@ -20,8 +20,6 @@ declare(strict_types=1);
 
 namespace ILIAS\Test\Scoring\Manual;
 
-use ILIAS\Test\Logging\TestLogger;
-
 /**
 * Scoring class for tests
 *
@@ -35,13 +33,10 @@ class TestScoringByParticipantGUI extends \ilTestServiceGUI
     public const PART_FILTER_MANSCORING_DONE = 4;
     public const PART_FILTER_MANSCORING_NONE = 5;
 
-    public TestLogger $logger;
-
     protected \ilTestAccess $test_access;
 
     public function __construct(\ilObjTest $object)
     {
-        $this->logger = $object->getTestLogger();
         parent::__construct($object);
     }
 
