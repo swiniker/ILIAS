@@ -28,6 +28,7 @@ use ILIAS\Test\Settings\ScoreReporting\SettingsResultSummary;
 use ILIAS\Test\Scoring\Marks\MarkSchemaGUI;
 use ILIAS\Test\Scoring\Manual\TestScoringByQuestionGUI;
 use ILIAS\Test\Scoring\Manual\TestScoringByParticipantGUI;
+use ILIAS\Test\Logging\TestQuestionAdministrationInteractionTypes;
 
 use ILIAS\TestQuestionPool\Questions\GeneralQuestionPropertiesRepository;
 
@@ -692,7 +693,7 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
                 $this->forwardCommandToExpressPageObject($cmd);
                 break;
 
-            case 'ilassquestionpreviewgui':
+            case strtolower(ilAssQuestionPreviewGUI::class):
                 if (!$this->access->checkAccess('write', '', $this->getTestObject()->getRefId())) {
                     $this->redirectAfterMissingWrite();
                 }
@@ -1011,7 +1012,7 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
     {
         $this->prepareOutput();
 
-        $this->ctrl->saveParameter($this, "q_id");
+        $this->ctrl->saveParameter($this, 'q_id');
         $gui = new ilAssQuestionPreviewGUI(
             $this->ctrl,
             $this->rbac_system,
@@ -1031,6 +1032,16 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
         $this->tabs_gui->setBackTarget($this->lng->txt('backtocallingtest'), $this->ctrl->getLinkTargetByClass(self::class, self::DEFAULT_CMD));
 
         $gui->{$cmd . 'Cmd'}();
+
+        $logger = $this->getTestObject()->getTestLogger();
+        if ($logger->isLoggingEnabled()) {
+            $logger->logQuestionAdministrationInteraction(
+                $gui->getQuestion()->toQuestionAdministrationInteraction(
+                    $this->getRefId(),
+                    TestQuestionAdministrationInteractionTypes::QUESTION_MODIFIED
+                )
+            );
+        }
     }
 
     protected function forwardCommandToQuestion(string $cmd): void
@@ -2148,7 +2159,7 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
         $table_gui = new ilTestQuestionsTableGUI(
             $this,
             'questions',
-            $this->getTestObject()->getRefId(),
+            'questions',
             $this->access,
             $this->ui_factory,
             $this->ui_renderer,
