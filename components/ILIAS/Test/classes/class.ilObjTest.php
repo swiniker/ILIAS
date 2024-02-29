@@ -1084,7 +1084,7 @@ class ilObjTest extends ilObject
         $test_sequence_factory = new ilTestSequenceFactory(
             $this,
             $this->db,
-            $this->questioninfo
+            $this->questionrepository
         );
 
         foreach ($active_ids as $active_id) {
@@ -1800,7 +1800,7 @@ class ilObjTest extends ilObject
             $pass = (int) $results['pass'];
         }
 
-        $test_sequence_factory = new ilTestSequenceFactory($this, $this->db, $this->questioninfo);
+        $test_sequence_factory = new ilTestSequenceFactory($this, $this->db, $this->questionrepository);
         $test_sequence = $test_sequence_factory->getSequenceByActiveIdAndPass($active_id, $pass);
 
         $test_sequence->setConsiderHiddenQuestionsEnabled($consider_hidden_questions);
@@ -4570,7 +4570,7 @@ class ilObjTest extends ilObject
                 $this->logger,
                 $this->component_repository,
                 $this,
-                $this->questioninfo
+                $this->questionrepository
             );
 
             $questionSetConfig->loadFromDb();
@@ -5413,7 +5413,7 @@ class ilObjTest extends ilObject
         }
         $workedthrough = 0;
         foreach ($this->questions as $value) {
-            if ($this->questioninfo->lookupResultRecordExist($active_id, $value, $pass)) {
+            if ($this->questionrepository->lookupResultRecordExist($active_id, $value, $pass)) {
                 $workedthrough += 1;
             }
         }
@@ -6742,7 +6742,7 @@ class ilObjTest extends ilObject
 
     public function &createTestSequence($active_id, $pass, $shuffle)
     {
-        $this->test_sequence = new ilTestSequence($active_id, $pass, $this->isRandomTest(), $this->questioninfo);
+        $this->test_sequence = new ilTestSequence($active_id, $pass, $this->isRandomTest(), $this->questionrepository);
     }
 
     /**
@@ -6994,7 +6994,7 @@ class ilObjTest extends ilObject
             $this->logger,
             $this->tree,
             $this->component_repository,
-            $this->questioninfo
+            $this->questionrepository
         );
         $test_exp = $expFactory->getExporter('xml');
         return $test_exp->buildExportFile();
