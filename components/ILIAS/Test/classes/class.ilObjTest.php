@@ -1787,7 +1787,7 @@ class ilObjTest extends ilObject
      *
      * @return array An array containing the test results for the given user
      */
-    public function &getTestResult(
+    public function getTestResult(
         int $active_id,
         ?int $pass = null,
         bool $ordered_sequence = false,
@@ -1870,13 +1870,9 @@ class ilObjTest extends ilObject
 		";
 
         $result = $this->db->query($query);
-
         $unordered = [];
-
         $key = 1;
-
         $obligationsAnswered = true;
-
         while ($row = $this->db->fetchAssoc($result)) {
             if (!isset($arrResults[ $row['question_id'] ])) {
                 $percentvalue = 0.0;
@@ -1911,7 +1907,6 @@ class ilObjTest extends ilObject
             }
 
             $unordered[ $row['question_id'] ] = $data;
-
             $key++;
         }
 
@@ -1921,7 +1916,6 @@ class ilObjTest extends ilObject
         $pass_reached = 0;
         $pass_requested_hints = 0;
         $pass_hint_points = 0;
-        $key = 1;
 
         $found = [];
 
@@ -1932,14 +1926,7 @@ class ilObjTest extends ilObject
             $pass_reached += round($unordered[$qid]['reached'], 2);
             $pass_requested_hints += $unordered[$qid]['requested_hints'];
             $pass_hint_points += $unordered[$qid]['hint_points'];
-
-            // pickup prepared data for question
-            // that exists in users qst sequence
-            $unordered[$qid]['nr'] = $key;
-            array_push($found, $unordered[$qid]);
-
-            // increment key counter
-            $key++;
+            $found[] = $unordered[$qid];
         }
 
         $unordered = null;
@@ -2599,11 +2586,6 @@ class ilObjTest extends ilObject
             ['integer'],
             [$this->getTestId()]
         );
-
-        $pass = null;
-        $checked = [];
-        $datasets = 0;
-        $questionData = [];
 
         while ($row = $this->db->fetchAssoc($result)) {
             if (!$data->participantExists($row["active_fi"])) {
@@ -6660,7 +6642,7 @@ class ilObjTest extends ilObject
         $finalized_record = (int) ($feedback_old['finalized_evaluation'] ?? 0);
         if ($finalized_record === 0 || ($is_single_feedback && $finalized_record === 1)) {
             $this->db->manipulateF(
-                "DELETE FROM tst_manual_fb WHERE active_fi = %s AND question_fi = %s AND pass = %s",
+                'DELETE FROM tst_manual_fb WHERE active_fi = %s AND question_fi = %s AND pass = %s',
                 ['integer', 'integer', 'integer'],
                 [$active_id, $question_id, $pass]
             );
@@ -6716,7 +6698,7 @@ class ilObjTest extends ilObject
                     $this->getRefId(),
                     $question_id,
                     $this->user,
-                    self::_getUserIdFromActiveId($active_id),
+                    new \ilObjUser(self::_getUserIdFromActiveId($active_id)),
                     TestScoringInteractionTypes::QUESTION_GRADED,
                     time(),
                     [
@@ -7778,7 +7760,7 @@ class ilObjTest extends ilObject
 
     public function recalculateScores($preserve_manscoring = false)
     {
-        $scoring = new TestScoring($this, $this->db, $this->user);
+        $scoring = new TestScoring($this, $this->user, $this->db, $this->lng);
         $scoring->setPreserveManualScores($preserve_manscoring);
         $scoring->recalculateSolutions();
         ilLPStatusWrapper::_updateStatus($this->getId(), $this->user->getId());

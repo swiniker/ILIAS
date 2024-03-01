@@ -140,7 +140,12 @@ class ilTestCorrectionsGUI
 
         $question_gui->populateCorrectionsFormProperties($form);
 
-        $scoring = new TestScoring($this->test_obj, $this->database, $this->scorer);
+        $scoring = new TestScoring(
+            $this->test_obj,
+            $this->scorer,
+            $this->database,
+            $this->language
+        );
         $scoring->setQuestionId($question_gui->getObject()->getId());
 
         if ($scoring->getNumManualScorings()) {
@@ -156,7 +161,12 @@ class ilTestCorrectionsGUI
     {
         $this->setCorrectionTabsContext($this->question_gui, 'question');
 
-        $scoring = new TestScoring($this->test_obj, $this->database, $this->scorer);
+        $scoring = new TestScoring(
+            $this->test_obj,
+            $this->scorer,
+            $this->database,
+            $this->language
+        );
         $scoring->setQuestionId($this->question_gui->getObject()->getId());
 
         $confirmation = sprintf(
@@ -196,7 +206,12 @@ class ilTestCorrectionsGUI
         $question_gui->setObject($question);
         $question_gui->getObject()->saveToDb();
 
-        $scoring = new TestScoring($this->test_obj, $this->database, $this->scorer);
+        $scoring = new TestScoring(
+            $this->test_obj,
+            $this->scorer,
+            $this->database,
+            $this->language
+        );
         $scoring->setPreserveManualScores(false);
         $scoring->setQuestionId($question_gui->getObject()->getId());
         $scoring->recalculateSolutions();
@@ -309,7 +324,12 @@ class ilTestCorrectionsGUI
             $question->saveToDb();
         }
 
-        $scoring = new TestScoring($this->test_obj, $this->database, $this->scorer);
+        $scoring = new TestScoring(
+            $this->test_obj,
+            $this->scorer,
+            $this->database,
+            $this->language
+        );
         $scoring->setPreserveManualScores(true);
         $scoring->recalculateSolutions();
 
@@ -355,7 +375,12 @@ class ilTestCorrectionsGUI
     protected function performQuestionRemoval(): void
     {
         $question_gui = $this->question_gui;
-        $scoring = new TestScoring($this->test_obj, $this->database, $this->scorer);
+        $scoring = new TestScoring(
+            $this->test_obj,
+            $this->scorer,
+            $this->database,
+            $this->language
+        );
 
         $participant_data = new ilTestParticipantData($this->database, $this->language);
         $participant_data->load($this->test_obj->getTestId());
@@ -464,6 +489,8 @@ class ilTestCorrectionsGUI
             $this->language->txt('back'),
             $this->ctrl->getLinkTargetByClass(self::class, 'showQuestionList')
         );
+        $this->ctrl->setParameterByClass(ilObjTestGUI::class, 'q_id', $question_gui->getObject()->getId());
+        $this->ctrl->setParameterByClass(self::class, 'q_id', $question_gui->getObject()->getId());
 
         $this->tabs->activateTab($active_tab_id);
     }
