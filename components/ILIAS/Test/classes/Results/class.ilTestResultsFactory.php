@@ -95,7 +95,7 @@ class ilTestResultsFactory
             $question_gui = $test_obj->createQuestionGUI("", $qid);
             $shuffle_trafo = $this->shuffler->getAnswerShuffleFor($qid, $active_id, $pass_id);
             $question = $question_gui->getObject();
-            $object->setShuffler($shuffle_trafo);
+            $question->setShuffler($shuffle_trafo);
             $question_gui->setObject($question);
 
             $graphical_output = true;
