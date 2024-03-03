@@ -219,7 +219,7 @@ class ilTestCorrectionsGUI
         if ($this->logger->isLoggingEnabled()) {
             $this->logger->logQuestionAdministrationInteraction(
                 $question_gui->getObject()->toQuestionAdministrationInteraction(
-                    $this->test_obj->getTestId(),
+                    $this->test_obj->getRefId(),
                     TestQuestionAdministrationInteractionTypes::QUESTION_MODIFIED_IN_CORRECTIONS
                 )
             );
@@ -336,7 +336,7 @@ class ilTestCorrectionsGUI
         if ($this->logger->isLoggingEnabled()) {
             $this->logger->logQuestionAdministrationInteraction(
                 $question->toQuestionAdministrationInteraction(
-                    $this->test_obj->getTestId(),
+                    $this->test_obj->getRefId(),
                     TestQuestionAdministrationInteractionTypes::QUESTION_MODIFIED_IN_CORRECTIONS
                 )
             );
@@ -411,12 +411,10 @@ class ilTestCorrectionsGUI
 
         if ($this->logger->isLoggingEnabled()) {
             $this->logger->logTestAdministrationInteraction(
-                new TestAdministrationInteraction(
-                    $this->language,
+                $this->logger->getInteractionFactory()->buildTestAdministrationInteraction(
                     $this->test_obj->getRefId(),
                     $this->scorer,
                     TestAdministrationInteractionTypes::QUESTION_REMOVED_IN_CORRECTIONS,
-                    time(),
                     [
                         'title' => $question_gui->getObject()->getTitle(),
                         'questiontext' => $question_gui->getObject()->getQuestion(),
