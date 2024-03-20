@@ -231,7 +231,7 @@ class ilObjTest extends ilObject
             $this->logger->logTestAdministrationInteraction(
                 $this->logger->getInteractionFactory()->buildTestAdministrationInteraction(
                     $this->getRefId(),
-                    $this->user,
+                    $this->user->getId(),
                     TestAdministrationInteractionTypes::NEW_TEST_CREATED,
                     []
                 )
@@ -1114,7 +1114,7 @@ class ilObjTest extends ilObject
             $this->logger->logTestAdministrationInteraction(
                 $this->logger->getInteractionFactory()->buildTestAdministrationInteraction(
                     $this->getRefId(),
-                    $this->user,
+                    $this->user->getId(),
                     TestAdministrationInteractionTypes::QUESTION_REMOVED,
                     [
                         'questions' => $remove_question_ids
@@ -1175,7 +1175,7 @@ class ilObjTest extends ilObject
             $this->logger->logTestAdministrationInteraction(
                 $this->logger->getInteractionFactory()->buildTestAdministrationInteraction(
                     $this->getRefId(),
-                    $this->user,
+                    $this->user->getId(),
                     TestAdministrationInteractionTypes::PARTICIPANT_DATA_REMOVED,
                     [
                         'users' => $participant_data->getUserIds(),
@@ -1207,7 +1207,7 @@ class ilObjTest extends ilObject
             $this->logger->logTestAdministrationInteraction(
                 $this->logger->getInteractionFactory()->buildTestAdministrationInteraction(
                     $this->getRefId(),
-                    $this->user,
+                    $this->user->getId(),
                     TestAdministrationInteractionTypes::PARTICIPANT_DATA_REMOVED,
                     [
                         'users' => $participantData->getUserIds()
@@ -1388,7 +1388,7 @@ class ilObjTest extends ilObject
             $this->logger->logTestAdministrationInteraction(
                 $this->logger->getInteractionFactory()->buildTestAdministrationInteraction(
                     $this->getRefId(),
-                    $this->user,
+                    $this->user->getId(),
                     TestAdministrationInteractionTypes::QUESTION_ADDED,
                     [
                         'question' => (assQuestion::instantiateQuestion($question_id))->toLog(),
@@ -3085,7 +3085,7 @@ class ilObjTest extends ilObject
             $this->logger->logTestAdministrationInteraction(
                 $this->logger->getInteractionFactory()->buildTestAdministrationInteraction(
                     $this->getRefId(),
-                    $this->user,
+                    $this->user->getId(),
                     TestAdministrationInteractionTypes::QUESTION_MOVED,
                     [
                         'order' => $this->questions
@@ -6684,8 +6684,8 @@ class ilObjTest extends ilObject
                 $this->logger->getInteractionFactory()->buildScoringInteraction(
                     $this->getRefId(),
                     $question_id,
-                    $this->user,
-                    new \ilObjUser(self::_getUserIdFromActiveId($active_id)),
+                    $this->user->getId(),
+                    self::_getUserIdFromActiveId($active_id),
                     TestScoringInteractionTypes::QUESTION_GRADED,
                     [
                         'finalized_evaluation' => $finalized ? '{{ true }}' : '{{ false }}',
@@ -7119,7 +7119,7 @@ class ilObjTest extends ilObject
             $this->logger->logTestAdministrationInteraction(
                 $this->logger->getInteractionFactory()->buildTestAdministrationInteraction(
                     $this->getRefId(),
-                    $this->user,
+                    $this->user->getId(),
                     TestAdministrationInteractionTypes::QUESTION_MOVED,
                     [
                         'order' => $orders,
@@ -7615,7 +7615,7 @@ class ilObjTest extends ilObject
             $this->logger->logTestAdministrationInteraction(
                 $this->logger->getInteractionFactory()->buildTestAdministrationInteraction(
                     $this->getRefId(),
-                    $this->user,
+                    $this->user->getId(),
                     TestAdministrationInteractionTypes::EXTRA_TIME_ADDED,
                     [
                         'users' => $participantData->getUserIds()
