@@ -22,7 +22,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use ILIAS\DI\Container;
 use ILIAS\FileUpload\FileUpload;
 use ILIAS\Filesystem\Filesystems;
-use ILIAS\HTTP\Services;
+use ILIAS\HTTP\Services as HTTPServices;
 use ILIAS\UI\Implementation\Factory;
 use ILIAS\Refinery\Factory as RefineryFactory;
 use ILIAS\Refinery\Random\Group as RandomGroup;
@@ -214,8 +214,12 @@ trait ilTestBaseTestCaseTrait
 
     protected function addGlobal_http(): void
     {
-        $http_mock = $this->getMockBuilder(Services::class)->disableOriginalConstructor()->getMock();
-        $http_mock->method('request')->willReturn($this->getMockBuilder(\Psr\Http\Message\ServerRequestInterface::class)->disableOriginalConstructor()->getMock());
+        $request_mock = $this->getMockBuilder(
+            \Psr\Http\Message\ServerRequestInterface::class
+        )->disableOriginalConstructor()->getMock();
+        $request_mock->method('getQueryParams')->willReturn([]);
+        $http_mock = $this->getMockBuilder(HTTPServices::class)->disableOriginalConstructor()->getMock();
+        $http_mock->method('request')->willReturn($request_mock);
         $this->setGlobalVariable('http', $http_mock);
     }
 
