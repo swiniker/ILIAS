@@ -52,13 +52,14 @@ class ilTestQuestionsTableGUITest extends ilTestBaseTestCase
 
         $this->parentObj_mock = $this->getMockBuilder(ilObjTestGUI::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['getObject'])
+            ->onlyMethods(['getObject', 'getRefId'])
             ->getMock();
         $this->parentObj_mock->expects($this->any())->method('getObject')->willReturn($this->createMock(ilObjTest::class));
+        $this->parentObj_mock->expects($this->once())->method('getRefId')->willReturn(0);
         $this->tableGui = new ilTestQuestionsTableGUI(
             $this->parentObj_mock,
-            "",
-            0,
+            '',
+            '',
             $this->createMock(ilAccessHandler::class),
             $DIC['ui.factory'],
             $DIC['ui.renderer'],
