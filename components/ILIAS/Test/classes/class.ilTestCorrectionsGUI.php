@@ -94,6 +94,7 @@ class ilTestCorrectionsGUI
             $table_gui = new ilTestQuestionsTableGUI(
                 $this,
                 'showQuestionList',
+                self::class,
                 'showQuestion',
                 $this->access,
                 $this->ui_factory,
