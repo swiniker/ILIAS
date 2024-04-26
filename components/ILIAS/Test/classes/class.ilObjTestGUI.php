@@ -93,7 +93,6 @@ use ILIAS\Skill\Service\SkillService;
 class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDesktopItemHandling
 {
     public const DEFAULT_CMD = 'showQuestions';
-    public const PREVIEW_QUESTION_CMD = 'previewQuestion';
 
     private const INFO_SCREEN_CHILD_CLASSES = [
         'ilpublicuserprofilegui', 'ilobjportfoliogui'
@@ -1041,16 +1040,6 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
         $this->tabs_gui->setBackTarget($this->lng->txt('backtocallingtest'), $this->ctrl->getLinkTargetByClass(self::class, self::DEFAULT_CMD));
 
         $gui->{$cmd . 'Cmd'}();
-
-        $logger = $this->getTestObject()->getTestLogger();
-        if ($logger->isLoggingEnabled()) {
-            $logger->logQuestionAdministrationInteraction(
-                $gui->getQuestion()->toQuestionAdministrationInteraction(
-                    $this->getRefId(),
-                    TestQuestionAdministrationInteractionTypes::QUESTION_MODIFIED
-                )
-            );
-        }
     }
 
     protected function forwardCommandToQuestion(string $cmd): void
@@ -2056,8 +2045,9 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
 
         $table_gui = new ilTestQuestionsTableGUI(
             $this,
-            'questions',
-            'questions',
+            self::DEFAULT_CMD,
+            ilAssQuestionPreviewGUI::class,
+            ilAssQuestionPreviewGUI::CMD_SHOW,
             $this->access,
             $this->ui_factory,
             $this->ui_renderer,
@@ -2129,11 +2119,16 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
         if ($this->getTestObject()->getTestLogger() === null) {
             return;
         }
+        $this->toolbar->addComponent(
+            $this->ui_factory->button()->standard(
+                $this->lng->txt('export_legacy_logs'),
+                $this->ctrl->getLinkTargetByClass(self::class, 'exportLegacyLogs')
+            )
+        );
         $this->tabs_gui->activateTab(ilTestTabsManager::TAB_ID_HISTORY);
         $here_uri = $this->data_factory->uri($this->request->getUri()->__toString());
-        $url_builder = new URLBuilder($here_uri);
         $query_params_namespace = ['test', 'logging'];
-        list($url_builder, $action_parameter_token, $row_id_token) = $url_builder->acquireParameters(
+        list($url_builder, $action_parameter_token, $row_id_token) = (new URLBuilder($here_uri))->acquireParameters(
             $query_params_namespace,
             'action',
             'log_entry'
@@ -2141,9 +2136,20 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
         $table_gui = $this->getTestObject()->getTestLogViewer()->getLogTable(
             $url_builder,
             $action_parameter_token,
-            $row_id_token
+            $row_id_token,
+            $this->getTestObject()->getRefId()
         );
         $this->tpl->setVariable('ADM_CONTENT', $this->ui_renderer->render($table_gui));
+    }
+
+    public function exportLegacyLogsObject(): void
+    {
+        $csv_output = $this->getTestObject()->getTestLogViewer()->getLegacyLogExportForObjId($this->getTestObject()->getId());
+
+        ilUtil::deliverData(
+            $csv_output,
+            "legacy_logs_for_{$this->getTestObject()->getRefId()}.csv"
+        );
     }
 
     /**
