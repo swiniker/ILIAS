@@ -856,7 +856,7 @@ abstract class assQuestion implements Question
         try {
             $this->deletePageOfQuestion($question_id);
         } catch (Exception $e) {
-            $this - log->root()->error("EXCEPTION: Could not delete page of question $question_id: $e");
+            $this->log->root()->error("EXCEPTION: Could not delete page of question $question_id: $e");
             return;
         }
 
@@ -875,7 +875,7 @@ abstract class assQuestion implements Question
             $this->feedbackOBJ->deleteGenericFeedbacks($question_id, $this->isAdditionalContentEditingModePageObject());
             $this->feedbackOBJ->deleteSpecificAnswerFeedbacks($question_id, $this->isAdditionalContentEditingModePageObject());
         } catch (Exception $e) {
-            $this - log->root()->error("EXCEPTION: Could not delete additional table data of question $question_id: $e");
+            $this->log->root()->error("EXCEPTION: Could not delete additional table data of question $question_id: $e");
             return;
         }
 
@@ -887,14 +887,14 @@ abstract class assQuestion implements Question
                 [$question_id]
             );
         } catch (Exception $e) {
-            $this - log->root()->error("EXCEPTION: Could not delete delete question $question_id from a test: $e");
+            $this->log->root()->error("EXCEPTION: Could not delete delete question $question_id from a test: $e");
             return;
         }
 
         try {
             $this->getSuggestedSolutionsRepo()->deleteForQuestion($question_id);
         } catch (Exception $e) {
-            $this - log->root()->error("EXCEPTION: Could not delete suggested solutions of question $question_id: $e");
+            $this->log->root()->error("EXCEPTION: Could not delete suggested solutions of question $question_id: $e");
             return;
         }
 
@@ -904,7 +904,7 @@ abstract class assQuestion implements Question
                 ilFileUtils::delDir($directory);
             }
         } catch (Exception $e) {
-            $this - log->root()->error("EXCEPTION: Could not delete question file directory $directory of question $question_id: $e");
+            $this->log->root()->error("EXCEPTION: Could not delete question file directory $directory of question $question_id: $e");
             return;
         }
 
@@ -922,7 +922,7 @@ abstract class assQuestion implements Question
                 }
             }
         } catch (Exception $e) {
-            $this - log->root()->error("EXCEPTION: Error deleting the media objects of question $question_id: $e");
+            $this->log->root()->error("EXCEPTION: Error deleting the media objects of question $question_id: $e");
             return;
         }
         ilAssQuestionHintTracking::deleteRequestsByQuestionIds([$question_id]);
@@ -950,7 +950,7 @@ abstract class assQuestion implements Question
         try {
             ilObjQuestionPool::_updateQuestionCount($this->getObjId());
         } catch (Exception $e) {
-            $this - log->root()->error("EXCEPTION: Error updating the question pool question count of question pool " . $this->getObjId() . " when deleting question $question_id: $e");
+            $this->log->root()->error("EXCEPTION: Error updating the question pool question count of question pool " . $this->getObjId() . " when deleting question $question_id: $e");
             return;
         }
     }
@@ -1003,11 +1003,11 @@ abstract class assQuestion implements Question
         return true;
     }
 
-    public function cloneXHTMLMediaObjectsOfQuestion(int $soruce_question_id, int $target_question_id): void
+    public function cloneXHTMLMediaObjectsOfQuestion(int $source_question_id): void
     {
-        $mobs = ilObjMediaObject::_getMobsOfObject("qpl:html", $soruce_question_id);
+        $mobs = ilObjMediaObject::_getMobsOfObject("qpl:html", $source_question_id);
         foreach ($mobs as $mob) {
-            ilObjMediaObject::_saveUsage($mob, "qpl:html", $target_question_id);
+            ilObjMediaObject::_saveUsage($mob, "qpl:html", $this->getId());
         }
     }
 
@@ -1265,7 +1265,7 @@ abstract class assQuestion implements Question
 
         $clone = $this->cloneQuestionTypeSpecificProperties($clone);
 
-        $clone->onDuplicate($thisObjId, $this_id, $clone->getObjId(), $clone->getId());
+        $clone->onDuplicate($this->getObjId(), $this->getId(), $clone->getObjId(), $clone->getId());
 
         return $clone->id;
     }
@@ -1401,12 +1401,16 @@ abstract class assQuestion implements Question
         );
     }
 
-    protected function onDuplicate(int $originalParentId, int $originalQuestionId, int $duplicateParentId, int $duplicateQuestionId): void
-    {
-        $this->cloneSuggestedSolutionFiles($originalParentId, $originalQuestionId);
-        $this->feedbackOBJ->duplicateFeedback($originalQuestionId, $duplicateQuestionId);
-        $this->duplicateQuestionHints($originalQuestionId, $duplicateQuestionId);
-        $this->duplicateSkillAssignments($originalParentId, $originalQuestionId, $duplicateParentId, $duplicateQuestionId);
+    protected function onDuplicate(
+        int $original_parent_id,
+        int $original_question_id,
+        int $duplicate_parent_id,
+        int $duplicate_question_id
+    ): void {
+        $this->cloneSuggestedSolutionFiles($original_parent_id, $original_question_id);
+        $this->feedbackOBJ->duplicateFeedback($original_question_id, $duplicate_question_id);
+        $this->duplicateQuestionHints($original_question_id, $duplicate_question_id);
+        $this->duplicateSkillAssignments($original_parent_id, $original_question_id, $duplicate_parent_id, $duplicate_question_id);
     }
 
     protected function afterSyncWithOriginal(
@@ -1474,8 +1478,8 @@ abstract class assQuestion implements Question
             }
             if (!is_file($filepath_original . $filename)
                 || !copy($filepath_original . $filename, $filepath . $filename)) {
-                $this - log->root()->error("File could not be duplicated!!!!");
-                $this - log->root()->error("object: " . print_r($this, true));
+                $this->log->root()->error("File could not be duplicated!!!!");
+                $this->log->root()->error("object: " . print_r($this, true));
             }
         }
     }
@@ -1484,12 +1488,8 @@ abstract class assQuestion implements Question
         int $source_question_id,
         int $target_question_id
     ): void {
-        $filepath = $this->getSuggestedSolutionPath();
-        $filepath_original = str_replace(
-            "{$this->getObjId()}/{$this->id}/solution",
-            "{$target_obj_id}/{$target_question_id}/solution",
-            $filepath
-        );
+        $filepath_target = $this->getSuggestedSolutionPath();
+        $filepath_original = str_replace("/$target_question_id/solution", "/$source_question_id/solution", $filepath_target);
         ilFileUtils::delDir($filepath_original);
         foreach ($this->suggested_solutions as $solution) {
             if (!$solution->isOfTypeFile()
@@ -1501,10 +1501,10 @@ abstract class assQuestion implements Question
                 ilFileUtils::makeDirParents($filepath_original);
             }
 
-            if (!is_file($filepath_original . $filename)
-                || copy($filepath . $filename, $filepath_original . $filename)) {
-                $this - log->root()->error("File could not be duplicated!!!!");
-                $this - log->root()->error("object: " . print_r($this, true));
+            if (!is_file($filepath_original . $solution->getFilename())
+                || copy($filepath_target . $solution->getFilename(), $filepath_target . $solution->getFilename())) {
+                $this->log->root()->error("File could not be duplicated!!!!");
+                $this->log->root()->error("object: " . print_r($this, true));
             }
         }
     }
@@ -1644,7 +1644,7 @@ abstract class assQuestion implements Question
         $original->createPageObject();
         $original->clonePageOfQuestion($this->getId());
         $original = $this->cloneQuestionTypeSpecificProperties($original);
-        $this->cloneXHTMLMediaObjectsOfQuestion();
+        $this->cloneXHTMLMediaObjectsOfQuestion($original->getId());
         $this->afterSyncWithOriginal($this->getId(), $this->getOriginalId(), $this->getObjId(), $original_obj_id);
         $this->cloneHints();
     }
@@ -2215,9 +2215,9 @@ abstract class assQuestion implements Question
         return $row['obj_fi'] ?? null;
     }
 
-    protected function duplicateQuestionHints(int $originalQuestionId, int $duplicateQuestionId): void
+    protected function duplicateQuestionHints(int $original_question_id, int $duplicate_question_id): void
     {
-        $hintIds = ilAssQuestionHintList::duplicateListForQuestion($originalQuestionId, $duplicateQuestionId);
+        $hintIds = ilAssQuestionHintList::duplicateListForQuestion($original_question_id, $duplicate_question_id);
 
         if ($this->isAdditionalContentEditingModePageObject()) {
             foreach ($hintIds as $originalHintId => $duplicateHintId) {
@@ -2519,7 +2519,7 @@ abstract class assQuestion implements Question
             "value1" => ["clob", $value1],
             "value2" => ["clob", $value2],
             "pass" => ["integer", $pass],
-            "tstamp" => ["integer", ((int)$tstamp > 0) ? (int)$tstamp : time()],
+            "tstamp" => ["integer", ((int) $tstamp > 0) ? (int) $tstamp : time()],
             'authorized' => ['integer', (int) $authorized]
         ];
 
