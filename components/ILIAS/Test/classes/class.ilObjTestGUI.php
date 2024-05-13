@@ -94,6 +94,7 @@ use ILIAS\Skill\Service\SkillService;
 class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDesktopItemHandling
 {
     public const DEFAULT_CMD = 'showQuestions';
+    private const SHOW_LOGS_CMD = 'history';
 
     private const INFO_SCREEN_CHILD_CLASSES = [
         'ilpublicuserprofilegui', 'ilobjportfoliogui'
@@ -2130,7 +2131,8 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
             return;
         }
 
-        $here_uri = $this->data_factory->uri($this->request->getUri()->__toString());
+        $here_uri = $this->data_factory->uri(ILIAS_HTTP_PATH
+            . '/' . $this->ctrl->getLinkTargetByClass(self::class, self::SHOW_LOGS_CMD));
         list($url_builder, $action_parameter_token, $row_id_token) = (new URLBuilder($here_uri))->acquireParameters(
             LogTable::QUERY_PARAMETER_NAME_SPACE,
             LogTable::ACTION_TOKEN_STRING,
