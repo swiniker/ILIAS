@@ -22,6 +22,8 @@ use ILIAS\TestQuestionPool\Questions\QuestionLMExportable;
 use ILIAS\TestQuestionPool\Questions\QuestionAutosaveable;
 use ILIAS\TestQuestionPool\Questions\Ordering\OrderingQuestionDatabaseRepository as OQRepository;
 
+use ILIAS\Test\Logging\AdditionalInformationGenerator;
+
 /**
  * Class for ordering questions
  *
@@ -624,7 +626,7 @@ class assOrderingQuestion extends assQuestion implements ilObjQuestionScoringAdj
         $target_filepath = $this->getImagePath() . $target_filename;
         if (ilFileUtils::moveUploadedFile($upload_file, $target_filename, $target_filepath)) {
             $thumb_path = $this->getImagePath() . $this->getThumbPrefix() . $target_filename;
-            ilShellUtil::convertImage($target_filepath, $thumb_path, "JPEG", (string)$this->getThumbSize());
+            ilShellUtil::convertImage($target_filepath, $thumb_path, "JPEG", (string) $this->getThumbSize());
 
             return $target_filename;
         }
@@ -640,7 +642,7 @@ class assOrderingQuestion extends assQuestion implements ilObjQuestionScoringAdj
         if (ilFileUtils::rename($existing_image_path, $target_filepath)) {
             unlink($this->getImagePath() . $this->getThumbPrefix() . $existing_image_name);
             $thumb_path = $this->getImagePath() . $this->getThumbPrefix() . $target_filename;
-            ilShellUtil::convertImage($target_filepath, $thumb_path, "JPEG", (string)$this->getThumbSize());
+            ilShellUtil::convertImage($target_filepath, $thumb_path, "JPEG", (string) $this->getThumbSize());
 
             return $target_filename;
         }
@@ -862,7 +864,7 @@ class assOrderingQuestion extends assQuestion implements ilObjQuestionScoringAdj
                     $ext = 'JPEG';
                     break;
             }
-            ilShellUtil::convertImage($filename, $thumbpath, $ext, (string)$this->getThumbSize());
+            ilShellUtil::convertImage($filename, $thumbpath, $ext, (string) $this->getThumbSize());
         }
     }
 
@@ -1317,23 +1319,23 @@ class assOrderingQuestion extends assQuestion implements ilObjQuestionScoringAdj
         return $formDataConverter;
     }
 
-    public function toLog(): array
+    public function toLog(AdditionalInformationGenerator $additional_info): array
     {
         return [
-            'question_id' => $this->getId(),
-            'question_type' => (string) $this->getQuestionType(),
-            'question_title' => $this->getTitle(),
-            'tst_question' => $this->formatSAQuestion($this->getQuestion()),
-            'qst_use_nested_answers' => array_reduce(
+            AdditionalInformationGenerator::KEY_QUESTION => $this->getId(),
+            AdditionalInformationGenerator::KEY_QUESTION_TYPE => (string) $this->getQuestionType(),
+            AdditionalInformationGenerator::KEY_QUESTION_TITLE => $this->getTitle(),
+            AdditionalInformationGenerator::KEY_QUESTION_TEXT => $this->formatSAQuestion($this->getQuestion()),
+            AdditionalInformationGenerator::KEY_QUESTION_ORDERING_NESTING_TYPE => array_reduce(
                 $this->getOrderingTypeLangVars($this->getOrderingType()),
-                fn(string $string, string $lang_var) => $string .= '{{ ' . $lang_var . ' }}',
+                static fn(string $string, string $lang_var) => $string . $additional_info->getTagForLangVar($lang_var),
                 ''
             ),
-            'points' => $this->getPoints(),
-            'answer' => $this->getSolutionOutputForLog(),
-            'tst_feedback' => [
-                'feedback_incomplete_solution' => $this->formatSAQuestion($this->feedbackOBJ->getGenericFeedbackTestPresentation($this->getId(), false)),
-                'feedback_complete_solution' => $this->formatSAQuestion($this->feedbackOBJ->getGenericFeedbackTestPresentation($this->getId(), true))
+            AdditionalInformationGenerator::KEY_QUESTION_REACHABLE_POINTS => $this->getPoints(),
+            AdditionalInformationGenerator::KEY_QUESTION_ANSWER_OPTION => $this->getSolutionOutputForLog(),
+            AdditionalInformationGenerator::KEY_FEEDBACK => [
+                AdditionalInformationGenerator::KEY_QUESTION_FEEDBACK_ON_INCOMPLETE => $this->formatSAQuestion($this->feedbackOBJ->getGenericFeedbackTestPresentation($this->getId(), false)),
+                AdditionalInformationGenerator::KEY_QUESTION_FEEDBACK_ON_COMPLETE => $this->formatSAQuestion($this->feedbackOBJ->getGenericFeedbackTestPresentation($this->getId(), true))
             ]
         ];
     }
