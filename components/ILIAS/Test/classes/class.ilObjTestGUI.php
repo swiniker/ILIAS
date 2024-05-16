@@ -2128,6 +2128,9 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
 
     public function historyObject(): void
     {
+        if ($this->access->checkAccess('tst_history_read', '', $this->getTestOBJ()->getRefId())) {
+            $this->redirectAfterMissingWrite();
+        }
         if ($this->getTestObject()->getTestLogger() === null) {
             return;
         }
