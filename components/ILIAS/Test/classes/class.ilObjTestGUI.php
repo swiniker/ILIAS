@@ -1792,16 +1792,21 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
         // get all questions to move
         $move_questions = ilSession::get('tst_qst_move_' . $this->getTestObject()->getTestId());
 
-        if (!is_array($_POST['q_id']) || 0 === count($_POST['q_id'])) {
+        $qst_ids = $this->testrequest->getQuestionIds();
+        if ($qst_ids === []) {
             $this->tpl->setOnScreenMessage('failure', $this->lng->txt("no_target_selected_for_move"), true);
             $this->ctrl->redirect($this, self::DEFAULT_CMD);
         }
-        if (count($_POST['q_id']) > 1) {
+        if (count($qst_ids) > 1) {
             $this->tpl->setOnScreenMessage('failure', $this->lng->txt("too_many_targets_selected_for_move"), true);
             $this->ctrl->redirect($this, self::DEFAULT_CMD);
         }
         $insert_mode = 0;
-        $this->getTestObject()->moveQuestions(ilSession::get('tst_qst_move_' . $this->getTestObject()->getTestId()), $_POST['q_id'][0], $insert_mode);
+        $this->getTestObject()->moveQuestions(
+            ilSession::get('tst_qst_move_' . $this->getTestObject()->getTestId()),
+            $qst_ids[0],
+            $insert_mode
+        );
         $this->tpl->setOnScreenMessage('success', $this->lng->txt("msg_questions_moved"), true);
         ilSession::clear('tst_qst_move_' . $this->getTestObject()->getTestId());
         $this->ctrl->redirect($this, "showQuestions");
@@ -1814,16 +1819,21 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
     {
         // get all questions to move
         $move_questions = ilSession::get('tst_qst_move_' . $this->getTestObject()->getTestId());
-        if (!is_array($_POST['q_id']) || 0 === count($_POST['q_id'])) {
+        $qst_ids = $this->testrequest->getQuestionIds();
+        if ($qst_ids === []) {
             $this->tpl->setOnScreenMessage('failure', $this->lng->txt("no_target_selected_for_move"), true);
             $this->ctrl->redirect($this, self::DEFAULT_CMD);
         }
-        if (count($_POST['q_id']) > 1) {
+        if (count($qst_ids) > 1) {
             $this->tpl->setOnScreenMessage('failure', $this->lng->txt("too_many_targets_selected_for_move"), true);
             $this->ctrl->redirect($this, self::DEFAULT_CMD);
         }
         $insert_mode = 1;
-        $this->getTestObject()->moveQuestions(ilSession::get('tst_qst_move_' . $this->getTestObject()->getTestId()), $_POST['q_id'][0], $insert_mode);
+        $this->getTestObject()->moveQuestions(
+            ilSession::get('tst_qst_move_' . $this->getTestObject()->getTestId()),
+            $qst_ids[0],
+            $insert_mode
+        );
         $this->tpl->setOnScreenMessage('success', $this->lng->txt("msg_questions_moved"), true);
         ilSession::clear('tst_qst_move_' . $this->getTestObject()->getTestId());
         $this->ctrl->redirect($this, "showQuestions");
@@ -1836,15 +1846,18 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
     */
     public function insertQuestionsObject(): void
     {
-        $selected_array = (is_array($_POST['q_id'])) ? $_POST['q_id'] : [];
+        $selected_array = $this->testrequest->getQuestionIds();
         if (!count($selected_array)) {
             $this->tpl->setOnScreenMessage('info', $this->lng->txt("tst_insert_missing_question"), true);
             $this->ctrl->redirect($this, 'browseForQuestions');
         }
 
         $manscoring = false;
-        foreach ($selected_array as $key => $value) {
-            $this->getTestObject()->insertQuestion($this->test_question_set_config_factory->getQuestionSetConfig(), $value);
+        foreach ($selected_array as $value) {
+            $this->getTestObject()->insertQuestion(
+                $this->test_question_set_config_factory->getQuestionSetConfig(),
+                $value
+            );
             if (!$manscoring) {
                 $manscoring = $manscoring | assQuestion::_needsManualScoring($value);
             }
@@ -2194,15 +2207,15 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
        */
     public function participantsActionObject(): void
     {
-        $command = $_POST["command"];
-        if (strlen($command)) {
-            $method = $command . "Object";
+        $command = $this->testrequest->strVal('command');
+        if ($command === '') {
+            $method = $command . 'Object';
             if (method_exists($this, $method)) {
                 $this->$method();
                 return;
             }
         }
-        $this->ctrl->redirect($this, "participants");
+        $this->ctrl->redirect($this, 'participants');
     }
 
     public function printObject()
@@ -2347,8 +2360,9 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
      */
     public function deleteDefaultsObject()
     {
-        if (isset($_POST['chb_defaults']) && is_array($_POST['chb_defaults']) && count($_POST['chb_defaults'])) {
-            foreach ($_POST['chb_defaults'] as $test_default_id) {
+        $defaults_ids = $this->testrequest->getArrayOfIntsFromPost('chb_defaults');
+        if ($defaults_ids !== null && $defaults_ids !== []) {
+            foreach ($defaults_ids as $test_default_id) {
                 $this->getTestObject()->deleteDefaults($test_default_id);
             }
         } else {
@@ -2371,8 +2385,9 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
      */
     public function applyDefaultsObject($confirmed = false)
     {
-        if (!isset($_POST['chb_defaults']) || !is_array($_POST["chb_defaults"]) || 1 !== count($_POST["chb_defaults"])) {
-            $this->tpl->setOnScreenMessage('info', $this->lng->txt("tst_defaults_apply_select_one"));
+        $defaults = $this->testrequest->getArrayOfStringsFromPost('chb_defaults');
+        if ($defaults !== null && $defaults !== []) {
+            $this->tpl->setOnScreenMessage('info', $this->lng->txt('tst_defaults_apply_select_one'));
 
             $this->defaultsObject();
             return;
@@ -2380,34 +2395,32 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
 
         // do not apply if user datasets exist
         if ($this->getTestObject()->evalTotalPersons() > 0) {
-            $this->tpl->setOnScreenMessage('info', $this->lng->txt("tst_defaults_apply_not_possible"));
-
+            $this->tpl->setOnScreenMessage('info', $this->lng->txt('tst_defaults_apply_not_possible'));
             $this->defaultsObject();
             return;
         }
 
-        $defaults = $this->getTestObject()->getTestDefaults($_POST["chb_defaults"][0]);
-        $defaultSettings = unserialize($defaults["defaults"]);
+        $default_settings = unserialize($defaults[0]['defaults'], ['allowed_classes' => false]);
 
-        if (isset($defaultSettings['isRandomTest'])) {
-            if ($defaultSettings['isRandomTest']) {
-                $newQuestionSetType = ilObjTest::QUESTION_SET_TYPE_RANDOM;
+        if (isset($default_settings['isRandomTest'])) {
+            if ($default_settings['isRandomTest']) {
+                $new_question_set_type = ilObjTest::QUESTION_SET_TYPE_RANDOM;
                 $this->getTestObject()->setQuestionSetType(ilObjTest::QUESTION_SET_TYPE_RANDOM);
             } else {
-                $newQuestionSetType = ilObjTest::QUESTION_SET_TYPE_FIXED;
+                $new_question_set_type = ilObjTest::QUESTION_SET_TYPE_FIXED;
                 $this->getTestObject()->setQuestionSetType(ilObjTest::QUESTION_SET_TYPE_FIXED);
             }
-        } elseif (isset($defaultSettings['questionSetType'])) {
-            $newQuestionSetType = $defaultSettings['questionSetType'];
+        } elseif (isset($default_settings['questionSetType'])) {
+            $new_question_set_type = $default_settings['questionSetType'];
         }
-        $oldQuestionSetType = $this->getTestObject()->getQuestionSetType();
-        $questionSetTypeSettingSwitched = ($oldQuestionSetType != $newQuestionSetType);
+        $old_question_set_type = $this->getTestObject()->getQuestionSetType();
+        $question_set_type_setting_switched = ($old_question_set_type != $new_question_set_type);
 
-        $oldQuestionSetConfig = $this->test_question_set_config_factory->getQuestionSetConfig();
+        $old_question_set_config = $this->test_question_set_config_factory->getQuestionSetConfig();
 
         switch (true) {
-            case !$questionSetTypeSettingSwitched:
-            case !$oldQuestionSetConfig->doesQuestionSetRelatedDataExist():
+            case !$question_set_type_setting_switched:
+            case !$old_question_set_config->doesQuestionSetRelatedDataExist():
             case $confirmed:
 
                 break;
@@ -2421,7 +2434,7 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
                 $confirmation->setConfirm($this->lng->txt('confirm'), 'confirmedApplyDefaults');
 
                 $confirmation->setOldQuestionSetType($this->getTestObject()->getQuestionSetType());
-                $confirmation->setNewQuestionSetType($newQuestionSetType);
+                $confirmation->setNewQuestionSetType($new_question_set_type);
                 $confirmation->setQuestionLossInfoEnabled(false);
                 $confirmation->build();
 
@@ -2432,20 +2445,20 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
                 return;
         }
 
-        if ($questionSetTypeSettingSwitched && !$this->getTestObject()->getOfflineStatus()) {
+        if ($question_set_type_setting_switched && !$this->getTestObject()->getOfflineStatus()) {
             $this->getTestObject()->setOfflineStatus(true);
 
-            $info = $this->lng->txt("tst_set_offline_due_to_switched_question_set_type_setting");
+            $info = $this->lng->txt('tst_set_offline_due_to_switched_question_set_type_setting');
 
             $this->tpl->setOnScreenMessage('info', $info, true);
         }
 
         $this->getTestObject()->applyDefaults($defaults);
 
-        $this->tpl->setOnScreenMessage('success', $this->lng->txt("tst_defaults_applied"), true);
+        $this->tpl->setOnScreenMessage('success', $this->lng->txt('tst_defaults_applied'), true);
 
-        if ($questionSetTypeSettingSwitched && $oldQuestionSetConfig->doesQuestionSetRelatedDataExist()) {
-            $oldQuestionSetConfig->removeQuestionSetRelatedData();
+        if ($question_set_type_setting_switched && $old_question_set_config->doesQuestionSetRelatedDataExist()) {
+            $old_question_set_config->removeQuestionSetRelatedData();
         }
 
         $this->ctrl->redirect($this, 'defaults');
@@ -2456,10 +2469,11 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
     */
     public function addDefaultsObject()
     {
-        if (strlen($_POST["name"]) > 0) {
-            $this->getTestObject()->addDefaults($_POST['name']);
+        $name = $this->testrequest->strVal('name');
+        if ($name !== '') {
+            $this->getTestObject()->addDefaults($name);
         } else {
-            $this->tpl->setOnScreenMessage('info', $this->lng->txt("tst_defaults_enter_name"));
+            $this->tpl->setOnScreenMessage('info', $this->lng->txt('tst_defaults_enter_name'));
         }
         $this->defaultsObject();
     }
