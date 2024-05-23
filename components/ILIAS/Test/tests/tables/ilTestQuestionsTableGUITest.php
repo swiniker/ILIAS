@@ -32,12 +32,6 @@ class ilTestQuestionsTableGUITest extends ilTestBaseTestCase
         global $DIC;
         parent::setUp();
 
-        $this->addGlobal_lng();
-        $this->addGlobal_tpl();
-        $this->addGlobal_ilComponentRepository();
-        $this->addGlobal_uiFactory();
-        $this->addGlobal_uiRenderer();
-
         $ctrl_mock = $this->createMock(ilCtrl::class);
         $ctrl_mock->expects($this->any())
                   ->method("getFormAction")
@@ -54,7 +48,7 @@ class ilTestQuestionsTableGUITest extends ilTestBaseTestCase
             ->disableOriginalConstructor()
             ->onlyMethods(['getObject', 'getRefId'])
             ->getMock();
-        $this->parentObj_mock->expects($this->any())->method('getObject')->willReturn($this->createMock(ilObjTest::class));
+        $this->parentObj_mock->expects($this->any())->method('getObject')->willReturn($this->getTestObjMock());
         $this->parentObj_mock->expects($this->once())->method('getRefId')->willReturn(0);
         $this->tableGui = new ilTestQuestionsTableGUI(
             $this->parentObj_mock,

@@ -34,37 +34,22 @@ class ilObjTestGUITest extends ilTestBaseTestCase
             define('ANONYMOUS_USER_ID', 13);
         }
 
-        global $DIC;
-
-        $this->dic = is_object($DIC) ? clone $DIC : $DIC;
-
-        $DIC = new Container();
-
         parent::setUp();
 
-        $this->addGlobal_lng();
         $this->addGlobal_ilCtrl();
-        $this->addGlobal_ilDB();
-        $this->addGlobal_ilComponentRepository();
         $this->addGlobal_tree();
         $this->addGlobal_ilLocator();
         $this->addGlobal_ilUser();
-        $this->addGlobal_ilAccess();
         $this->addGlobal_ilSetting();
         $this->addGlobal_rbacreview();
         $this->addGlobal_ilToolbar();
         $this->addGlobal_rbacsystem();
         $this->addGlobal_filesystem();
         $this->addGlobal_upload();
-        $this->addGlobal_objDefinition();
-        $this->addGlobal_tpl();
         $this->addGlobal_ilErr();
         $this->addGlobal_ilTabs();
         $this->addGlobal_ilias();
         $this->addGlobal_ilNavigationHistory();
-        $this->addGlobal_ilComponentFactory();
-        $this->addGlobal_uiFactory();
-        $this->addGlobal_uiRenderer();
         $this->addGlobal_skillService();
         $this->addGlobal_ilHelp();
         $this->addGlobal_ilObjDataCache();
@@ -73,15 +58,6 @@ class ilObjTestGUITest extends ilTestBaseTestCase
         $this->addGlobal_GlobalScreenService();
 
         $this->testObj = new ilObjTestGUI();
-    }
-
-    protected function tearDown(): void
-    {
-        global $DIC;
-
-        $DIC = $this->dic;
-
-        parent::tearDown();
     }
 
     public function test_instantiateObject_shouldReturnInstance(): void

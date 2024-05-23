@@ -37,7 +37,7 @@ class ilTestExportFixedQuestionSetTest extends ilTestBaseTestCase
         $this->addGlobal_ilias();
         $this->addGlobal_lng();
 
-        $objTest_mock = $this->createMock(ilObjTest::class);
+        $objTest_mock = $this->getTestObjMock();
         $this->testObj = new ilTestExportFixedQuestionSet($objTest_mock);
     }
 
