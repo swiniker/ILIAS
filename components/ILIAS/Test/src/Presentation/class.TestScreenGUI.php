@@ -81,7 +81,7 @@ class TestScreenGUI
     public function executeCommand(): void
     {
         if ($this->access->checkAccess('read', '', $this->ref_id)) {
-            $this->{$this->ctrl->getCmd()}();
+            $this->{$this->ctrl->getCmd(self::DEFAULT_CMD)}();
             return;
         }
 
