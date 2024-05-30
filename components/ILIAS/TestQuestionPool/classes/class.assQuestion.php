@@ -1241,7 +1241,6 @@ abstract class assQuestion implements Question
         }
 
         $clone = clone $this;
-        $original_id = $this->questionrepository->getForQuestionId($this->id)->getOriginalId();
         $clone->id = -1;
 
         if ((int) $test_obj_id > 0) {
@@ -1258,7 +1257,7 @@ abstract class assQuestion implements Question
             $clone->setOwner($owner);
         }
         if ($for_test) {
-            $clone->saveToDb($original_id);
+            $clone->saveToDb($this->id);
         } else {
             $clone->saveToDb();
         }
@@ -1422,7 +1421,7 @@ abstract class assQuestion implements Question
         int $original_parent_id,
         int $clone_parent_id
     ): void {
-        $this->feedbackOBJ->syncFeedback($original_question_id, $clone_question_id);
+        $this->feedbackOBJ->cloneFeedback($original_question_id, $clone_question_id);
     }
 
     protected function onCopy(int $sourceParentId, int $sourceQuestionId, int $targetParentId, int $targetQuestionId): void
@@ -1639,7 +1638,7 @@ abstract class assQuestion implements Question
         // Now we become the original
         $original->setId($this->getOriginalId());
         $original->setOriginalId(null);
-        $original->setObjId($original_obj_id);
+        $original->setObjId($original_parent_id);
 
         $original->saveToDb();
 
@@ -1648,8 +1647,8 @@ abstract class assQuestion implements Question
         $original->clonePageOfQuestion($this->getId());
         $original = $this->cloneQuestionTypeSpecificProperties($original);
         $this->cloneXHTMLMediaObjectsOfQuestion($original->getId());
-        $this->afterSyncWithOriginal($this->getId(), $this->getOriginalId(), $this->getObjId(), $original_obj_id);
-        $this->cloneHints();
+        $this->afterSyncWithOriginal($this->getId(), $this->getOriginalId(), $this->getObjId(), $original_parent_id);
+        $this->cloneHints($this->original_id, $this->id);
     }
 
     /**
@@ -2938,6 +2937,16 @@ abstract class assQuestion implements Question
     public static function extendedTrim(string $value): string
     {
         return preg_replace(self::TRIM_PATTERN, '', $value);
+    }
+
+    public function hasWritableOriginalInQuestionPool(): bool
+    {
+        if (!is_null($this->original_id)
+            && $this->questionrepository->questionExistsInPool($this->original_id)
+            && assQuestion::instantiateQuestion($this->original_id)->isWriteable()) {
+            return true;
+        }
+        return false;
     }
 
     public function answerToParticipantInteraction(
