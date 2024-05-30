@@ -165,7 +165,7 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
         }
         parent::__construct("", $ref_id, true, false);
 
-        $this->ctrl->saveParameter($this, ['ref_id', 'test_ref_id', 'calling_test', 'test_express_mode', 'q_id']);
+        $this->ctrl->saveParameter($this, ['ref_id', 'test_ref_id', 'q_id']);
 
         $this->lng->loadLanguageModule('assessment');
 
@@ -969,7 +969,7 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
             $qid = $this->fetchAuthoringQuestionIdParameter();
 
             $question_gui = assQuestionGUI::_getQuestionGUI(
-                ilUtil::stripSlashes($this->testrequest->raw('question_type') ?? ''),
+                ilUtil::stripSlashes($this->testrequest->strVal('question_type')),
                 $qid
             );
 
@@ -990,8 +990,7 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
 
             $this->tpl->setOnScreenMessage('success', $this->lng->txt('msg_obj_modified'), true);
             $this->executeAfterQuestionSaveTasks($question_gui);
-            $this->showNextViewAfterQuestionSave($question_gui);
-
+            $this->showNextViewAfterQuestionSave($question_gui, $cmd);
         } catch (ilTestException $e) {
             $this->showQuestionsObject();
         }
