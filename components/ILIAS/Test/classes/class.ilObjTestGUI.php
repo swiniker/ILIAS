@@ -803,6 +803,8 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
                 }
                 $this->prepareSubGuiOutput();
 
+                // set return target
+                $this->ctrl->setReturnByClass(self::class, self::SHOW_QUESTIONS_CMD);
                 $question_gui = assQuestionGUI::_getQuestionGUI('', $this->fetchAuthoringQuestionIdParameter());
                 $question = $question_gui->getObject();
                 $question->setObjId($this->getTestObject()->getId());
@@ -991,7 +993,7 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
                 return;
             }
 
-            if (!in_array($cmd, ['save', 'saveReturn', 'syncQuestion', 'syncQuestionReturn'])) {
+            if (!in_array($cmd, ['save', 'saveReturn'])) {
                 $this->ctrl->forwardCommand($question_gui);
                 return;
             }
