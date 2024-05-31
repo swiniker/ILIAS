@@ -116,7 +116,7 @@ class ilObjTestGUITest extends ilTestBaseTestCase
         $ctrl_mock
             ->expects($this->once())
             ->method('redirect')
-            ->with($this->testObj, ilObjTestGUI::DEFAULT_CMD)
+            ->with($this->testObj, ilObjTestGUI::SHOW_QUESTIONS_CMD)
         ;
         $this->setGlobalVariable('ilCtrl', $ctrl_mock);
 
@@ -131,7 +131,7 @@ class ilObjTestGUITest extends ilTestBaseTestCase
         $ctrl_mock
             ->expects($this->once())
             ->method('redirect')
-            ->with($this->testObj, ilObjTestGUI::DEFAULT_CMD)
+            ->with($this->testObj, ilObjTestGUI::SHOW_QUESTIONS_CMD)
         ;
         $this->setGlobalVariable('ilCtrl', $ctrl_mock);
 
@@ -146,7 +146,7 @@ class ilObjTestGUITest extends ilTestBaseTestCase
         $ctrl_mock
             ->expects($this->once())
             ->method('redirect')
-            ->with($this->testObj, ilObjTestGUI::DEFAULT_CMD)
+            ->with($this->testObj, ilObjTestGUI::SHOW_QUESTIONS_CMD)
         ;
         $this->setGlobalVariable('ilCtrl', $ctrl_mock);
 
@@ -161,7 +161,7 @@ class ilObjTestGUITest extends ilTestBaseTestCase
         $ctrl_mock
             ->expects($this->once())
             ->method('redirect')
-            ->with($this->testObj, ilObjTestGUI::DEFAULT_CMD)
+            ->with($this->testObj, ilObjTestGUI::SHOW_QUESTIONS_CMD)
         ;
         $this->setGlobalVariable('ilCtrl', $ctrl_mock);
 
