@@ -20,7 +20,6 @@ declare(strict_types=1);
 
 use ILIAS\Test\TestDIC;
 use ILIAS\Test\RequestDataCollector;
-use ILIAS\Test\QuestionIdentifiers;
 use ILIAS\Test\Settings\MainSettings\SettingsMainGUI;
 use ILIAS\Test\Settings\ScoreReporting\SettingsScoringGUI;
 use ILIAS\Test\Scoring\Settings\Settings as SettingsScoring;
@@ -33,6 +32,7 @@ use ILIAS\Test\Logging\TestQuestionAdministrationInteractionTypes;
 use ILIAS\Test\Presentation\TestScreenGUI;
 
 use ILIAS\TestQuestionPool\Questions\GeneralQuestionPropertiesRepository;
+use ILIAS\TestQuestionPool\Import\TestQuestionsImportTrait;
 
 use ILIAS\Data\Factory as DataFactory;
 use ILIAS\UI\Factory as UIFactory;
@@ -45,10 +45,8 @@ use ILIAS\UI\Component\Input\Field\Select;
 use ILIAS\UI\Component\Input\Field\Radio;
 use ILIAS\UI\Component\Input\Field\SwitchableGroup;
 use ILIAS\GlobalScreen\Services as GlobalScreen;
-use ILIAS\GlobalScreen\Services as GlobalScreen;
 use ILIAS\Filesystem\Stream\Streams;
 use ILIAS\Filesystem\Util\Archive\Archives;
-use ILIAS\TestQuestionPool\Import\TestQuestionsImportTrait;
 use ILIAS\Skill\Service\SkillService;
 
 /**
@@ -94,6 +92,8 @@ use ILIAS\Skill\Service\SkillService;
  */
 class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDesktopItemHandling
 {
+    use TestQuestionsImportTrait;
+
     public const SHOW_QUESTIONS_CMD = 'showQuestions';
     private const SHOW_LOGS_CMD = 'history';
 
@@ -109,13 +109,12 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
     private ilTestPlayerFactory $test_player_factory;
     private ilTestSessionFactory $test_session_factory;
     private GeneralQuestionPropertiesRepository $questionrepository;
-    protected ilTestTabsManager $tabs_manager;
+    protected ?ilTestTabsManager $tabs_manager = null;
     private ilTestObjectiveOrientedContainer $objective_oriented_container;
     protected ilTestAccess $test_access;
     protected ilNavigationHistory $navigation_history;
     protected ilComponentRepository $component_repository;
     protected ilComponentFactory $component_factory;
-    private LegacyArchives $archives;
     protected ilDBInterface $db;
     protected UIFactory $ui_factory;
     protected UIRenderer $ui_renderer;
@@ -219,7 +218,7 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
             'resumePlayer', 'resumePlayer', 'outUserResultsOverview', 'outUserListOfAnswerPasses'
         ];
 
-        if (!$this->getCreationMode() && $this->getTestObject()->getOfflineStatus() && in_array($cmd, $cmds_disabled_due_to_offline_status)) {
+        if (!$this->getCreationMode() && $this->object->getOfflineStatus() && in_array($cmd, $cmds_disabled_due_to_offline_status)) {
             $cmd = 'infoScreen';
         }
 
@@ -1427,13 +1426,12 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
         list($subdir, $importdir, $xmlfile, $qtifile) = $this->buildImportDirectoriesFromImportFile($file_to_import);
 
         $new_obj = new ilObjTest(0, true);
-        $new_obj->setTitle("dummy");
-        $new_obj->setDescription("test import");
+        $new_obj->setTitle('dummy');
+        $new_obj->setDescription('test import');
         $new_obj->create(true);
         $new_obj->createReference();
         $new_obj->putInTree($this->testrequest->getRefId());
         $new_obj->setPermissions($this->testrequest->getRefId());
-        $new_obj->resetMarkSchema();
 
         $selected_questions = $this->retrieveSelectedQuestionsFromImportQuestionsSelectionForm(
             'importVerifiedFile',
@@ -2756,8 +2754,8 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
     {
         parent::setTitleAndDescription();
 
-        $icon = ilObject::_getIcon($this->getTestObject()->getId(), 'big', $this->getTestObject()->getType());
-        $this->tpl->setTitleIcon($icon, $this->lng->txt('obj_' . $this->getTestObject()->getType()));
+        $icon = ilObject::_getIcon($this->object->getId(), 'big', $this->object->getType());
+        $this->tpl->setTitleIcon($icon, $this->lng->txt('obj_' . $this->object->getType()));
     }
 
     public static function accessViolationRedirect()
