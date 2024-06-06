@@ -1050,7 +1050,7 @@ class ilNestedSetTree implements ilTreeImplementation
             $query = 'SELECT * FROM ' . $this->getTree()->getTreeTable() . ' ' .
                 $this->getTree()->buildJoin() .
                 'WHERE lft > %s ' .
-                'AND ' . self::TABLE_OBJECT_DATA . '.type = %s ' .
+                'AND lm_data.type = %s ' .
                 'AND ' . $this->getTree()->getTreeTable() . '.' . $this->getTree()->getTreePk() . ' = %s ' .
                 'ORDER BY lft ';
             $this->db->setLimit(1, 0);
@@ -1108,7 +1108,7 @@ class ilNestedSetTree implements ilTreeImplementation
             $query = 'SELECT * FROM ' . $this->getTree()->getTreeTable() . ' ' .
                 $this->getTree()->buildJoin() .
                 'WHERE lft < %s ' .
-                'AND ' . self::TABLE_OBJECT_DATA . '.type = %s ' .
+                'AND lm_data.type = %s ' .
                 'AND ' . $this->getTree()->getTreeTable() . '.' . $this->getTree()->getTreePk() . ' = %s ' .
                 'ORDER BY lft DESC';
             $this->db->setLimit(1, 0);
