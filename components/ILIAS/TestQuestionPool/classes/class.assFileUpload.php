@@ -750,7 +750,6 @@ class assFileUpload extends assQuestion implements ilObjQuestionScoringAdjustabl
     public function getQuestionType(): string
     {
         return 'assFileUpload';
-        //return QuestionIdentifiers::FILE_UPLOAD_IDENTIFIER;
     }
 
     public function getAdditionalTableName(): string
