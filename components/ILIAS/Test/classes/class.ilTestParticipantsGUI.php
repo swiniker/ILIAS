@@ -206,29 +206,27 @@ class ilTestParticipantsGUI
     {
         $table_gui = $this->buildTableGUI();
 
-        if (!$this->getQuestionSetConfig()->areDepenciesBroken()) {
-            if ($this->getTestObj()->getFixedParticipants()) {
-                $participant_list = $this->getTestObj()->getInvitedParticipantList()->getAccessFilteredList(
-                    $this->participant_access_filter->getManageParticipantsUserFilter($this->getTestObj()->getRefId())
-                );
+        if ($this->getTestObj()->getFixedParticipants()) {
+            $participant_list = $this->getTestObj()->getInvitedParticipantList()->getAccessFilteredList(
+                $this->participant_access_filter->getManageParticipantsUserFilter($this->getTestObj()->getRefId())
+            );
 
-                $table_gui->setData($this->applyFilterCriteria($participant_list->getParticipantsTableRows()));
-                $table_gui->setRowKeyDataField('usr_id');
-                $table_gui->setManageInviteesCommandsEnabled(true);
-                $table_gui->setDescription($this->lng->txt("fixed_participants_hint"));
-            } else {
-                $participant_list = $this->getTestObj()->getActiveParticipantList()->getAccessFilteredList(
-                    $this->participant_access_filter->getManageParticipantsUserFilter($this->getTestObj()->getRefId())
-                );
+            $table_gui->setData($this->applyFilterCriteria($participant_list->getParticipantsTableRows()));
+            $table_gui->setRowKeyDataField('usr_id');
+            $table_gui->setManageInviteesCommandsEnabled(true);
+            $table_gui->setDescription($this->lng->txt("fixed_participants_hint"));
+        } else {
+            $participant_list = $this->getTestObj()->getActiveParticipantList()->getAccessFilteredList(
+                $this->participant_access_filter->getManageParticipantsUserFilter($this->getTestObj()->getRefId())
+            );
 
-                $table_gui->setData($participant_list->getParticipantsTableRows());
-                $table_gui->setRowKeyDataField('active_id');
-            }
-
-            $table_gui->setManageResultsCommandsEnabled(true);
-
-            $this->initToolbarControls($participant_list);
+            $table_gui->setData($participant_list->getParticipantsTableRows());
+            $table_gui->setRowKeyDataField('active_id');
         }
+
+        $table_gui->setManageResultsCommandsEnabled(true);
+
+        $this->initToolbarControls($participant_list);
 
         $table_gui->setAnonymity($this->getTestObj()->getAnonymity());
 
@@ -349,5 +347,34 @@ class ilTestParticipantsGUI
         }
 
         $this->ctrl->redirect($this, self::CMD_SHOW);
+    }
+
+    private function addExportActionsToToolbar(): void
+    {
+        $ilToolbar->setFormName('form_output_eval');
+        $ilToolbar->setFormAction($this->ctrl->getFormAction($this, 'exportEvaluation'));
+        if ($this->getObject() && $this->getObject()->getQuestionSetType() !== ilObjTest::QUESTION_SET_TYPE_RANDOM) {
+            $options = [
+                $this->ui_factory->button()->shy($this->lng->txt('exp_grammar_as') . ' ' . $this->lng->txt('exp_type_excel') . ' (' . $this->lng->txt('exp_scored_test_run') . ')', $this->ctrl->getLinkTarget($this, 'excel_scored_test_run')),
+                $this->ui_factory->button()->shy($this->lng->txt('exp_grammar_as') . ' ' . $this->lng->txt('exp_type_excel') . ' (' . $this->lng->txt('exp_all_test_runs') . ')', $this->ctrl->getLinkTarget($this, 'excel_all_test_runs')),
+            ];
+        } else {
+            $options = [
+                $this->ui_factory->button()->shy($this->lng->txt('exp_grammar_as') . ' ' . $this->lng->txt('exp_type_excel') . ' (' . $this->lng->txt('exp_all_test_runs') . ')', $this->ctrl->getLinkTarget($this, 'excel_all_test_runs')),
+            ];
+        }
+
+        if (!$this->object->getAnonymity()) {
+            try {
+                $globalCertificatePrerequisites = new ilCertificateActiveValidator();
+                if ($globalCertificatePrerequisites->validate()) {
+                    $options[] = $this->ui_factory->button()->shy($this->lng->txt('exp_grammar_as') . ' ' . $this->lng->txt('exp_type_certificate'), $this->ctrl->getLinkTarget($this, 'exportCertificateArchive'));
+                }
+            } catch (ilException $e) {
+            }
+        }
+
+        $select = $this->ui_factory->dropdown()->standard($options)->withLabel($this->lng->txt('exp_eval_data'));
+        $ilToolbar->addComponent($select);
     }
 }

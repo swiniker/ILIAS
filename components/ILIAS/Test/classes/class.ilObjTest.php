@@ -122,8 +122,6 @@ class ilObjTest extends ilObject
      */
     private $participantDataExist = null;
 
-    protected bool $testFinalBroken = false;
-
     private ?int $tmpCopyWizardCopyId = null;
 
     private TestManScoringDoneHelper $test_man_scoring_done_helper;
@@ -472,8 +470,7 @@ class ilObjTest extends ilObject
                     'author' => ['text', $this->getAuthor()],
                     'created' => ['integer', time()],
                     'tstamp' => ['integer', time()],
-                    'template_id' => ['integer', $this->getTemplate()],
-                    'broken' => ['integer', (int) $this->isTestFinalBroken()]
+                    'template_id' => ['integer', $this->getTemplate()]
                 ]
             );
 
@@ -483,7 +480,6 @@ class ilObjTest extends ilObject
                 'tst_tests',
                 [
                     'author' => ['text', $this->getAuthor()],
-                    'broken' => ['integer', (int) $this->isTestFinalBroken()]
                 ],
                 [
                     'test_id' => ['integer', $this->getTestId()]
@@ -7761,14 +7757,6 @@ class ilObjTest extends ilObject
         $test_sequence->loadFromDb();
 
         return $test_sequence->hasSequence();
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isTestFinalBroken(): bool
-    {
-        return $this->testFinalBroken;
     }
 
     public function adjustTestSequence()

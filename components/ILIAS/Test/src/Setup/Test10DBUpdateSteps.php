@@ -281,4 +281,11 @@ class Test10DBUpdateSteps implements \ilDatabaseUpdateSteps
             $this->db->addIndex(TestLoggingDatabaseRepository::ERROR_LOG_TABLE, ['ref_id'], 'rid');
         }
     }
+
+    public function step_4(): void
+    {
+        if ($this->db->tableColumnExists('tst_tests', 'broken')) {
+            $this->db->dropTableColumn('tst_tests', 'broken');
+        }
+    }
 }
