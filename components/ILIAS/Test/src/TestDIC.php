@@ -36,6 +36,7 @@ use ILIAS\Test\Logging\TestLoggingDatabaseRepository;
 use ILIAS\Test\Logging\TestLogger;
 use ILIAS\Test\Logging\TestLogViewer;
 use ILIAS\Test\Logging\Factory as InteractionFactory;
+use ILIAS\Test\ExportImport\Factory as ExportImportFactory;
 
 use ILIAS\TestQuestionPool\Questions\GeneralQuestionPropertiesRepository;
 use ILIAS\TestQuestionPool\RequestDataCollector as QPLRequestDataCollector;
@@ -140,6 +141,16 @@ class TestDIC extends PimpleContainer
                 $DIC['tpl'],
                 $DIC['file_delivery']->delivery(),
                 $DIC['ilUser']
+            );
+
+        $dic['exportimport.factory'] = static fn($c): ExportImportFactory =>
+            new ExportImportFactory(
+                $DIC['lng'],
+                $c['logging.logger'],
+                $DIC['tree'],
+                $DIC['component.repository'],
+                $DIC['component.factory'],
+                $c['question.general_properties.repository']
             );
 
         $dic['question.general_properties.repository'] = static fn($c): GeneralQuestionPropertiesRepository =>

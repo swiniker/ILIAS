@@ -21,6 +21,7 @@ declare(strict_types=1);
 use ILIAS\UI\Factory as UIFactory;
 use ILIAS\UI\Renderer as UIRenderer;
 
+use ILIAS\Test\ExportImport\Factory as ExportImportFactory;
 use ILIAS\Test\RequestDataCollector;
 
 /**
@@ -52,6 +53,8 @@ class ilTestDashboardGUI
         protected readonly ilCtrl $ctrl,
         protected ilTabsGUI $tabs,
         protected ilToolbarGUI $toolbar,
+        protected readonly \ilComponentFactory $component_factory,
+        protected readonly ExportImportFactory $export_factory,
         protected ilTestQuestionSetConfig $question_set_config,
         protected readonly RequestDataCollector $testrequest
     ) {
@@ -132,6 +135,8 @@ class ilTestDashboardGUI
                     $this->db,
                     $this->tabs,
                     $this->toolbar,
+                    $this->component_factory,
+                    $this->export_factory,
                     $this->testrequest
                 );
                 $gui->setTestAccess($this->getTestAccess());

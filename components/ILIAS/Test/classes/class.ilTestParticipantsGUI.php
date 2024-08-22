@@ -21,6 +21,7 @@ declare(strict_types=1);
 use ILIAS\UI\Factory as UIFactory;
 use ILIAS\UI\Renderer as UIRenderer;
 
+use ILIAS\Test\ExportImport\Factory as ImportExportFactory;
 use ILIAS\Test\RequestDataCollector;
 
 /**
@@ -44,6 +45,8 @@ class ilTestParticipantsGUI
 
     public const CALLBACK_ADD_PARTICIPANT = 'addParticipants';
 
+    private const EXPORT_TYPE_PARAMETER = 'export_type';
+
     protected ilTestObjectiveOrientedContainer $objective_parent;
     protected ilTestAccess $test_access;
 
@@ -61,6 +64,8 @@ class ilTestParticipantsGUI
         protected ilDBInterface $db,
         protected ilTabsGUI $tabs,
         protected ilToolbarGUI $toolbar,
+        protected ilComponentFactory $component_factory,
+        protected ImportExportFactory $export_factory,
         protected RequestDataCollector $testrequest
     ) {
         $this->participant_access_filter = new ilTestParticipantAccessFilterFactory($access);
@@ -285,6 +290,10 @@ class ilTestParticipantsGUI
         if ($participant_list->hasUnfinishedPasses()) {
             $this->addFinishAllPassesButton($this->toolbar);
         }
+
+        if ($this->getTestObj()->evalTotalPersons() > 0) {
+            $this->addExportDropdown($this->toolbar);
+        }
     }
 
     protected function addUserSearchControls(ilToolbarGUI $toolbar): void
@@ -317,6 +326,96 @@ class ilTestParticipantsGUI
         $toolbar->addComponent($finish_all_user_passes_btn);
     }
 
+    private function addExportDropdown(ilToolbarGUI $toolbar): void
+    {
+        $toolbar->setFormName('form_output_eval');
+        $toolbar->setFormAction($this->ctrl->getFormActionByClass(self::class, 'exportEvaluation'));
+
+        if ($this->getTestObj()->getAnonymity()) {
+            $this->ctrl->setParameterByClass(self::class, self::EXPORT_TYPE_PARAMETER, 'all_test_runs_a');
+            $options = [
+                $this->ui_factory->button()->shy(
+                    $this->lng->txt('exp_scored_test_run'),
+                    $this->ctrl->getLinkTargetByClass(self::class, 'exportResults')
+                )
+            ];
+        } else {
+            $options = $this->buildOptionsForTestWithNames();
+        }
+
+        $options = $this->addPluginExportsToOptions($options);
+
+        $this->ctrl->clearParameterByClass(self::class, 'export_type');
+        $toolbar->addComponent(
+            $this->ui_factory->dropdown()->standard($options)->withLabel($this->lng->txt('exp_eval_data'))
+        );
+    }
+
+    /**
+     * @return array<\ILIAS\UI\Component\Button\Shy>
+     */
+    private function buildOptionsForTestWithNames(): array
+    {
+        $this->ctrl->setParameterByClass(self::class, self::EXPORT_TYPE_PARAMETER, 'scored_test_run');
+        $options = [
+            $this->ui_factory->button()->shy(
+                $this->lng->txt('exp_scored_test_run'),
+                $this->ctrl->getLinkTargetByClass(self::class, 'exportResults')
+            )
+        ];
+        $this->ctrl->setParameterByClass(self::class, self::EXPORT_TYPE_PARAMETER, 'all_test_runs');
+        $options[] = $this->ui_factory->button()->shy(
+            $this->lng->txt('exp_all_test_runs'),
+            $this->ctrl->getLinkTargetByClass(self::class, 'exportResults')
+        );
+        return $this->addCertificateExportToOptions($options);
+    }
+
+    /**
+     * @param array<\ILIAS\UI\Component\Button\Shy> $options
+     * @return array<\ILIAS\UI\Component\Button\Shy>
+     */
+    private function addCertificateExportToOptions(array $options): array
+    {
+        try {
+            if ((new ilCertificateActiveValidator())->validate()) {
+                $this->ctrl->setParameterByClass(self::class, self::EXPORT_TYPE_PARAMETER, 'certificate');
+                $options[] = $this->ui_factory->button()->shy(
+                    $this->lng->txt('exp_grammar_as') . ' ' . $this->lng->txt('exp_type_certificate'),
+                    $this->ctrl->getLinkTargetByClass(self::class, 'exportResults')
+                );
+            }
+        } catch (ilException $e) {
+        }
+        return $options;
+    }
+
+    /**
+     * @param array<\ILIAS\UI\Component\Button\Shy> $options
+     * @return array<\ILIAS\UI\Component\Button\Shy>
+     */
+    private function addPluginExportsToOptions(array $options): array
+    {
+        foreach ($this->component_factory->getActivePluginsInSlot('texp') as $plugin) {
+            $plugin->setTest($this->getTestObj());
+            $this->ctrl->setParameterByClass(self::class, self::EXPORT_TYPE_PARAMETER, $plugin->getFormat());
+            $options[] = $this->ui_factory->button()->shy(
+                $plugin->getFormatLabel(),
+                $this->ctrl->getLinkTargetByClass(self::class, 'exportResults')
+            );
+        }
+        return $options;
+    }
+
+    public function exportResultsCmd(): void
+    {
+        $this->export_factory->getExporter(
+            $this->getTestObj(),
+            $this->testrequest->strVal(self::EXPORT_TYPE_PARAMETER)
+        )->deliver();
+        $this->showCmd();
+    }
+
     protected function saveClientIpCmd(): void
     {
         $filter_closure = $this->participant_access_filter->getManageParticipantsUserFilter($this->getTestObj()->getRefId());
@@ -347,34 +446,5 @@ class ilTestParticipantsGUI
         }
 
         $this->ctrl->redirect($this, self::CMD_SHOW);
-    }
-
-    private function addExportActionsToToolbar(): void
-    {
-        $ilToolbar->setFormName('form_output_eval');
-        $ilToolbar->setFormAction($this->ctrl->getFormAction($this, 'exportEvaluation'));
-        if ($this->getObject() && $this->getObject()->getQuestionSetType() !== ilObjTest::QUESTION_SET_TYPE_RANDOM) {
-            $options = [
-                $this->ui_factory->button()->shy($this->lng->txt('exp_grammar_as') . ' ' . $this->lng->txt('exp_type_excel') . ' (' . $this->lng->txt('exp_scored_test_run') . ')', $this->ctrl->getLinkTarget($this, 'excel_scored_test_run')),
-                $this->ui_factory->button()->shy($this->lng->txt('exp_grammar_as') . ' ' . $this->lng->txt('exp_type_excel') . ' (' . $this->lng->txt('exp_all_test_runs') . ')', $this->ctrl->getLinkTarget($this, 'excel_all_test_runs')),
-            ];
-        } else {
-            $options = [
-                $this->ui_factory->button()->shy($this->lng->txt('exp_grammar_as') . ' ' . $this->lng->txt('exp_type_excel') . ' (' . $this->lng->txt('exp_all_test_runs') . ')', $this->ctrl->getLinkTarget($this, 'excel_all_test_runs')),
-            ];
-        }
-
-        if (!$this->object->getAnonymity()) {
-            try {
-                $globalCertificatePrerequisites = new ilCertificateActiveValidator();
-                if ($globalCertificatePrerequisites->validate()) {
-                    $options[] = $this->ui_factory->button()->shy($this->lng->txt('exp_grammar_as') . ' ' . $this->lng->txt('exp_type_certificate'), $this->ctrl->getLinkTarget($this, 'exportCertificateArchive'));
-                }
-            } catch (ilException $e) {
-            }
-        }
-
-        $select = $this->ui_factory->dropdown()->standard($options)->withLabel($this->lng->txt('exp_eval_data'));
-        $ilToolbar->addComponent($select);
     }
 }
