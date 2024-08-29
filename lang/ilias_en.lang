@@ -701,7 +701,7 @@ assessment#:#export_cert_ignored_for_users_s#:#The following account did not ach
 assessment#:#export_cert_no_users#:#A certificate archive cannot be created due to missing test participants.
 assessment#:#export_essay_qst_with_html#:#Export Essay Question with HTML code
 assessment#:#export_essay_qst_with_html_desc#:#If activated it is possible to export Essay Question with HTML to Excel.
-assessment#:#export_legacy_logs#:#Legacy Log-Daten exportieren
+assessment#:#export_legacy_logs#:#Export Legacy Log Data
 assessment#:#extratime#:#Extra Time
 assessment#:#factor#:#Factor
 assessment#:#failed_official#:#failed
