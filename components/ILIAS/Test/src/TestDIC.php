@@ -20,10 +20,8 @@ declare(strict_types=1);
 
 namespace ILIAS\Test;
 
-use Pimple\Container as PimpleContainer;
-use ILIAS\DI\Container as ILIASContainer;
-
 use ILIAS\Data\Factory as DataFactory;
+use ILIAS\Test\Utilities\TitleColumnsBuilder;
 use ILIAS\Test\TestManScoringDoneHelper;
 use ILIAS\Test\Scoring\Marks\MarksRepository;
 use ILIAS\Test\Scoring\Marks\MarksDatabaseRepository;
@@ -40,6 +38,10 @@ use ILIAS\Test\ExportImport\Factory as ExportImportFactory;
 
 use ILIAS\TestQuestionPool\Questions\GeneralQuestionPropertiesRepository;
 use ILIAS\TestQuestionPool\RequestDataCollector as QPLRequestDataCollector;
+
+use ILIAS\DI\Container as ILIASContainer;
+
+use Pimple\Container as PimpleContainer;
 
 class TestDIC extends PimpleContainer
 {
@@ -59,6 +61,16 @@ class TestDIC extends PimpleContainer
         $dic = new self();
         $dic['shuffler'] = static fn($c): \ilTestShuffler =>
             new \ilTestShuffler($DIC['refinery']);
+
+        $dic['title_columns_builder'] = static fn($c): TitleColumnsBuilder =>
+            new TitleColumnsBuilder(
+                $c['question.general_properties.repository'],
+                $DIC['ilCtrl'],
+                $DIC['ilAccess'],
+                $DIC['lng'],
+                $DIC['static_url'],
+                $DIC['ui.factory']
+            );
 
         $dic['results.factory'] = static fn($c): \ilTestResultsFactory =>
             new \ilTestResultsFactory(
@@ -129,10 +141,10 @@ class TestDIC extends PimpleContainer
             new TestLogViewer(
                 $c['logging.repository'],
                 $c['logging.logger'],
+                $c['title_columns_builder'],
                 $c['question.general_properties.repository'],
                 $DIC['http']->request(),
                 $DIC['http']->wrapper()->query(),
-                $DIC['static_url'],
                 $DIC->uiService(),
                 $DIC['ui.factory'],
                 $DIC['ui.renderer'],
