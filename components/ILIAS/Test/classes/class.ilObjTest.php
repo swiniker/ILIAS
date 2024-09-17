@@ -43,10 +43,8 @@ use ILIAS\Test\Settings\ScoreReporting\ScoreSettingsRepository;
 use ILIAS\Test\Settings\ScoreReporting\ScoreSettingsDatabaseRepository;
 use ILIAS\Test\Settings\ScoreReporting\SettingsResultSummary;
 use ILIAS\Test\Settings\ScoreReporting\ScoreSettings;
-
 use ILIAS\TestQuestionPool\Import\TestQuestionsImportTrait;
 use ILIAS\TestQuestionPool\Questions\GeneralQuestionPropertiesRepository;
-
 use ILIAS\Refinery\Factory as Refinery;
 use ILIAS\Filesystem\Filesystem;
 use ILIAS\Filesystem\Stream\Streams;
@@ -669,24 +667,22 @@ class ilObjTest extends ilObject
                 $pass = self::_getPass($active_id);
             }
             $result = $this->db->queryF(
-                "SELECT tst_test_rnd_qst.* FROM tst_test_rnd_qst, qpl_questions WHERE tst_test_rnd_qst.active_fi = %s AND qpl_questions.question_id = tst_test_rnd_qst.question_fi AND tst_test_rnd_qst.pass = %s ORDER BY sequence",
+                'SELECT tst_test_rnd_qst.* '
+                . 'FROM tst_test_rnd_qst, qpl_questions '
+                . 'WHERE tst_test_rnd_qst.active_fi = %s '
+                . 'AND qpl_questions.question_id = tst_test_rnd_qst.question_fi '
+                . 'AND tst_test_rnd_qst.pass = %s '
+                . 'ORDER BY sequence',
                 ['integer', 'integer'],
                 [$active_id, $pass]
             );
-            // The following is a fix for random tests prior to ILIAS 3.8. If someone started a random test in ILIAS < 3.8, there
-            // is only one test pass (pass = 0) in tst_test_rnd_qst while with ILIAS 3.8 there are questions for every test pass.
-            // To prevent problems with tests started in an older version and continued in ILIAS 3.8, the first pass should be taken if
-            // no questions are present for a newer pass.
-            if ($result->numRows() == 0) {
-                $result = $this->db->queryF(
-                    "SELECT tst_test_rnd_qst.* FROM tst_test_rnd_qst, qpl_questions WHERE tst_test_rnd_qst.active_fi = %s AND qpl_questions.question_id = tst_test_rnd_qst.question_fi AND tst_test_rnd_qst.pass = 0 ORDER BY sequence",
-                    ['integer'],
-                    [$active_id]
-                );
-            }
         } else {
             $result = $this->db->queryF(
-                "SELECT tst_test_question.* FROM tst_test_question, qpl_questions WHERE tst_test_question.test_fi = %s AND qpl_questions.question_id = tst_test_question.question_fi ORDER BY sequence",
+                'SELECT tst_test_question.* '
+                . 'FROM tst_test_question, qpl_questions '
+                . 'WHERE tst_test_question.test_fi = %s '
+                . 'AND qpl_questions.question_id = tst_test_question.question_fi '
+                . 'ORDER BY sequence',
                 ['integer'],
                 [$this->test_id]
             );
@@ -722,10 +718,6 @@ class ilObjTest extends ilObject
 
     /**
     * Gets the database id of the additional test data
-    *
-    * @return integer The database id of the additional test data
-    * @access public
-    * @see $test_id
     */
     public function getTestId(): int
     {
@@ -737,13 +729,6 @@ class ilObjTest extends ilObject
         return $this->getMainSettings()->getParticipantFunctionalitySettings()->getPostponedQuestionsMoveToEnd();
     }
 
-    /**
-    * Gets the score reporting of the ilObjTest object
-    *
-    * @return integer The score reporting of the test
-    * @access public
-    * @see $score_reporting
-    */
     public function getScoreReporting(): int
     {
         return $this->getScoreSettings()->getResultSummarySettings()->getScoreReporting();
@@ -804,10 +789,6 @@ class ilObjTest extends ilObject
 
     /**
     * Determines if the score of a question should be cut at 0 points or the score of the whole test
-    *
-    * @return integer The score cutting type. 0 for question cutting, 1 for test cutting
-    * @access public
-    * @see $score_cutting
     */
     public function getScoreCutting(): int
     {
@@ -816,10 +797,6 @@ class ilObjTest extends ilObject
 
     /**
     * Gets the pass scoring type
-    *
-    * @return integer The pass scoring type
-    * @access public
-    * @see $pass_scoring
     */
     public function getPassScoring(): int
     {
@@ -828,12 +805,8 @@ class ilObjTest extends ilObject
 
     /**
     * Gets the pass scoring type
-    *
-    * @return integer The pass scoring type
-    * @access public
-    * @see $pass_scoring
     */
-    public static function _getPassScoring($active_id): int
+    public static function _getPassScoring(int $active_id): int
     {
         global $DIC;
         $ilDB = $DIC['ilDB'];
@@ -851,12 +824,8 @@ class ilObjTest extends ilObject
 
     /**
     * Determines if the score of a question should be cut at 0 points or the score of the whole test
-    *
-    * @return boolean The score cutting type. 0 for question cutting, 1 for test cutting
-    * @access public
-    * @see $score_cutting
     */
-    public static function _getScoreCutting($active_id): bool
+    public static function _getScoreCutting(int $active_id): bool
     {
         global $DIC;
         $ilDB = $DIC['ilDB'];
@@ -887,13 +856,6 @@ class ilObjTest extends ilObject
         $this->mark_schema = null;
     }
 
-    /**
-    * Gets the reporting date of the ilObjTest object
-    *
-    * @return string The reporting date of the test of an empty string (=FALSE) if no reporting date is set
-    * @access public
-    * @see $reporting_date
-    */
     public function getReportingDate(): ?string
     {
         return $this->getScoreSettings()->getResultSummarySettings()->getReportingDate()?->format('YmdHis');
@@ -954,10 +916,6 @@ class ilObjTest extends ilObject
         return false;
     }
 
-    /**
-
-    * @return string The processing time for the test in some weired format (needs checking)
-    */
     public function getProcessingTime(): ?string
     {
         return $this->getMainSettings()->getTestBehaviourSettings()->getProcessingTime();
@@ -988,7 +946,7 @@ class ilObjTest extends ilObject
     * @access public
     * @see $processing_time
     */
-    public function getProcessingTimeInSeconds($active_id = ""): int
+    public function getProcessingTimeInSeconds(int $active_id = 0): int
     {
         $processing_time = $this->getMainSettings()->getTestBehaviourSettings()->getProcessingTime() ?? '';
         if (preg_match("/(\d{2}):(\d{2}):(\d{2})/", (string) $processing_time, $matches)) {
@@ -6879,7 +6837,7 @@ class ilObjTest extends ilObject
 
     public function setQuestionOrder(array $order)
     {
-        asort($orders);
+        asort($order);
 
         $i = 0;
 
@@ -6894,7 +6852,7 @@ class ilObjTest extends ilObject
 
             $this->db->manipulateF(
                 $query,
-                ['integer', 'integer', 'integer'],
+                ['integer', 'integer'],
                 [$i, $id]
             );
         }
@@ -6906,7 +6864,7 @@ class ilObjTest extends ilObject
                     $this->user->getId(),
                     TestAdministrationInteractionTypes::QUESTION_MOVED,
                     [
-                        AdditionalInformationGenerator::KEY_QUESTION_ORDER => $orders
+                        AdditionalInformationGenerator::KEY_QUESTION_ORDER => $order
                     ]
                 )
             );
@@ -7235,10 +7193,10 @@ class ilObjTest extends ilObject
         return $times;
     }
 
-    public function getExtraTime($active_id)
+    public function getExtraTime(int $active_id): int
     {
         $result = $this->db->queryF(
-            "SELECT additionaltime FROM tst_addtime WHERE active_fi = %s",
+            'SELECT additionaltime FROM tst_addtime WHERE active_fi = %s',
             ['integer'],
             [$active_id]
         );
