@@ -867,11 +867,4 @@ class assOrderingQuestionGUI extends assQuestionGUI implements ilGuiQuestionScor
 
         $this->object->setOrderingElementList($newElementList);
     }
-
-    private function addInitializationJSToTemplate(): void
-    {
-        $this->tpl->addOnLoadCode(
-            "il.test.orderinghorizontal.init(document.querySelector('#horizontal_{$this->object->getId()}'));"
-        );
-    }
 }

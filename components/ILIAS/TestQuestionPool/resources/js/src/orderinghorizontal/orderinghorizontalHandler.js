@@ -41,7 +41,7 @@ function setup() {
     (elem) => {
       elem.style.width = `${elementWidth / answers.length}px`;
       elem.style.height = `${answers.item(0).offsetHeight}px`;
-    }
+    },
   );
 }
 
@@ -73,8 +73,25 @@ function changeHandler() {
   parentElement.nextElementSibling.value = currentAnswer.join(answerSeparator);
 }
 
+function onStartAdditionalHandler(draggedElement) {
+  if (draggedElement.previousElementSibling?.classList.contains(placeholderClass)) {
+    draggedElement.previousElementSibling.remove();
+  }
+
+  if (draggedElement.nextElementSibling?.classList.contains(placeholderClass)) {
+    draggedElement.nextElementSibling.remove();
+  }
+}
+
 export default function orderingHorizontalHandler(parentElementParam, makeDraggable) {
   parentElement = parentElementParam;
   setup();
-  makeDraggable(parentElement, answerElementClass, placeholderClass, changeHandler);
+  makeDraggable(
+    'move',
+    parentElement,
+    answerElementClass,
+    placeholderClass,
+    changeHandler,
+    onStartAdditionalHandler,
+  );
 }

@@ -7,9 +7,9 @@ export default {
     'document',
     'ilias',
   ],
-  input: './orderingvertical.js',
+  input: './matching.js',
   output: {
-    file: '../../dist/orderingvertical.js',
+    file: '../../dist/matching.js',
     format: 'iife',
     banner: copyright,
     globals: {

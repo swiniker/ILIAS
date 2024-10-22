@@ -170,6 +170,31 @@ class RequestDataCollector
         return $this->intArray("category_ids");
     }
 
+    public function getMatchingPairs(): array
+    {
+        if (!$this->http->wrapper()->post()->has('matching')) {
+            return [];
+        }
+
+        return $this->http->wrapper()->post()->retrieve(
+            'matching',
+            $this->refinery->byTrying([
+                $this->refinery->container()->mapValues(
+                    $this->refinery->custom()->transformation(
+                        fn(string $v): array => $this->refinery->container()->mapValues(
+                            $this->refinery->kindlyTo()->int()
+                        )->transform(json_decode($v))
+                    )
+                ),
+                $this->refinery->always([])
+            ])
+        );
+        return array_map(
+            fn(string $v): array => json_decode($v),
+            $this->questionpool_request->retrieveArrayOfStringsFromPost('matching')
+        );
+    }
+
     /*"
      * @return array<int, string>
      */

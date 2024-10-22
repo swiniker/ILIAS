@@ -14268,16 +14268,16 @@ div.ilc_Page.readonly textarea[disabled] {
   top: 40px;
 }
 
-/* 2024-10-23 skergomard: We use fixed margins here because of interactions with content.css */
+/* 2024-10-23 skergomard: We use fixed margins from here on because of interactions with content.css */
 .c-test__dropzone {
   display: none;
   margin: 5px 10px 5px 0;
   padding: 0;
   background: #f9f9f9;
-  border: 1px dashed #dddddd;
+  border: 1px solid #dddddd;
 }
 .c-test__dropzone.c-test__dropzone--hover {
-  background: #f0f0f0;
+  background: #e2e8ef;
 }
 .c-test__dropzone.c-test__dropzone--active {
   display: block;
@@ -14289,6 +14289,25 @@ div.ilc_Page.readonly textarea[disabled] {
 
 .ilc_qordul_OrderList .c-test__dropzone {
   width: 100%;
+}
+
+.c-test__definition {
+  border: 1px solid #dddddd;
+  background-color: #f0f0f0;
+  margin: 5px 10px 5px 0;
+  padding: 3px;
+}
+
+.c-test__term {
+  border: 1px solid #dddddd;
+  background-color: #e2e8ef;
+  margin: 5px 10px 5px 0;
+  padding: 3px;
+  cursor: move;
+}
+
+.draggableDisabled {
+  background-color: #b0b0b0;
 }
 
 #tst_output {

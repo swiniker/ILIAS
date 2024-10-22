@@ -46,12 +46,12 @@ function setup() {
       if (elem.offsetHeight < elementHeight) {
         elementHeight = elem.offsetHeight;
       }
-    }
+    },
   );
   parentElement.querySelectorAll(`.${placeholderClass}`).forEach(
     (elem) => {
       elem.style.height = `${answers.item(0).offsetHeight}px`;
-    }
+    },
   );
 }
 
@@ -81,15 +81,15 @@ function updateIndentationInputs(draggedElement, target) {
   let root = target.parentElement.parentElement;
   while (root !== parentElement) {
     root = root.parentElement.parentElement;
-    i++;
+    i += 1;
   }
   draggedElement.querySelector(indentationInputQuery).value = i;
 
   draggedElement.querySelectorAll(`.${answerElementClass}`).forEach(
     (elem) => {
-      i++;
+      i += 1;
       elem.querySelector(indentationInputQuery).value = i;
-    }
+    },
   );
 }
 
@@ -98,19 +98,36 @@ function updatePositionInputs() {
   parentElement.querySelectorAll(`.${answerElementClass}`).forEach(
     (elem) => {
       elem.querySelector(positionInputQuery).value = p;
-      p++;
-    }
+      p += 1;
+    },
   );
 }
 
 function changeHandler(draggedElement, target) {
   updatePlaceholders();
   updateIndentationInputs(draggedElement, target);
-  updatePositionInputs()
+  updatePositionInputs();
+}
+
+function onStartAdditionalHandler(draggedElement) {
+  if (draggedElement.previousElementSibling?.classList.contains(placeholderClass)) {
+    draggedElement.previousElementSibling.remove();
+  }
+
+  if (draggedElement.nextElementSibling?.classList.contains(placeholderClass)) {
+    draggedElement.nextElementSibling.remove();
+  }
 }
 
 export default function orderingVerticalHandler(parentElementParam, makeDraggable) {
   parentElement = parentElementParam;
   setup();
-  makeDraggable(parentElement, answerElementClass, placeholderClass, changeHandler);
+  makeDraggable(
+    'move',
+    parentElement,
+    answerElementClass,
+    placeholderClass,
+    changeHandler,
+    onStartAdditionalHandler,
+  );
 }

@@ -4,8 +4,12 @@
 
 /* not yet refactored code from former ta.css */
 $il-test-dropzone-bg-color: $il-main-dark-bg;
-$il-test-dropzone-bg-color-hover: $il-main-darker-bg;
-$il-test-dropzone-border-color: $il-main-border-color;
+$il-test-dropzone-bg-color-hover: $il-highlight-bg;
+$il-test-dropzone-border: $il-main-border;
+$il-test-term-bg-color: $il-highlight-bg;
+$il-test-term-disabled-bg-color: $il-disabled-btn-bg;
+$il-test-definition-bg-color: $il-main-darker-bg;
+$il-test-matching-padding: $il-padding-xs-horizontal;
 
 .fullwidth_invisible {
 	background-color: transparent !important;
@@ -599,13 +603,13 @@ div.ilc_Page.readonly textarea[disabled]
 	top: 40px;
 }
 
-/* 2024-10-23 skergomard: We use fixed margins here because of interactions with content.css */
+/* 2024-10-23 skergomard: We use fixed margins from here on because of interactions with content.css */
 .c-test__dropzone {
     display: none;
     margin: 5px 10px 5px 0;
     padding: 0;
     background: $il-test-dropzone-bg-color;
-    border: 1px dashed $il-test-dropzone-border-color;
+    border: $il-test-dropzone-border;
 
     &.c-test__dropzone--hover {
         background: $il-test-dropzone-bg-color-hover;
@@ -622,4 +626,26 @@ div.ilc_Page.readonly textarea[disabled]
 
 .ilc_qordul_OrderList .c-test__dropzone {
     width: 100%;
+}
+
+.c-test__definition
+{
+    border: $il-test-dropzone-border;
+    background-color: $il-test-definition-bg-color;
+    margin: 5px 10px 5px 0;
+    padding: $il-test-matching-padding;
+}
+
+.c-test__term
+{
+    border: $il-test-dropzone-border;
+    background-color: $il-test-term-bg-color;
+    margin: 5px 10px 5px 0;
+    padding: $il-test-matching-padding;
+    cursor: move;
+}
+
+.draggableDisabled
+{
+    background-color: $il-test-term-disabled-bg-color;
 }

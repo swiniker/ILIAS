@@ -24,6 +24,11 @@ const activeClass = 'c-test__dropzone--active';
 const hoverClass = 'c-test__dropzone--hover';
 
 /**
+ * @type {String}
+ */
+let dragType;
+
+/**
  * @type {DOMElement}
  */
 let parentElement;
@@ -42,6 +47,11 @@ let placeholderClass;
  * @type {Function}
  */
 let onChangeHandler;
+
+/**
+ * @type {Function}
+ */
+let onStartPrepareHandler;
 
 /**
  * @type {DOMElement}
@@ -63,8 +73,8 @@ let currentHoverElementForTouch;
  */
 function dragstartHandler(event) {
   startMoving(event.target);
-  event.dataTransfer.dropEffect = 'move';
-  event.dataTransfer.effectAllowed = 'move';
+  event.dataTransfer.dropEffect = dragType;
+  event.dataTransfer.effectAllowed = dragType;
   event.dataTransfer.setDragImage(draggedElement, 0, 0);
 }
 
@@ -75,8 +85,8 @@ function touchstartHandler(event) {
   event.preventDefault();
   event.stopPropagation();
   startMoving(event.target.closest(`.${draggableClass}`));
-  let width = draggedElement.offsetWidth;
-  let height = draggedElement.offsetHeight;
+  const width = draggedElement.offsetWidth;
+  const height = draggedElement.offsetHeight;
   clonedElementForTouch = draggedElement.cloneNode(true);
   draggedElement.parentNode.insertBefore(clonedElementForTouch, draggedElement);
   draggedElement.style.position = 'fixed';
@@ -96,22 +106,17 @@ function startMoving(target) {
   draggedElement = target;
   draggedElement.style.opacity = 0.5;
 
-  if (draggedElement.previousElementSibling?.classList.contains(placeholderClass)) {
-    draggedElement.previousElementSibling.remove();
-  }
-
-  if (draggedElement.nextElementSibling?.classList.contains(placeholderClass)) {
-    draggedElement.nextElementSibling.remove();
-  }
+  onStartPrepareHandler(draggedElement);
 
   parentElement.querySelectorAll(`.${placeholderClass}`).forEach(
     (elem) => {
+      addPlaceholderEventListeners(elem);
       elem.classList.add(activeClass);
     },
   );
 
   draggedElement.querySelectorAll(`.${placeholderClass}`).forEach(
-    (elem) => { elem.classList.remove(activeClass); }
+    (elem) => { elem.classList.remove(activeClass); },
   );
 }
 
@@ -123,12 +128,12 @@ function touchmoveHandler(event) {
   draggedElement.style.left = `${event.touches[0].clientX - draggedElement.offsetWidth / 2}px`;
   draggedElement.style.top = `${event.touches[0].clientY - draggedElement.offsetHeight / 2}px`;
 
-  let documentElement = parentElement.ownerDocument.documentElement;
+  const { documentElement } = parentElement.ownerDocument;
   if (event.touches[0].clientY > documentElement.clientHeight * 0.8) {
     documentElement.scroll({
       left: 0,
       top: event.touches[0].pageY * 0.8,
-      behavior: 'smooth'
+      behavior: 'smooth',
     });
   }
 
@@ -136,7 +141,7 @@ function touchmoveHandler(event) {
     documentElement.scroll({
       left: 0,
       top: event.touches[0].pageY * 0.8,
-      behavior: 'smooth'
+      behavior: 'smooth',
     });
   }
 
@@ -186,7 +191,6 @@ function dragendHandler() {
     (elem) => {
       elem.classList.remove(activeClass);
       elem.classList.remove(hoverClass);
-      addPlaceholderEventListeners(elem);
     },
   );
 }
@@ -223,8 +227,24 @@ function touchendHandler(event) {
  * @returns {void}
  */
 function stopMoving(target) {
-  target.parentNode.insertBefore(draggedElement, target);
-  onChangeHandler(draggedElement, target);
+  let dropElement = draggedElement;
+  if (dragType !== 'move') {
+    dropElement = draggedElement.cloneNode(true);
+    dropElement.style.opacity = null;
+    addDragEventListeners(dropElement);
+  }
+  target.parentNode.insertBefore(dropElement, target);
+  onChangeHandler(dropElement, target, draggedElement);
+}
+
+/**
+ * @param {DOMElement} elem
+ * @returns {void}
+ */
+function addDragEventListeners(elem) {
+  elem.addEventListener('dragstart', dragstartHandler);
+  elem.addEventListener('dragend', dragendHandler);
+  elem.addEventListener('touchstart', touchstartHandler);
 }
 
 /**
@@ -251,21 +271,19 @@ function addPlaceholderEventListeners(elem) {
    * changes necessary to make the parent usecase work.
    */
 export default function makeDraggable(
+  dragTypeParam,
   parentElementParam,
   draggableClassParam,
   placeholderClassParam,
   onChangeHandlerParam,
+  onStartPrepareHandlerParam,
 ) {
+  dragType = dragTypeParam;
   parentElement = parentElementParam;
   draggableClass = draggableClassParam;
   placeholderClass = placeholderClassParam;
   onChangeHandler = onChangeHandlerParam;
-  parentElement.querySelectorAll(`.${draggableClass}`).forEach(
-    (elem) => {
-      elem.addEventListener('dragstart', dragstartHandler);
-      elem.addEventListener('dragend', dragendHandler);
-      elem.addEventListener('touchstart', touchstartHandler);
-    },
-  );
+  onStartPrepareHandler = onStartPrepareHandlerParam;
+  parentElement.querySelectorAll(`.${draggableClass}`).forEach(addDragEventListeners);
   parentElement.querySelectorAll(`.${placeholderClass}`).forEach(addPlaceholderEventListeners);
 }

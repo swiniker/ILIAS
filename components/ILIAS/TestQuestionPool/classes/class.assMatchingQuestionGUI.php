@@ -44,7 +44,7 @@ class assMatchingQuestionGUI extends assQuestionGUI implements ilGuiQuestionScor
         $this->http = $DIC['http'];
         parent::__construct();
         $this->object = new assMatchingQuestion();
-        $this->setErrorMessage($this->lng->txt("msg_form_save_error"));
+        $this->setErrorMessage($this->lng->txt('msg_form_save_error'));
         if ($id >= 0) {
             $this->object->loadFromDb($id);
         }
@@ -478,8 +478,8 @@ class assMatchingQuestionGUI extends assQuestionGUI implements ilGuiQuestionScor
         bool $show_question_text = true,
         bool $show_inline_feedback = true
     ): string {
-        $template = new ilTemplate("tpl.il_as_qpl_matching_output_solution.html", true, true, "components/ILIAS/TestQuestionPool");
-        $solutiontemplate = new ilTemplate("tpl.il_as_tst_solution_output.html", true, true, "components/ILIAS/TestQuestionPool");
+        $template = new ilTemplate('tpl.il_as_qpl_matching_output_solution.html', true, true, 'components/ILIAS/TestQuestionPool');
+        $solutiontemplate = new ilTemplate('tpl.il_as_tst_solution_output.html', true, true, 'components/ILIAS/TestQuestionPool');
 
         $solutions = [];
         if (($active_id > 0) && (!$show_correct_solution)) {
@@ -487,8 +487,8 @@ class assMatchingQuestionGUI extends assQuestionGUI implements ilGuiQuestionScor
         } else {
             foreach ($this->object->getMaximumScoringMatchingPairs() as $pair) {
                 $solutions[] = [
-                    "value1" => $pair->getTerm()->getIdentifier(),
-                    "value2" => $pair->getDefinition()->getIdentifier(),
+                    'value1' => $pair->getTerm()->getIdentifier(),
+                    'value2' => $pair->getDefinition()->getIdentifier(),
                     'points' => $pair->getPoints()
                 ];
             }
@@ -502,11 +502,11 @@ class assMatchingQuestionGUI extends assQuestionGUI implements ilGuiQuestionScor
             $points = $solution['points'];
 
             if (is_object($definition)) {
-                if (strlen($definition->getPicture())) {
-                    if (strlen($definition->getText())) {
+                if ($definition->getPicture() !== '') {
+                    if ($definition->getText() !== '') {
                         $template->setCurrentBlock('definition_image_text');
                         $template->setVariable(
-                            "TEXT_DEFINITION",
+                            'TEXT_DEFINITION',
                             ilLegacyFormElementsUtil::prepareFormOutput($definition->getText())
                         );
                         $template->parseCurrentBlock();
@@ -540,7 +540,7 @@ class assMatchingQuestionGUI extends assQuestionGUI implements ilGuiQuestionScor
                     $template->parseCurrentBlock();
                 }
             }
-            if (is_object($term)) {
+            if ($term !== null) {
                 if (strlen($term->getPicture())) {
                     if (strlen($term->getText())) {
                         $template->setCurrentBlock('term_image_text');
@@ -591,26 +591,26 @@ class assMatchingQuestionGUI extends assQuestionGUI implements ilGuiQuestionScor
                     if ($ok) {
                         $correctness_icon = $this->generateCorrectnessIconsForCorrectness(self::CORRECTNESS_OK);
                     }
-                    $template->setCurrentBlock("icon_ok");
-                    $template->setVariable("ICON_OK", $correctness_icon);
+                    $template->setCurrentBlock('icon_ok');
+                    $template->setVariable('ICON_OK', $correctness_icon);
                     $template->parseCurrentBlock();
                 }
             }
 
             if ($result_output) {
-                $resulttext = ($points == 1) ? "(%s " . $this->lng->txt("point") . ")" : "(%s " . $this->lng->txt("points") . ")";
-                $template->setCurrentBlock("result_output");
-                $template->setVariable("RESULT_OUTPUT", sprintf($resulttext, $points));
+                $resulttext = ($points == 1) ? '(%s ' . $this->lng->txt('point') . ')' : '(%s ' . $this->lng->txt('points') . ')';
+                $template->setCurrentBlock('result_output');
+                $template->setVariable('RESULT_OUTPUT', sprintf($resulttext, $points));
                 $template->parseCurrentBlock();
             }
 
-            $template->setCurrentBlock("row");
-            $template->setVariable("TEXT_MATCHES", $this->lng->txt("matches"));
+            $template->setCurrentBlock('row');
+            $template->setVariable('TEXT_MATCHES', $this->lng->txt('matches'));
             $template->parseCurrentBlock();
         }
 
         if ($show_question_text == true) {
-            $template->setVariable("QUESTIONTEXT", $this->object->getQuestionForHTMLOutput());
+            $template->setVariable('QUESTIONTEXT', $this->object->getQuestionForHTMLOutput());
         }
 
         $questionoutput = $template->get();
@@ -631,11 +631,11 @@ class assMatchingQuestionGUI extends assQuestionGUI implements ilGuiQuestionScor
                 ilAssQuestionFeedback::CSS_CLASS_FEEDBACK_CORRECT : ilAssQuestionFeedback::CSS_CLASS_FEEDBACK_WRONG
             );
 
-            $solutiontemplate->setVariable("ILC_FB_CSS_CLASS", $cssClass);
-            $solutiontemplate->setVariable("FEEDBACK", ilLegacyFormElementsUtil::prepareTextareaOutput($feedback, true));
+            $solutiontemplate->setVariable('ILC_FB_CSS_CLASS', $cssClass);
+            $solutiontemplate->setVariable('FEEDBACK', ilLegacyFormElementsUtil::prepareTextareaOutput($feedback, true));
         }
 
-        $solutiontemplate->setVariable("SOLUTION_OUTPUT", $questionoutput);
+        $solutiontemplate->setVariable('SOLUTION_OUTPUT', $questionoutput);
 
         $solutionoutput = $solutiontemplate->get();
         if (!$show_question_only) {
@@ -649,22 +649,10 @@ class assMatchingQuestionGUI extends assQuestionGUI implements ilGuiQuestionScor
         bool $show_question_only = false,
         bool $show_inline_feedback = false
     ): string {
-        $solutions = is_object($this->getPreviewSession()) ? (array) $this->getPreviewSession()->getParticipantsSolution() : [];
+        $template = new ilTemplate('tpl.il_as_qpl_matching_output.html', true, true, 'components/ILIAS/TestQuestionPool');
+        $this->initializePlayerJS();
 
-        $this->tpl->addJavaScript('assets/js/ilMatchingQuestion.js');
-        $this->tpl->addOnLoadCode('ilMatchingQuestionInit();');
-        $this->tpl->addCss(ilUtil::getStyleSheetLocation('output', 'test_javascript.css'));
-
-        $template = new ilTemplate("tpl.il_as_qpl_matching_output.html", true, true, 'components/ILIAS/TestQuestionPool');
-
-        foreach ($solutions as $defId => $terms) {
-            foreach ($terms as $termId) {
-                $template->setCurrentBlock("matching_data");
-                $template->setVariable("DEFINITION_ID", $defId);
-                $template->setVariable("TERM_ID", $termId);
-                $template->parseCurrentBlock();
-            }
-        }
+        $solutions = $this->getPreviewSession()?->getParticipantsSolution() ?? [];
 
         // shuffle output
         $terms = $this->object->getTerms();
@@ -684,79 +672,24 @@ class assMatchingQuestionGUI extends assQuestionGUI implements ilGuiQuestionScor
                 break;
         }
 
-        // create definitions
-        $counter = 0;
         foreach ($definitions as $definition) {
-            if (strlen($definition->getPicture())) {
-                $template->setCurrentBlock("definition_picture");
-                $template->setVariable("DEFINITION_ID", $definition->getIdentifier());
-                $template->setVariable("IMAGE_HREF", $this->object->getImagePathWeb() . $definition->getPicture());
-                $thumbweb = $this->object->getImagePathWeb() . $this->object->getThumbPrefix() . $definition->getPicture();
-                $thumb = $this->object->getImagePath() . $this->object->getThumbPrefix() . $definition->getPicture();
-                if (!@file_exists($thumb)) {
-                    $this->object->rebuildThumbnails();
-                }
-                $template->setVariable("THUMBNAIL_HREF", $thumbweb);
-                $template->setVariable("THUMB_ALT", $this->lng->txt("image"));
-                $template->setVariable("THUMB_TITLE", $this->lng->txt("image"));
-                $template->setVariable("TEXT_DEFINITION", (strlen($definition->getText())) ? ilLegacyFormElementsUtil::prepareTextareaOutput($definition->getText(), true, true) : '');
-                $template->setVariable("TEXT_PREVIEW", $this->lng->txt('preview'));
-                $template->setVariable("IMG_PREVIEW", ilUtil::getImagePath('media/enlarge.svg'));
-                $template->parseCurrentBlock();
-            } else {
-                $template->setCurrentBlock("definition_text");
-                $template->setVariable("DEFINITION", ilLegacyFormElementsUtil::prepareTextareaOutput($definition->getText(), true, true));
-                $template->parseCurrentBlock();
-            }
-
-            $template->setCurrentBlock("droparea");
-            $template->setVariable("ID_DROPAREA", $definition->getIdentifier());
-            $template->setVariable("QUESTION_ID", $this->object->getId());
-            $template->parseCurrentBlock();
-
-            $template->setCurrentBlock("definition_data");
-            $template->setVariable("DEFINITION_ID", $definition->getIdentifier());
+            $terms = $this->populateDefinition($template, $definition, $solutions, $terms);
+            $template->setCurrentBlock('droparea');
+            $template->setVariable('ID_DROPAREA', $definition->getIdentifier());
+            $template->setVariable('QUESTION_ID', $this->object->getId());
             $template->parseCurrentBlock();
         }
 
-        // create terms
-        $counter = 0;
-        foreach ($terms as $term) {
-            if (strlen($term->getPicture())) {
-                $template->setCurrentBlock("term_picture");
-                $template->setVariable("TERM_ID", $term->getIdentifier());
-                $template->setVariable("IMAGE_HREF", $this->object->getImagePathWeb() . $term->getPicture());
-                $thumbweb = $this->object->getImagePathWeb() . $this->object->getThumbPrefix() . $term->getPicture();
-                $thumb = $this->object->getImagePath() . $this->object->getThumbPrefix() . $term->getPicture();
-                if (!@file_exists($thumb)) {
-                    $this->object->rebuildThumbnails();
-                }
-                $template->setVariable("THUMBNAIL_HREF", $thumbweb);
-                $template->setVariable("THUMB_ALT", $this->lng->txt("image"));
-                $template->setVariable("THUMB_TITLE", $this->lng->txt("image"));
-                $template->setVariable("TEXT_PREVIEW", $this->lng->txt('preview'));
-                $template->setVariable("TEXT_TERM", (strlen($term->getText())) ? ilLegacyFormElementsUtil::prepareTextareaOutput($term->getText(), true, true) : '');
-                $template->setVariable("IMG_PREVIEW", ilUtil::getImagePath('media/enlarge.svg'));
-                $template->parseCurrentBlock();
-            } else {
-                $template->setCurrentBlock("term_text");
-                $template->setVariable("TERM_TEXT", ilLegacyFormElementsUtil::prepareTextareaOutput($term->getText(), true, true));
-                $template->parseCurrentBlock();
-            }
-            $template->setCurrentBlock("draggable");
-            $template->setVariable("ID_DRAGGABLE", $term->getIdentifier());
-            $template->parseCurrentBlock();
+        $template->setVariable(
+            'TERMS_PRESENTATION_SOURCE',
+            array_reduce(
+                $terms,
+                fn(string $c, assAnswerMatchingTerm $v) => $c . $this->buildTermHtml($v),
+                ''
+            )
+        );
 
-            $template->setCurrentBlock("term_data");
-            $template->setVariable("TERM_ID", $term->getIdentifier());
-            $template->parseCurrentBlock();
-        }
-
-        $template->setVariable('MATCHING_MODE', $this->object->getMatchingMode());
-
-        $template->setVariable("RESET_BUTTON", $this->lng->txt("reset_terms"));
-
-        $template->setVariable("QUESTIONTEXT", $this->object->getQuestionForHTMLOutput());
+        $template->setVariable('QUESTIONTEXT', $this->object->getQuestionForHTMLOutput());
 
         $questionoutput = $template->get();
 
@@ -768,38 +701,166 @@ class assMatchingQuestionGUI extends assQuestionGUI implements ilGuiQuestionScor
         return $questionoutput;
     }
 
+    private function populateDefinition(
+        ilTemplate $template,
+        assAnswerMatchingDefinition $definition,
+        array $solutions,
+        array $terms
+    ): array {
+        if ($definition->getPicture() !== '') {
+            $template->setCurrentBlock('definition_picture');
+            $template->setVariable('DEFINITION_ID', $definition->getIdentifier());
+            $template->setVariable('IMAGE_HREF', $this->object->getImagePathWeb() . $definition->getPicture());
+            $thumbweb = $this->object->getImagePathWeb() . $this->object->getThumbPrefix() . $definition->getPicture();
+            $thumb = $this->object->getImagePath() . $this->object->getThumbPrefix() . $definition->getPicture();
+            if (!@file_exists($thumb)) {
+                $this->object->rebuildThumbnails();
+            }
+            $template->setVariable('THUMBNAIL_HREF', $thumbweb);
+            $template->setVariable('THUMB_ALT', $this->lng->txt('image'));
+            $template->setVariable('THUMB_TITLE', $this->lng->txt('image'));
+            $template->setVariable('TEXT_DEFINITION', (strlen($definition->getText())) ? ilLegacyFormElementsUtil::prepareTextareaOutput($definition->getText(), true, true) : '');
+            $template->setVariable('TEXT_PREVIEW', $this->lng->txt('preview'));
+            $template->setVariable('IMG_PREVIEW', ilUtil::getImagePath('media/enlarge.svg'));
+            $template->parseCurrentBlock();
+        } else {
+            $template->setCurrentBlock('definition_text');
+            $template->setVariable('DEFINITION', ilLegacyFormElementsUtil::prepareTextareaOutput($definition->getText(), true, true));
+            $template->parseCurrentBlock();
+        }
+
+        if ($solutions === []
+            || !array_key_exists($definition->getIdentifier(), $solutions)) {
+            $template->setVariable('ASSIGNED_TERMS', json_encode([]));
+            return $terms;
+        }
+
+        return $this->populateAssignedTerms($template, $definition->getIdentifier(), $solutions[$definition->getIdentifier()], $terms);
+    }
+
     /**
-     * @param array $solution
-     * @param assAnswerMatchingDefinition[] $definitions
+     * @param array<int> $term_ids
+     */
+    private function populateAssignedTerms(
+        ilTemplate $definition_template,
+        int $definition_id,
+        array $assigned_term_ids,
+        array $available_terms
+    ): array {
+        $definition_template->setVariable('ASSIGNED_TERMS', json_encode($assigned_term_ids));
+        $definition_template->setVariable(
+            'TERMS_PRESENTATION_ASSIGNED',
+            array_reduce(
+                $assigned_term_ids,
+                function (string $c, int $v) use ($definition_id, &$available_terms) {
+                    $key = $this->getArrayKeyForTermId($v, $available_terms);
+                    if ($key === null) {
+                        return $c;
+                    }
+                    $c .= $this->buildTermHtml($available_terms[$key], $definition_id);
+                    if ($this->object->getMatchingMode() === assMatchingQuestion::MATCHING_MODE_1_ON_1) {
+                        unset($available_terms[$key]);
+                    }
+                    return $c;
+                },
+                ''
+            )
+        );
+
+        return $available_terms;
+    }
+
+    private function getArrayKeyForTermId(int $term_id, array $terms): ?int
+    {
+        foreach ($terms as $key => $term) {
+            if ($term->getIdentifier() === $term_id) {
+                return $key;
+            }
+        }
+        return null;
+    }
+
+    private function buildTermHtml(assAnswerMatchingTerm $term, int $definition_id = null): string
+    {
+        $template = new ilTemplate('tpl.il_as_qpl_matching_term_output.html', true, true, 'components/ILIAS/TestQuestionPool');
+
+        $template->setVariable('ID_DRAGGABLE', $term->getIdentifier());
+
+        if ($definition_id !== null) {
+            $template->setCurrentBlock('definition_id');
+            $template->setVariable('IID_DROPAREA', $definition_id);
+            $template->parseCurrentBlock();
+        }
+
+        if ($term->getPicture() === '') {
+            $template->setCurrentBlock('term_text');
+            $template->setVariable('TERM_TEXT', ilLegacyFormElementsUtil::prepareTextareaOutput($term->getText(), true, true));
+            $template->parseCurrentBlock();
+            return $template->get();
+        }
+
+        $template->setCurrentBlock('term_picture');
+        $template->setVariable('TERM_ID', $term->getIdentifier());
+        $template->setVariable('IMAGE_HREF', $this->object->getImagePathWeb() . $term->getPicture());
+        $thumbweb = $this->object->getImagePathWeb() . $this->object->getThumbPrefix() . $term->getPicture();
+        $thumb = $this->object->getImagePath() . $this->object->getThumbPrefix() . $term->getPicture();
+        if (!file_exists($thumb)) {
+            $this->object->rebuildThumbnails();
+        }
+        $template->setVariable('THUMBNAIL_HREF', $thumbweb);
+        $template->setVariable('THUMB_ALT', $this->lng->txt('image'));
+        $template->setVariable('THUMB_TITLE', $this->lng->txt('image'));
+        $template->setVariable('TEXT_PREVIEW', $this->lng->txt('preview'));
+        $template->setVariable('TEXT_TERM', $term->getText() !== ''
+            ? ilLegacyFormElementsUtil::prepareTextareaOutput($term->getText(), true, true)
+            : '');
+        $template->setVariable('IMG_PREVIEW', ilUtil::getImagePath('media/enlarge.svg'));
+        $template->parseCurrentBlock();
+        return $template->get();
+    }
+
+    private function buildSolutionsArray(int $active_id, array|bool $user_post_solutions): array
+    {
+        if ($active_id === 0) {
+            return [];
+        }
+        if ($user_post_solutions !== false) {
+            return $user_post_solutions['matching'];
+        }
+
+        return array_reduce(
+            $this->object->getTestOutputSolutions($active_id, $pass),
+            static function (array $c, array $v): array {
+                if (!array_key_exists($v['value2'], $c)) {
+                    $c[$v['value2']] = [$v['value1']];
+                    return $c;
+                }
+                $c[$v['value2']][] = $v['value1'];
+                return $c;
+            },
+            []
+        );
+    }
+
+    /**
+     * @param array<int, int> $solution
+     * @param array<assAnswerMatchingDefinition> $definitions
      * @return array
      */
-    protected function sortDefinitionsBySolution(array $solution, array $definitions): array
+    protected function sortDefinitionsBySolution(array $solutions, array $definitions): array
     {
         $neworder = [];
-        $handled_defintions = [];
-        foreach ($solution as $solution_values) {
-            $id = $solution_values['value2'];
-            if (!isset($handled_defintions[$id])) {
-                $neworder[] = $this->object->getDefinitionWithIdentifier($id);
-                $handled_defintions[$id] = $id;
-            }
+        foreach (array_key($solutions) as $definition_id) {
+            $neworder[] = $this->object->getDefinitionWithIdentifier($definition_id);
         }
 
         foreach ($definitions as $definition) {
-            /**
-             * @var $definition assAnswerMatchingDefinition
-             */
-            if (!isset($handled_defintions[$definition->getIdentifier()])) {
+            if (!array_key_exists($definition->getIdentifier(), $neworder)) {
                 $neworder[] = $definition;
             }
         }
 
         return $neworder;
-    }
-
-    public function getPresentationJavascripts(): array
-    {
-        return ['assets/js/ilMatchingQuestion.js'];
     }
 
     public function getTestOutput(
@@ -809,43 +870,16 @@ class assMatchingQuestionGUI extends assQuestionGUI implements ilGuiQuestionScor
         array|bool $user_post_solutions = false,
         bool $show_specific_inline_feedback = false
     ): string {
-        $this->tpl->addJavaScript('assets/js/ilMatchingQuestion.js');
-        $this->tpl->addOnLoadCode('ilMatchingQuestionInit();');
-        $this->tpl->addCss(ilUtil::getStyleSheetLocation('output', 'test_javascript.css'));
+        $template = new ilTemplate('tpl.il_as_qpl_matching_output.html', true, true, 'components/ILIAS/TestQuestionPool');
+        $this->initializePlayerJS();
 
-        $template = new ilTemplate("tpl.il_as_qpl_matching_output.html", true, true, "components/ILIAS/TestQuestionPool");
-
-        $solutions = [];
-        if ($active_id) {
-            if (is_array($user_post_solutions)) {
-                foreach ($user_post_solutions['matching'][$this->object->getId()] as $definition => $term) {
-                    array_push($solutions, ["value1" => $term, "value2" => $definition]);
-                }
-            } else {
-                // hey: prevPassSolutions - obsolete due to central check
-                $solutions = $this->object->getTestOutputSolutions($active_id, $pass);
-                // hey.
-            }
-
-            $counter = 0;
-            foreach ($solutions as $solution_value) {
-                if (($solution_value["value2"] > -1) && ($solution_value["value1"] > -1)) {
-                    $template->setCurrentBlock("matching_data");
-                    $template->setVariable("TERM_ID", $solution_value["value1"]);
-                    $template->setVariable("DEFINITION_ID", $solution_value["value2"]);
-                    $template->parseCurrentBlock();
-                }
-
-                $counter++;
-            }
-        }
-
+        $solutions = $this->buildSolutionsArray($active_id, $user_post_solutions);
         $terms = $this->object->getTerms();
         $definitions = $this->object->getDefinitions();
         switch ($this->object->getShuffleMode()) {
             case 1:
                 $terms = $this->object->getShuffler()->transform($terms);
-                if (count($solutions)) {
+                if ($solutions !== []) {
                     $definitions = $this->sortDefinitionsBySolution($solutions, $definitions);
                 } else {
                     $definitions = $this->object->getShuffler()->transform(
@@ -857,7 +891,7 @@ class assMatchingQuestionGUI extends assQuestionGUI implements ilGuiQuestionScor
                 $terms = $this->object->getShuffler()->transform($terms);
                 break;
             case 3:
-                if (count($solutions)) {
+                if ($solutions !== []) {
                     $definitions = $this->sortDefinitionsBySolution($solutions, $definitions);
                 } else {
                     $definitions = $this->object->getShuffler()->transform($definitions);
@@ -865,81 +899,24 @@ class assMatchingQuestionGUI extends assQuestionGUI implements ilGuiQuestionScor
                 break;
         }
 
-        // create definitions
-        $counter = 0;
         foreach ($definitions as $definition) {
-            if (strlen($definition->getPicture())) {
-                $template->setCurrentBlock("definition_picture");
-                $template->setVariable("DEFINITION_ID", $definition->getIdentifier());
-                $template->setVariable("IMAGE_HREF", $this->object->getImagePathWeb() . $definition->getPicture());
-                $thumbweb = $this->object->getImagePathWeb() . $this->object->getThumbPrefix() . $definition->getPicture();
-                $thumb = $this->object->getImagePath() . $this->object->getThumbPrefix() . $definition->getPicture();
-                if (!@file_exists($thumb)) {
-                    $this->object->rebuildThumbnails();
-                }
-                $template->setVariable("THUMBNAIL_HREF", $thumbweb);
-                $template->setVariable("THUMB_ALT", $this->lng->txt("image"));
-                $template->setVariable("THUMB_TITLE", $this->lng->txt("image"));
-                $template->setVariable("TEXT_DEFINITION", (strlen($definition->getText())) ? ilLegacyFormElementsUtil::prepareTextareaOutput($definition->getText(), true, true) : '');
-                $template->setVariable("TEXT_PREVIEW", $this->lng->txt('preview'));
-                $template->setVariable("IMG_PREVIEW", ilUtil::getImagePath('media/enlarge.svg'));
-                $template->parseCurrentBlock();
-            } else {
-                $template->setCurrentBlock("definition_text");
-                $template->setVariable("DEFINITION", ilLegacyFormElementsUtil::prepareTextareaOutput($definition->getText(), true, true));
-                $template->parseCurrentBlock();
-            }
-
-            $template->setCurrentBlock("droparea");
-            $template->setVariable("ID_DROPAREA", $definition->getIdentifier());
-            $template->setVariable("QUESTION_ID", $this->object->getId());
-            $template->parseCurrentBlock();
-
-            $template->setCurrentBlock("definition_data");
-            $template->setVariable("DEFINITION_ID", $definition->getIdentifier());
+            $terms = $this->populateDefinition($definition, $solutions, $terms);
+            $template->setCurrentBlock('droparea');
+            $template->setVariable('ID_DROPAREA', $definition->getIdentifier());
+            $template->setVariable('QUESTION_ID', $this->object->getId());
             $template->parseCurrentBlock();
         }
 
-        // create terms
-        $counter = 0;
         foreach ($terms as $term) {
-            if (strlen($term->getPicture())) {
-                $template->setCurrentBlock("term_picture");
-                $template->setVariable("TERM_ID", $term->getIdentifier());
-                $template->setVariable("IMAGE_HREF", $this->object->getImagePathWeb() . $term->getPicture());
-                $thumbweb = $this->object->getImagePathWeb() . $this->object->getThumbPrefix() . $term->getPicture();
-                $thumb = $this->object->getImagePath() . $this->object->getThumbPrefix() . $term->getPicture();
-                if (!@file_exists($thumb)) {
-                    $this->object->rebuildThumbnails();
-                }
-                $template->setVariable("THUMBNAIL_HREF", $thumbweb);
-                $template->setVariable("THUMB_ALT", $this->lng->txt("image"));
-                $template->setVariable("THUMB_TITLE", $this->lng->txt("image"));
-                $template->setVariable("TEXT_PREVIEW", $this->lng->txt('preview'));
-                $template->setVariable("TEXT_TERM", (strlen($term->getText())) ? ilLegacyFormElementsUtil::prepareTextareaOutput($term->getText(), true, true) : '');
-                $template->setVariable("IMG_PREVIEW", ilUtil::getImagePath('media/enlarge.svg'));
-                $template->parseCurrentBlock();
-            } else {
-                $template->setCurrentBlock("term_text");
-                $template->setVariable("TERM_TEXT", ilLegacyFormElementsUtil::prepareTextareaOutput($term->getText(), true, true));
-                $template->parseCurrentBlock();
-            }
-            $template->setCurrentBlock("draggable");
-            $template->setVariable("ID_DRAGGABLE", $term->getIdentifier());
-            $template->parseCurrentBlock();
-
-            $template->setCurrentBlock('term_data');
-            $template->setVariable('TERM_ID', $term->getIdentifier());
+            $this->populateTerm($term);
+            $template->setCurrentBlock('draggable');
+            $template->setVariable('ID_DRAGGABLE', $term->getIdentifier());
             $template->parseCurrentBlock();
         }
 
-        $template->setVariable('MATCHING_MODE', $this->object->getMatchingMode());
+        $template->setVariable('QUESTIONTEXT', $this->object->getQuestionForHTMLOutput());
 
-        $template->setVariable("RESET_BUTTON", $this->lng->txt("reset_terms"));
-
-        $template->setVariable("QUESTIONTEXT", $this->object->getQuestionForHTMLOutput());
-
-        return $this->outQuestionPage("", $is_question_postponed, $active_id, $template->get());
+        return $this->outQuestionPage('', $is_question_postponed, $active_id, $template->get());
     }
 
     /**
@@ -947,7 +924,9 @@ class assMatchingQuestionGUI extends assQuestionGUI implements ilGuiQuestionScor
     */
     public function checkInput(): bool
     {
-        if ((!$_POST["title"]) or (!$_POST["author"]) or (!$_POST["question"])) {
+        if ($this->request->string('title') === ''
+            || $this->request->string('title') === ''
+            || $this->request->string('title') === 'question') {
             return false;
         }
         return true;
@@ -981,9 +960,8 @@ class assMatchingQuestionGUI extends assQuestionGUI implements ilGuiQuestionScor
                 0,
                 $idx
             );
-            $feedback .= '<tr><td>"' . $ans->getDefinition()->getText() . '"&nbsp;' . $this->lng->txt("matches") . '&nbsp;"';
-            $feedback .= $ans->getTerm()->getText() . '"</td><td>';
-            $feedback .= $fb . '</td> </tr>';
+            $feedback .= "<tr><td>\"{$ans->getDefinition()->getText()}\" {$this->lng->txt('matches')} ";
+            $feedback .= "\"{$ans->getTerm()->getText()}\"</td><td>{$fb}</td></tr>";
         }
 
         $feedback .= '</tbody></table>';
@@ -1171,5 +1149,15 @@ class assMatchingQuestionGUI extends assQuestionGUI implements ilGuiQuestionScor
 
             $this->object = $this->object->withMatchingPairs($nu_pairs);
         }
+    }
+
+    private function initializePlayerJS(): void
+    {
+        $this->tpl->addJavaScript('assets/js/matching.js');
+        $this->tpl->addOnLoadCode(
+            'il.test.matching.init('
+            . "document.querySelector('#ilMatchingQuestionContainer_{$this->object->getId()}'),"
+            . "'{$this->object->getMatchingMode()}');"
+        );
     }
 }
