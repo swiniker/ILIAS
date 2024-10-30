@@ -440,9 +440,15 @@ class Administration
 
     public function externalSettingsMessage(bool $enabled): Component
     {
-        return $this->ui->create()->messageBox()->info(
+        $message_box = $this->ui->create()->messageBox()->info(
             $this->ui->txt('withdrawal_usr_deletion') . ': ' . $this->ui->txt($enabled ? 'enabled' : 'disabled')
-        )->withLinks([
+        );
+
+        if (!$this->canWriteUserAdministration()) {
+            return $message_box;
+        }
+
+        return $message_box->withLinks([
             $this->ui->create()->link()->standard(
                 $this->ui->txt('adm_external_setting_edit'),
                 $this->willLinkWith(ilObjUserFolderGUI::class, ['ref_id' => (string) USER_FOLDER_ID])('generalSettings')
@@ -463,6 +469,11 @@ class Administration
     public function canReadUserAdministration(): bool
     {
         return $this->container->rbac()->system()->checkAccess('read', USER_FOLDER_ID);
+    }
+
+    private function canWriteUserAdministration(): bool
+    {
+        return $this->container->rbac()->system()->checkAccess('write', USER_FOLDER_ID);
     }
 
     private function addTab(string $id, string $text, string $link, bool $can_access = true): void
