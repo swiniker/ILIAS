@@ -271,10 +271,11 @@ class ilPCQuestion extends ilPageContent
         $js_files = array();
 
         if ($this->getPage()->getPageConfig()->getEnableSelfAssessment()) {
-            $js_files[] = "./components/ILIAS/Scorm2004/scripts/questions/pure.js";
-            $js_files[] = "./components/ILIAS/Scorm2004/scripts/questions/question_handling.js";
-            $js_files[] = 'components/ILIAS/TestQuestionPool/js/ilAssMultipleChoice.js';
-            $js_files[] = "components/ILIAS/TestQuestionPool/js/ilMatchingQuestion.js";
+            $js_files[] = 'assets/js/pure_rendering.js';
+            $js_files[] = 'assets/js/question_handling.js';
+            $js_files[] = 'assets/js/matchinginput.js';
+            $js_files[] = 'assets/js/orderinghorizontal.js';
+            $js_files[] = 'assets/js/orderingvertical.js';
 
             foreach ($this->getQuestionIds() as $qId) {
                 $qstGui = assQuestionGUI::_getQuestionGUI('', $qId);
@@ -293,7 +294,7 @@ class ilPCQuestion extends ilPageContent
     public function getCssFiles(string $a_mode): array
     {
         if ($this->getPage()->getPageConfig()->getEnableSelfAssessment()) {
-            return array("./components/ILIAS/Scorm2004/templates/default/question_handling.css",
+            return array("./components/ILIAS/TestQuestionPool/resources/js/dist/question_handling.css",
                 "components/ILIAS/TestQuestionPool/templates/default/test_javascript.css");
         }
         return array();
