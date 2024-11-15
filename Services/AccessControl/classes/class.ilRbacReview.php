@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This file is part of ILIAS, a powerful learning management system
  * published by ILIAS open source e-Learning e.V.
@@ -16,8 +14,9 @@ declare(strict_types=1);
  * https://www.ilias.de
  * https://github.com/ILIAS-eLearning
  *
- ********************************************************************
- */
+ *********************************************************************/
+
+declare(strict_types=1);
 
 /**
  * class ilRbacReview
@@ -167,7 +166,20 @@ class ilRbacReview
         bool $a_internal_roles = false,
         string $title_filter = ''
     ): array {
-        $role_list = [];
+        return iterator_to_array(
+            $this->getAssignableRolesGenerator(
+                $a_templates,
+                $a_internal_roles,
+                $title_filter
+            )
+        );
+    }
+
+    private function getAssignableRolesGenerator(
+        bool $a_templates = false,
+        bool $a_internal_roles = false,
+        string $title_filter = ''
+    ): Generator {
         $where = $this->__setTemplateFilter($a_templates);
         $query = "SELECT * FROM object_data " .
             "JOIN rbac_fa ON obj_id = rol_id " .
@@ -189,9 +201,8 @@ class ilRbacReview
             $row["user_id"] = (int) $row["owner"];
             $row['obj_id'] = (int) $row['obj_id'];
             $row['parent'] = (int) $row['parent'];
-            $role_list[] = $row;
+            yield $this->setRoleTypeAndProtection($row);
         }
-        return $this->__setRoleType($role_list);
     }
 
     /**
@@ -267,28 +278,41 @@ class ilRbacReview
     protected function __setRoleType(array $a_role_list): array
     {
         foreach ($a_role_list as $key => $val) {
-            // determine role type
-            if ($val["type"] == "rolt") {
-                $a_role_list[$key]["role_type"] = "template";
-            } else {
-                if ($val["assign"] == "y") {
-                    if ($val["parent"] == ROLE_FOLDER_ID) {
-                        $a_role_list[$key]["role_type"] = "global";
-                    } else {
-                        $a_role_list[$key]["role_type"] = "local";
-                    }
-                } else {
-                    $a_role_list[$key]["role_type"] = "linked";
-                }
-            }
-
-            if ($val["protected"] == "y") {
-                $a_role_list[$key]["protected"] = true;
-            } else {
-                $a_role_list[$key]["protected"] = false;
-            }
+            $a_role_list[$key] = $this->setRoleTypeAndProtection($val);
         }
         return $a_role_list;
+    }
+
+    private function setRoleTypeAndProtection(array $role_list_entry): array
+    {
+        $role_list_entry['role_type'] = $this->buildRoleType($role_list_entry);
+        $role_list_entry['protected'] = $this->buildProtectionByStringValue($role_list_entry['protected']);
+        return $role_list_entry;
+    }
+
+    private function buildRoleType(array $role_list_entry): string
+    {
+        if ($role_list_entry['type'] === 'rolt') {
+            return 'template';
+        }
+
+        if ($role_list_entry['assign'] !== 'y') {
+            return 'linked';
+        }
+
+        if ($role_list_entry['parent'] === ROLE_FOLDER_ID) {
+            return 'global';
+        }
+
+        return 'local';
+    }
+
+    private function buildProtectionByStringValue(string $value): bool
+    {
+        if ($value === 'y') {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -813,15 +837,16 @@ class ilRbacReview
         return in_array($a_role_id, $this->getGlobalRoles());
     }
 
-    public function getRolesByFilter(int $a_filter = 0, int $a_user_id = 0, string $title_filter = ''): array
+    public function getRolesByFilter(int $a_filter = 0, int $a_user_id = 0, string $title_filter = ''): Generator
     {
         $assign = "y";
         switch ($a_filter) {
             // all (assignable) roles
             case self::FILTER_ALL:
-                return $this->getAssignableRoles(true, true, $title_filter);
+                yield from $this->getAssignableRolesGenerator(true, true, $title_filter);
 
                 // all (assignable) global roles
+                // no break
             case self::FILTER_ALL_GLOBAL:
                 $where = 'WHERE ' . $this->db->in('rbac_fa.rol_id', $this->getGlobalRoles(), false, 'integer') . ' ';
                 break;
@@ -853,8 +878,6 @@ class ilRbacReview
                 ) . ' ';
                 break;
         }
-
-        $roles = [];
 
         $query = "SELECT * FROM object_data " .
             "JOIN rbac_fa ON obj_id = rol_id " .
@@ -890,9 +913,9 @@ class ilRbacReview
             $row['obj_id'] = (int) $row['obj_id'];
             $row['rol_id'] = (int) $row['rol_id'];
             $row['parent'] = (int) $row['parent'];
-            $roles[] = $row;
+
+            yield $this->setRoleTypeAndProtection($row);
         }
-        return $this->__setRoleType($roles);
     }
 
     public function getTypeId(string $a_type): int
