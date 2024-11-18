@@ -28,6 +28,7 @@ declare(strict_types=1);
  * @author  Sascha Hofmann <saschahofmann@gmx.de>
  * @version $Id$
  * @ingroup ServicesAccessControl
+ * @phpstan-type RoleListEntry array{obj_id: int, rol_id: int, parent: int, user_id: int, owner: int, title: ?string, desc: string, description: string, create_date: ?string, last_update: ?string, import_id: ?string, tile_image_rid: ?string, role_type: string, offline: ?int, type: string, assign: string, protected: bool, blocked: int, rol_id: int}
  */
 class ilRbacReview
 {
@@ -133,6 +134,7 @@ class ilRbacReview
 
     /**
      * Returns a list of roles in an container
+     * @return list<RoleListEntry>
      */
     public function getRoleListByObject(int $a_ref_id, bool $a_templates = false): array
     {
@@ -160,6 +162,7 @@ class ilRbacReview
 
     /**
      * Returns a list of all assignable roles
+     * @return list<RoleListEntry>
      */
     public function getAssignableRoles(
         bool $a_templates = false,
@@ -175,6 +178,9 @@ class ilRbacReview
         );
     }
 
+    /**
+     * @return Generator<RoleListEntry>
+     */
     private function getAssignableRolesGenerator(
         bool $a_templates = false,
         bool $a_internal_roles = false,
@@ -837,6 +843,9 @@ class ilRbacReview
         return in_array($a_role_id, $this->getGlobalRoles());
     }
 
+    /**
+     * @return Generator<RoleListEntry>
+     */
     public function getRolesByFilter(int $a_filter = 0, int $a_user_id = 0, string $title_filter = ''): Generator
     {
         $assign = "y";
