@@ -19,7 +19,6 @@
 declare(strict_types=1);
 
 use ILIAS\GlobalScreen\Scope\Layout\Factory\FooterModification;
-use ILIAS\GlobalScreen\Scope\Layout\Factory\LogoModification;
 use ILIAS\GlobalScreen\Scope\Layout\Factory\MainBarModification;
 use ILIAS\GlobalScreen\Scope\Layout\Factory\MetaBarModification;
 use ILIAS\GlobalScreen\Scope\Layout\Factory\TitleModification;
@@ -29,11 +28,9 @@ use ILIAS\GlobalScreen\Scope\Layout\Provider\AbstractModificationProvider;
 use ILIAS\GlobalScreen\Scope\Layout\Provider\ModificationProvider;
 use ILIAS\GlobalScreen\ScreenContext\Stack\CalledContexts;
 use ILIAS\GlobalScreen\ScreenContext\Stack\ContextCollection;
-
 use ILIAS\UI\Component\MainControls\MetaBar;
 use ILIAS\UI\Component\MainControls\MainBar;
 use ILIAS\UI\Component\MainControls\Footer;
-use ILIAS\UI\Component\Image\Image;
 
 /**
  * Class TestPlayerLayoutProvider

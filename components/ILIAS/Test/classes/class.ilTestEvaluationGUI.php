@@ -19,9 +19,12 @@
 declare(strict_types=1);
 
 use ILIAS\Test\Results\Presentation\TitlesBuilder as ResultsTitlesBuilder;
-use ILIAS\UI\Implementation\Component\ViewControl\Mode as ViewControlMode;
-use ILIAS\Filesystem\Stream\Streams;
+use ILIAS\Test\Presentation\PrintLayoutProvider;
+use ILIAS\UI\Component\ViewControl\Mode as ViewControlMode;
+use ILIAS\UI\Component\Link\Standard as StandardLink;
+use ILIAS\UI\Component\Panel\Sub as SubPanel;
 use ILIAS\UI\Component\Signal;
+use ILIAS\Filesystem\Stream\Streams;
 
 /**
  * Output class for assessment test evaluation
@@ -100,7 +103,7 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
      *
      * @return int question or original id
      **/
-    public function getEvaluationQuestionId($question_id, $original_id = "")
+    public function getEvaluationQuestionId($question_id, $original_id = '')
     {
         if ($original_id > 0) {
             return $original_id;
@@ -111,131 +114,101 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
 
     protected function setCss(): void
     {
-        $this->tpl->addCss(ilUtil::getStyleSheetLocation("output", "test_print.css"), "print");
+        $this->tpl->addCss(ilUtil::getStyleSheetLocation('output', 'test_print.css'), 'print');
         if ($this->object->getShowSolutionAnswersOnly()) {
-            $this->tpl->addCss(ilUtil::getStyleSheetLocation("output", "test_print_hide_content.css"), "print");
+            $this->tpl->addCss(ilUtil::getStyleSheetLocation('output', 'test_print_hide_content.css'), 'print');
         }
         $this->tpl->addCss(ilObjStyleSheet::getContentStylePath(0));
     }
 
-    public function showResults()
+    public function printResults(): void
     {
-        $selected_users = explode(',', $this->testrequest->strVal('active_ids'));
         $this->ctrl->saveParameterByClass(self::class, 'active_ids');
+        $this->global_screen->tool()->context()->current()->addAdditionalData(
+            PrintLayoutProvider::TEST_CONTEXT_PRINT,
+            true
+        );
+
+        $selected_active_ids = explode(',', $this->testrequest->strVal('active_ids'));
+        $results_panel = $this->ui_factory->panel()->report(
+            $this->lng->txt('tst_results'),
+            array_map(
+                function (int $v): SubPanel {
+                    $attempt_id = ilObjTest::_getResultPass($v);
+                    $components = $this->buildAttemptComponents($v, $attempt_id, false, true);
+                    return $this->ui_factory->panel()->sub(
+                        $this->buildResultsTitle(
+                            ilObjUser::_lookupFullname($this->object->_getUserIdFromActiveId($v)),
+                            $attempt_id
+                        ),
+                        $components
+                    );
+                },
+                $selected_active_ids
+            )
+        );
+
+        $this->tpl->setVariable(
+            'ADM_CONTENT',
+            $this->ui_renderer->render([
+                $results_panel,
+                $this->ui_factory->legacy('')->withAdditionalOnLoadCode(
+                    fn(string $id): string => 'setTimeout(() => {window.print();}, 50)'
+                )
+            ])
+        );
+    }
+
+    public function showResults(): void
+    {
+        $this->ctrl->saveParameterByClass(self::class, 'active_ids');
+        $selected_active_ids = explode(',', $this->testrequest->strVal('active_ids'));
 
         $this->addPrintButtonToToolbar();
         $this->addToggleBestSolutionButtonToToolbar();
 
-        $test_overview = $this->ui_factory->card()->standard($this->lng->txt('overview'))->withSections([
-            $this->results_data_factory->getOverviewDataForTest($this->object)
-                ->getAsDescriptiveListing(
-                    $this->lng,
-                    $this->ui_factory
-                )
-        ]);
+        $current_active_id = (int) $selected_active_ids[0];
+        if (count($selected_active_ids) > 1
+            && ($selected_active_id = $this->testrequest->getActiveId()) > 0
+            && array_search($selected_active_id, $selected_active_ids) !== false) {
+            $current_active_id = $selected_active_id;
+        }
 
-        $settings = $this->results_presentation_factory->getAttemptResultsSettings(
-            $this->object,
-            false
+        if ($this->testrequest->isset('attempt')) {
+            $attempt_id = $this->testrequest->int('attempt');
+        } else {
+            $attempt_id = ilObjTest::_getResultPass($current_active_id);
+        }
+
+        $results_panel = $this->ui_factory->panel()->report(
+            $this->buildResultsTitle(
+                ilObjUser::_lookupFullname($this->object->_getUserIdFromActiveId($current_active_id)),
+                $attempt_id
+            ),
+            $this->buildAttemptComponents($current_active_id, $attempt_id, true, false)
         );
 
-        $content = [];
-        $anchors = [];
-        $expand_singals = [];
-        $collapse_signals = [];
-        foreach ($selected_users as $selected_user) {
-            $active_id = (int) $selected_user;
+        $attempts_ids_array = $this->results_data_factory->getAttemptIdsArrayFor(
+            $this->object,
+            $current_active_id
+        );
 
-            if ($this->testrequest->isset('attempt')) {
-                $attempt_id = $this->testrequest->int('attempt');
-            } else {
-                $attempt_id = ilObjTest::_getResultPass($active_id);
-            }
-
-            $attempt_overview = $this->ui_factory->panel()->sub(
-                $this->lng->txt('question_summary'),
-                $this->results_data_factory->getAttemptOverviewFor(
-                    $settings,
-                    $this->object,
-                    $active_id,
-                    $attempt_id
-                )->getAsDescriptiveListing(
-                    $this->lng,
-                    $this->ui_factory,
-                    [
-                        'timezone' => new DateTimeZone($this->user->getTimeZone()),
-                        'datetimeformat' => $this->user->getDateTimeFormat()->toString()
-                    ]
+        if (count($attempts_ids_array) > 1) {
+            $results_panel->withViewControls([
+                $this->buildAttemptSwitchingViewControl(
+                    $attempts_ids_array,
+                    ++$attempt_id
                 )
-            );
-
-            if ($test_overview !== null) {
-                $attempt_overview = $attempt_overview->withFurtherInformation($test_overview);
-                $test_overview = null;
-            }
-
-            $presentation_table = $this->results_presentation_factory->getAttemptResultsPresentationTable(
-                $this->results_data_factory->getAttemptResultsFor(
-                    $settings,
-                    $this->object,
-                    $active_id,
-                    $attempt_id,
-                    false
-                ),
-                $settings
-            )->getTableComponent();
-            $attempt_details = $this->ui_factory->panel()->sub(
-                $this->lng->txt('details'),
-                $presentation_table
-            );
-
-            $fullname = ilObjUser::_lookupFullname($this->object->_getUserIdFromActiveId($active_id));
-
-            if (count($selected_users) === 1) {
-                $content[] = $this->ui_factory->panel()->standard(
-                    $this->buildResultsTitle($fullname, $attempt_id),
-                    [
-                        $attempt_overview,
-                        $attempt_details
-                    ]
-                )->withViewControls([
-                    $this->buildAttemptSwitchingViewControl(
-                        $this->results_data_factory->getAttemptIdsArrayFor(
-                            $this->object,
-                            $active_id
-                        ),
-                        ++$attempt_id
-                    )
-                ]);
-            } else {
-                $anchors[] = $this->ui_factory->link()->standard(
-                    $fullname,
-                    '#participant_active_' . $active_id
-                );
-                $expand_singals[] = $presentation_table->getExpandAllSignal();
-                $collapse_signals[] = $presentation_table->getCollapseAllSignal();
-                $content[] = $this->ui_factory->panel()->sub(
-                    $this->buildResultsTitle($fullname, $attempt_id),
-                    [
-                         $this->ui_factory->legacy('<a name="participant_active_' . $active_id . '"></a>'),
-                         $attempt_overview,
-                         $attempt_details
-                     ]
-                );
-            }
+            ]);
         }
-        if (count($selected_users) > 1) {
-            $this->addParticipantSelectorToToolbar($anchors);
-            $this->addExpandCollapseButtonsToToolbar($expand_singals, $collapse_signals);
-            $content = $this->ui_factory->panel()->report(
-                $this->lng->txt('tst_results'),
-                $content
-            );
+
+        if (count($selected_active_ids) > 1) {
+            $this->addParticipantSelectorToToolbar($selected_active_ids, $current_active_id);
         }
 
         $this->tpl->setVariable(
             'ADM_CONTENT',
-            $this->ui_renderer->render($content)
+            $this->ui_renderer->render($results_panel)
         );
 
         $this->tabs->setBackTarget(
@@ -258,8 +231,8 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
         $active_id = $test_session->getActiveId();
         $user_id = $test_session->getUserId();
 
-        $this->ctrl->saveParameter($this, "pass");
-        $pass = $this->testrequest->int("pass");
+        $this->ctrl->saveParameter($this, 'pass');
+        $pass = $this->testrequest->int('pass');
 
         $test_result_header_label_builder = new ResultsTitlesBuilder($this->lng, $this->obj_cache);
 
@@ -292,14 +265,12 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
             $test_result_header_label_builder->initObjectiveOrientedMode();
         }
 
-        $result_array = $this->getFilteredTestResult($active_id, $pass, $consider_hidden_questions, $consider_optional_questions);
-
-        $command_solution_details = "";
+        $command_solution_details = '';
         if ($this->object->getShowSolutionListComparison()) {
-            $command_solution_details = "outCorrectSolution";
+            $command_solution_details = 'outCorrectSolution';
         }
 
-        $tpl = new ilTemplate('tpl.il_as_tst_pass_details_overview_participants.html', true, true, "components/ILIAS/Test");
+        $tpl = new ilTemplate('tpl.il_as_tst_pass_details_overview_participants.html', true, true, 'components/ILIAS/Test');
 
         $this->addPrintButtonToToolbar();
 
@@ -308,7 +279,7 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
         }
 
         $tpl->setCurrentBlock('signature');
-        $tpl->setVariable("SIGNATURE", $this->getResultsSignature());
+        $tpl->setVariable('SIGNATURE', $this->getResultsSignature());
         $tpl->parseCurrentBlock();
 
         if ($this->object->isShowExamIdInTestResultsEnabled()) {
@@ -332,14 +303,14 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
         $reached = $data->getParticipant($active_id)->getPass($pass)->getReachedPoints();
         $max = $data->getParticipant($active_id)->getPass($pass)->getMaxPoints();
         $percent = $max ? $reached / $max * 100.0 : 0;
-        $result = $data->getParticipant($active_id)->getPass($pass)->getReachedPoints() . " " . strtolower($this->lng->txt("of")) . " " . $data->getParticipant($active_id)->getPass($pass)->getMaxPoints() . " (" . sprintf("%2.2f", $percent) . " %" . ")";
+        $result = $data->getParticipant($active_id)->getPass($pass)->getReachedPoints() . ' ' . strtolower($this->lng->txt('of')) . ' ' . $data->getParticipant($active_id)->getPass($pass)->getMaxPoints() . ' (' . sprintf('%2.2f', $percent) . ' %' . ')';
         $tpl->setCurrentBlock('total_score');
-        $tpl->setVariable("TOTAL_RESULT_TEXT", $this->lng->txt('tst_stat_result_resultspoints'));
-        $tpl->setVariable("TOTAL_RESULT", $result);
+        $tpl->setVariable('TOTAL_RESULT_TEXT', $this->lng->txt('tst_stat_result_resultspoints'));
+        $tpl->setVariable('TOTAL_RESULT', $result);
         $tpl->parseCurrentBlock();
 
-        $tpl->setVariable("TEXT_RESULTS", $test_result_header_label_builder->getPassDetailsHeaderLabel($pass + 1));
-        $tpl->setVariable("FORMACTION", $this->ctrl->getFormAction($this));
+        $tpl->setVariable('TEXT_RESULTS', $test_result_header_label_builder->getPassDetailsHeaderLabel($pass + 1));
+        $tpl->setVariable('FORMACTION', $this->ctrl->getFormAction($this));
 
         $this->populateExamId($tpl, $active_id, (int) $pass);
         $this->populatePassFinishDate($tpl, ilObjTest::lookupLastTestPassAccess($active_id, $pass));
@@ -359,10 +330,11 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
                 true
             ),
             $settings,
-            $this->buildResultsTitle($this->user->getFullname(), $pass)
+            $this->buildResultsTitle($this->user->getFullname(), $pass),
+            false
         );
 
-        $tpl->setVariable("LIST_OF_ANSWERS", $table->render());
+        $tpl->setVariable('LIST_OF_ANSWERS', $table->render());
 
         $this->tpl->addCss(ilObjStyleSheet::getContentStylePath(0));
 
@@ -382,8 +354,8 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
             $this->ctrl->redirectByClass([ilRepositoryGUI::class, ilObjTestGUI::class, ilInfoScreenGUI::class]);
         }
 
-        $templatehead = new ilTemplate('tpl.il_as_tst_results_participants.html', true, true, "components/ILIAS/Test");
-        $template = new ilTemplate('tpl.il_as_tst_results_participant.html', true, true, "components/ILIAS/Test");
+        $templatehead = new ilTemplate('tpl.il_as_tst_results_participants.html', true, true, 'components/ILIAS/Test');
+        $template = new ilTemplate('tpl.il_as_tst_results_participant.html', true, true, 'components/ILIAS/Test');
 
         $this->addPrintButtonToToolbar();
 
@@ -429,7 +401,7 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
             );
             $lo_status->setCrsObjId($this->getObjectiveOrientedContainer()->getObjId());
             $lo_status->setUsrId($test_session->getUserId());
-            $overview .= "<br />" . $lo_status->getHTML();
+            $overview .= '<br />' . $lo_status->getHTML();
         }
         $template->setVariable('PASS_OVERVIEW', $overview);
         $template->parseCurrentBlock();
@@ -444,15 +416,15 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
 
         if (!$this->getObjectiveOrientedContainer()->isObjectiveOrientedPresentationRequired()) {
             if ($this->object->getAnonymity()) {
-                $template->setVariable("TEXT_HEADING", $this->lng->txt("tst_result"));
+                $template->setVariable('TEXT_HEADING', $this->lng->txt('tst_result'));
             } else {
-                $template->setVariable("TEXT_HEADING", sprintf($this->lng->txt("tst_result_user_name"), $uname));
-                $template->setVariable("USER_DATA", $user_data);
+                $template->setVariable('TEXT_HEADING', sprintf($this->lng->txt('tst_result_user_name'), $uname));
+                $template->setVariable('USER_DATA', $user_data);
             }
         }
 
         $this->setCss();
-        $templatehead->setVariable("RESULTS_PARTICIPANT", $template->get());
+        $templatehead->setVariable('RESULTS_PARTICIPANT', $template->get());
         $this->tpl->setContent($templatehead->get());
     }
 
@@ -463,7 +435,7 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
             $this->ctrl->redirectByClass([ilRepositoryGUI::class, ilObjTestGUI::class, ilInfoScreenGUI::class]);
         }
 
-        $template = new ilTemplate('tpl.il_as_tst_info_list_of_answers.html', true, true, "components/ILIAS/Test");
+        $template = new ilTemplate('tpl.il_as_tst_info_list_of_answers.html', true, true, 'components/ILIAS/Test');
 
         $user_id = $this->user->getId();
 
@@ -588,7 +560,7 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
         }
 
         $confirm = new ilTestPassDeletionConfirmationGUI($this->ctrl, $this->lng, $this);
-        $confirm->build((int) $this->testrequest->raw("active_id"), (int) $this->testrequest->raw("pass"), $context);
+        $confirm->build($this->testrequest->getActiveId('active_id'), $this->testrequest->int('pass'), $context);
 
         $this->tpl->setContent($this->ctrl->getHTML($confirm));
     }
@@ -911,22 +883,102 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
     {
         if ($this->object->getAnonymity()) {
             return sprintf(
-                $this->lng->txt("tst_eval_results_by_pass_lo"),
+                $this->lng->txt('tst_eval_results_by_pass_lo'),
                 $pass + 1
             );
         }
         return sprintf(
-            $this->lng->txt("tst_result_user_name_pass"),
+            $this->lng->txt('tst_result_user_name_pass'),
             $pass + 1,
             $fullname
         );
     }
 
+    private function buildAttemptComponents(
+        int $active_id,
+        int $attempt_id,
+        bool $with_test_results_overview,
+        bool $for_print
+    ): array {
+        $settings = $this->results_presentation_factory->getAttemptResultsSettings(
+            $this->object,
+            false
+        );
+        $attempt_overview = $this->ui_factory->panel()->sub(
+            $this->lng->txt('question_summary'),
+            $this->results_data_factory->getAttemptOverviewFor(
+                $settings,
+                $this->object,
+                $active_id,
+                $attempt_id
+            )->getAsDescriptiveListing(
+                $this->lng,
+                $this->ui_factory,
+                [
+                    'timezone' => new DateTimeZone($this->user->getTimeZone()),
+                    'datetimeformat' => $this->user->getDateTimeFormat()->toString()
+                ]
+            )
+        );
+
+        if ($with_test_results_overview) {
+            $attempt_overview = $attempt_overview->withFurtherInformation(
+                $this->ui_factory->card()->standard($this->lng->txt('overview'))->withSections([
+                    $this->results_data_factory->getOverviewDataForTest($this->object)
+                        ->getAsDescriptiveListing(
+                            $this->lng,
+                            $this->ui_factory
+                        )
+                ])
+            );
+        }
+
+        $results_presentation_table = $this->results_presentation_factory->getAttemptResultsPresentationTable(
+            $this->results_data_factory->getAttemptResultsFor(
+                $settings,
+                $this->object,
+                $active_id,
+                $attempt_id,
+                false
+            ),
+            $settings,
+            '',
+            $for_print
+        )->getTableComponent();
+
+        if ($for_print) {
+            $signal = $results_presentation_table->getExpandAllSignal();
+            $results_presentation_table = [
+                $results_presentation_table,
+                $this->ui_factory->legacy('')->withAdditionalOnLoadCode(
+                    fn(string $id): string => "$(document).trigger('{$signal->getId()}',"
+                        . '{"options" : ' . json_encode($signal->getOptions()) . '}); '
+                )
+            ];
+        }
+
+
+
+        $attempt_details = $this->ui_factory->panel()->sub(
+            $this->lng->txt('details'),
+            $results_presentation_table
+        );
+
+        return [$attempt_overview, $attempt_details];
+    }
+
     private function addPrintButtonToToolbar(): void
     {
+        $link = $this->ctrl->getLinkTargetByClass(self::class, 'printResults');
         $this->toolbar->addComponent(
-            $this->ui_factory->button()->standard($this->lng->txt('print'), '')
-                ->withOnLoadCode(fn($id) => "$('#$id').on('click', ()=>{window.print();})")
+            $this->ui_factory->button()->standard(
+                $this->lng->txt('print'),
+                ''
+            )->withOnLoadCode(
+                fn($id): string => "document.getElementById('{$id}').addEventListener('click', "
+                    . "(e) => {window.open('{$link}');}"
+                    . ');'
+            )
         );
     }
 
@@ -967,40 +1019,38 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
         $this->ctrl->clearParameters($this, 'show_best_solutions');
     }
 
-    private function addExpandCollapseButtonsToToolbar(
-        array $expand_signals,
-        array $collapse_signals
+    private function addParticipantSelectorToToolbar(
+        array $selected_active_ids,
+        int $current_active_id
     ): void {
         $this->toolbar->addSeparator();
-
         $this->toolbar->addComponent(
-            $this->ui_factory->button()->standard($this->lng->txt('presentation_table_expand'), '')
-                ->withAdditionalOnLoadCode(
-                    fn($id): string => "document.getElementById('{$id}').addEventListener('click', "
-                    . '(e) => {' . $this->buildExpandCollapseSignalString($expand_signals) . '}'
-                    . ');'
-                )
-        );
-
-        $this->toolbar->addComponent(
-            $this->ui_factory->button()->standard($this->lng->txt('presentation_table_collapse'), '')
-                ->withAdditionalOnLoadCode(
-                    fn($id): string => "document.getElementById('{$id}').addEventListener('click', "
-                    . '(e) => {' . $this->buildExpandCollapseSignalString($collapse_signals) . '}'
-                    . ');'
-                )
+            $this->ui_factory->dropdown()
+                ->standard(
+                    $this->buildParticipantSelectorArray($selected_active_ids, $current_active_id)
+                )->withLabel($this->lng->txt('tst_res_jump_to_participant_hint_opt'))
         );
     }
 
-    private function addParticipantSelectorToToolbar(array $selector_entries): void
-    {
-        $this->toolbar->addSeparator();
-
-        $this->toolbar->addComponent(
-            $this->ui_factory->dropdown()
-                ->standard($selector_entries)
-                ->withLabel($this->lng->txt('tst_res_jump_to_participant_hint_opt'))
+    private function buildParticipantSelectorArray(
+        array $selected_active_ids,
+        int $current_active_id
+    ): array {
+        $this->ctrl->setParameterByClass(self::class, 'active_ids', implode(',', $selected_active_ids));
+        unset($selected_active_ids[array_search($current_active_id, $selected_active_ids)]);
+        $available_user_links = array_map(
+            function (int $v): StandardLink {
+                $this->ctrl->setParameterByClass(self::class, 'active_id', $v);
+                return $this->ui_factory->link()->standard(
+                    ilObjUser::_lookupFullname($this->object->_getUserIdFromActiveId($v)),
+                    $this->ctrl->getLinkTargetByClass(self::class, 'showResults')
+                );
+            },
+            $selected_active_ids
         );
+        $this->ctrl->clearParameterByClass(self::class, 'active_id');
+        $this->ctrl->clearParameterByClass(self::class, 'active_ids');
+        return $available_user_links;
     }
 
     private function addAttemptSwitchingViewControlToToolbar(
@@ -1035,15 +1085,5 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
             ),
             $this->lng->txt('select_attempt')
         )->withActive("{$this->lng->txt('tst_attempt')} {$selected_attempt}");
-    }
-
-    private function buildExpandCollapseSignalString(array $signals): string
-    {
-        return array_reduce(
-            $signals,
-            fn(string $c, Signal $v) => "{$c}$(document).trigger('{$v->getId()}',"
-                . '{"options" : ' . json_encode($v->getOptions()) . '}); ',
-            ''
-        );
     }
 }

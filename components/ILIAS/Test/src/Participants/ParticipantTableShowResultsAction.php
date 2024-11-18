@@ -81,6 +81,9 @@ class ParticipantTableShowResultsAction implements TableAction
         array $selected_participants,
         bool $all_participants_selected
     ): ?Modal {
+        if ($selected_participants === []) {
+            return null;
+        }
         foreach ($selected_participants as $participant) {
             if (!$this->test_access->checkResultsAccessForActiveId(
                 $participant->getActiveId(),

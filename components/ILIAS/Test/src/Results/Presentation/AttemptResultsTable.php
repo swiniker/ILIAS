@@ -22,7 +22,7 @@ namespace ILIAS\Test\Results\Presentation;
 
 use ILIAS\Test\Results\Data\AttemptResult;
 use ILIAS\Test\Results\Data\QuestionResult;
-use ILIAS\UI\Implementation\Component\Table\Presentation as PresentationTable;
+use ILIAS\UI\Component\Table\Presentation as PresentationTable;
 use ILIAS\UI\URLBuilder;
 use ILIAS\UI\Factory as UIFactory;
 use ILIAS\UI\Renderer as UIRenderer;
@@ -54,8 +54,9 @@ class AttemptResultsTable
         DataFactory $data_factory,
         Language $lng,
         private AttemptResult $test_results,
-        private Settings $settings,
-        string $title
+        Settings $settings,
+        string $title,
+        bool $for_print
     ) {
         list($mode, $sortation) = $this->getViewControlsParameter();
         $results = $this->applyControls($mode, $sortation, $test_results->getQuestionResults());
@@ -63,7 +64,7 @@ class AttemptResultsTable
 
         $this->table = $ui_factory->table()->presentation(
             $title,
-            $this->getViewControls($ui_factory, $lng, $target, $mode, $sortation),
+            $for_print ? [] : $this->getViewControls($ui_factory, $lng, $target, $mode, $sortation),
             $this->getMapping()
         )
         ->withEnvironment([

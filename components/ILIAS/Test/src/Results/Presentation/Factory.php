@@ -46,7 +46,8 @@ class Factory
     public function getAttemptResultsPresentationTable(
         AttemptResult $attempt_result,
         Settings $settings,
-        string $title = ''
+        string $title,
+        bool $for_print
     ): AttemptResultsTable {
         return new AttemptResultsTable(
             $this->ui_factory,
@@ -57,7 +58,8 @@ class Factory
             $this->lng,
             $attempt_result,
             $settings,
-            $title
+            $title,
+            $for_print
         );
     }
 
