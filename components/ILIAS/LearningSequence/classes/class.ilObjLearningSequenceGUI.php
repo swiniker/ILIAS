@@ -108,7 +108,6 @@ class ilObjLearningSequenceGUI extends ilContainerGUI implements ilCtrlBaseClass
     public const ACCESS_VISIBLE = 'visible';
     protected \ILIAS\Style\Content\Service $content_style;
 
-    protected string $obj_type;
     protected ilNavigationHistory $navigation_history;
     protected ilObjectService $obj_service;
     protected ilRbacReview $rbac_review;
@@ -198,7 +197,7 @@ class ilObjLearningSequenceGUI extends ilContainerGUI implements ilCtrlBaseClass
 
     public function __construct()
     {
-        $this->obj_type = ilObjLearningSequence::OBJ_TYPE;
+        $this->type = ilObjLearningSequence::OBJ_TYPE;
 
         global $DIC;
         $this->ctrl = $DIC['ilCtrl'];
@@ -226,8 +225,8 @@ class ilObjLearningSequenceGUI extends ilContainerGUI implements ilCtrlBaseClass
         $this->refinery = $DIC->refinery();
         $this->content_style = $DIC->contentStyle();
 
-        $this->help->setScreenIdComponent($this->obj_type);
-        $this->lng->loadLanguageModule($this->obj_type);
+        $this->help->setScreenIdComponent($this->type);
+        $this->lng->loadLanguageModule($this->type);
 
         $this->data_factory = new Data\Factory();
 
@@ -488,8 +487,8 @@ class ilObjLearningSequenceGUI extends ilContainerGUI implements ilCtrlBaseClass
             !$this->getCreationMode() &&
             $this->access->checkAccess('read', '', $this->ref_id)
         ) {
-            $link = ilLink::_getLink($this->ref_id, $this->obj_type);
-            $this->navigation_history->addItem($this->ref_id, $link, $this->obj_type);
+            $link = ilLink::_getLink($this->ref_id, $this->type);
+            $this->navigation_history->addItem($this->ref_id, $link, $this->type);
         }
     }
 
