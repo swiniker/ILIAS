@@ -338,6 +338,8 @@ class ilFileInputGUI extends ilSubEnabledFormPropertyGUI implements ilToolbarIte
             );
         }
 
+        $f_tpl->setVariable('MAX_SIZE_WARNING', $this->lng->txt('form_msg_file_size_exceeds'));
+        $f_tpl->setVariable('MAX_SIZE', $this->getMaxFileSizeInt());
         $f_tpl->setVariable("POST_VAR", $this->getPostVar());
         $f_tpl->setVariable("ID", $this->getFieldId());
         $f_tpl->setVariable("SIZE", $this->getSize());
@@ -383,6 +385,12 @@ class ilFileInputGUI extends ilSubEnabledFormPropertyGUI implements ilToolbarIte
 
     protected function getMaxFileSizeString(): string
     {
+        //format for display in mega-bytes
+        return sprintf("%.1f MB", $this->getMaxFileSizeInt() / 1024 / 1024);
+    }
+
+    protected function getMaxFileSizeInt(): int
+    {
         // get the value for the maximal uploadable filesize from the php.ini (if available)
         $umf = ini_get("upload_max_filesize");
         // get the value for the maximal post data from the php.ini (if available)
@@ -407,9 +415,6 @@ class ilFileInputGUI extends ilSubEnabledFormPropertyGUI implements ilToolbarIte
         if (!$max_filesize) {
             $max_filesize = max($umf, $pms);
         }
-
-        //format for display in mega-bytes
-        $max_filesize = sprintf("%.1f MB", $max_filesize / 1024 / 1024);
 
         return $max_filesize;
     }

@@ -51,8 +51,24 @@ il.Form = {
     // trigger event on fileselect
     $(document).on('change', `${selectorPrefix}.btn-file :file`, function () {
       const input = $(this);
+      const dt = new DataTransfer();
+      let label = '';
+
+      input.parents('.input-group').next().addClass('help-block').removeClass('ui-input-file-input-error-msg');
+      input.get(0).files.forEach(
+        (item) => {
+          if (item.size <= input.attr('data-maxsize')) {
+            dt.items.add(item);
+          } else {
+            label = input.attr('data-maxsize-warning');
+            input.parents('.input-group').next().removeClass('help-block').addClass('ui-input-file-input-error-msg');
+          }
+        }
+      );
+      input.get(0).files = dt.files;
+
       const numFiles = input.get(0).files ? input.get(0).files.length : 1;
-      const label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+      label += input.val().replace(/\\/g, '/').replace(/.*\//, '');
       input.trigger('fileselect', [numFiles, label]);
     });
 
