@@ -138,12 +138,15 @@ class ilUsersGalleryGUI
                 $this->ui_factory->messageBox()->info(
                     $this->lng->txt('no_gallery_users_available')
                 )
-            )
+            ),
+            JSON_THROW_ON_ERROR
         );
         $onload_js = <<<JS
-    let stateChangedListener = (event, usr_id, is_state, was_state) => {
-        if (is_state === 'ilBuddySystemUnlinkedRelationState') {
-            document.querySelector('.il-deck [data-buddy-id="' + usr_id + '"]').closest('.il-card').parentElement.remove();
+    let stateChangedListener = (event) => {
+      const {buddyId, newState, oldState} = event.detail;
+  
+        if (newState === 'ilBuddySystemUnlinkedRelationState') {
+            document.querySelector('.il-deck [data-buddy-id="' + buddyId + '"]').closest('.il-card').parentElement.remove();
             if (document.querySelectorAll('.il-card.thumbnail').length === 0) {
                 document.querySelector('.il-deck').innerHTML = {$message};
             }
@@ -151,7 +154,7 @@ class ilUsersGalleryGUI
         return true;
     };
 
-    $(window).on('il.bs.stateChange.afterStateChangePerformed', stateChangedListener);
+    document.addEventListener('il.bs.stateChange.afterStateChangePerformed', stateChangedListener);
 JS;
         $this->tpl->addOnLoadCode($onload_js);
     }
