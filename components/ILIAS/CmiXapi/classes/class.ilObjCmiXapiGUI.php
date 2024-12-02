@@ -166,34 +166,57 @@ class ilObjCmiXapiGUI extends ilObject2GUI
         return $form;
     }
 
-    protected function afterSave(ilObject $newObject): void
+    public function saveObject(): void
     {
-        /* @var ilObjCmiXapi $newObject */
-        $form = $this->initCreateForm($newObject->getType());
+        // create permission is already checked in createObject. This check here is done to prevent hacking attempts
+        if (!$this->checkPermissionBool("create", "", $this->requested_new_type)) {
+            $this->error->raiseError($this->lng->txt("no_create_permission"), $this->error->MESSAGE);
+        }
 
+        $this->lng->loadLanguageModule($this->requested_new_type);
+        $this->ctrl->setParameter($this, "new_type", $this->requested_new_type);
+
+        $form = $this->initCreateForm($this->requested_new_type);
         if ($form->checkInput()) {
-            $newObject->setContentType($form->getInput('content_type'));
+            $this->ctrl->setParameter($this, "new_type", "");
 
-            $newObject->setLrsTypeId((int) $form->getInput('lrs_type_id'));
-            $newObject->initLrsType();
+            $class_name = "ilObj" . $this->obj_definition->getClassName($this->requested_new_type);
+            $new_obj = new $class_name();
+            $new_obj->setType($this->requested_new_type);
+            $new_obj->setTitle($form->getInput("title"));
+            $new_obj->setDescription($form->getInput("desc"));
+            $new_obj->processAutoRating();
+            $new_obj->create();
 
-            $newObject->setPrivacyIdent($newObject->getLrsType()->getPrivacyIdent());
-            $newObject->setPrivacyName($newObject->getLrsType()->getPrivacyName());
+            $this->putObjectInTree($new_obj);
+
+            $dtpl = $this->getDidacticTemplateVar("dtpl");
+            if ($dtpl) {
+                $new_obj->applyDidacticTemplate($dtpl);
+            }
+
+            $new_obj->setContentType($form->getInput('content_type'));
+
+            $new_obj->setLrsTypeId((int) $form->getInput('lrs_type_id'));
+            $new_obj->initLrsType();
+
+            $new_obj->setPrivacyIdent($new_obj->getLrsType()->getPrivacyIdent());
+            $new_obj->setPrivacyName($new_obj->getLrsType()->getPrivacyName());
 
             switch ($form->getInput('source_type')) {
                 case 'resource': // remote resource
 
-                    $newObject->setTitle($form->getInput('title'));
-                    $newObject->setSourceType(ilObjCmiXapi::SRC_TYPE_REMOTE);
+                    $new_obj->setTitle($form->getInput('title'));
+                    $new_obj->setSourceType(ilObjCmiXapi::SRC_TYPE_REMOTE);
                     break;
 
                 case 'upload': // upload from local client
 
                     try {
-                        $uploadImporter = new ilCmiXapiContentUploadImporter($newObject);
+                        $uploadImporter = new ilCmiXapiContentUploadImporter($new_obj);
                         $uploadImporter->importFormUpload((array) $form->getInput('uploadfile'));
 
-                        $newObject->setSourceType(ilObjCmiXapi::SRC_TYPE_LOCAL);
+                        $new_obj->setSourceType(ilObjCmiXapi::SRC_TYPE_LOCAL);
                     } catch (ilCmiXapiInvalidUploadContentException $e) {
                         $form->getItemByPostVar('uploadfile')->setAlert($e->getMessage());
                         $this->tpl->setOnScreenMessage('failure', 'something went wrong!', true);
@@ -214,32 +237,33 @@ class ilObjCmiXapiGUI extends ilObject2GUI
                         throw new ilCmiXapiException($this->lng->txt('upload_error_file_not_found'));
                     }
 
-                    $uploadImporter = new ilCmiXapiContentUploadImporter($newObject);
+                    $uploadImporter = new ilCmiXapiContentUploadImporter($new_obj);
 
                     $uploadImporter->importServerFile(implode(DIRECTORY_SEPARATOR, [
                         ilUploadFiles::_getUploadDirectory(),
                         $serverFile
                     ]));
 
-                    $newObject->setSourceType(ilObjCmiXapi::SRC_TYPE_LOCAL);
+                    $new_obj->setSourceType(ilObjCmiXapi::SRC_TYPE_LOCAL);
 
                     break;
 
                 case 'external':
 
-                    $newObject->setSourceType(ilObjCmiXapi::SRC_TYPE_EXTERNAL);
-                    $newObject->setBypassProxyEnabled(true);
+                    $new_obj->setSourceType(ilObjCmiXapi::SRC_TYPE_EXTERNAL);
+                    $new_obj->setBypassProxyEnabled(true);
                     break;
             }
 
-            $newObject->save();
+            $new_obj->save();
 
-            $this->initMetadata($newObject);
+            $this->initMetadata($new_obj);
 
             $this->ctrl->redirectByClass(ilCmiXapiSettingsGUI::class);
         }
 
-        throw new ilCmiXapiException('invalid creation form submit!');
+        $form->setValuesByPost();
+        $this->tpl->setContent($form->getHTML());
     }
 
     public function initMetadata(ilObjCmiXapi $object): void
