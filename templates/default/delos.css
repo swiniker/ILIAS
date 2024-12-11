@@ -14386,6 +14386,10 @@ div.ilc_Page.readonly textarea[disabled] {
   cursor: move;
 }
 
+.c-test__term .ilc_qimg_QuestionImage, .dd-item .ilc_qimg_QuestionImage {
+  pointer-events: none;
+}
+
 .draggableDisabled {
   background-color: #b0b0b0;
 }

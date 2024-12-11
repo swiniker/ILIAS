@@ -628,21 +628,25 @@ div.ilc_Page.readonly textarea[disabled]
     width: 100%;
 }
 
-.c-test__definition
-{
+.c-test__definition {
     border: $il-test-dropzone-border;
     background-color: $il-test-definition-bg-color;
     margin: 5px 10px 5px 0;
     padding: $il-test-matching-padding;
 }
 
-.c-test__term
-{
+.c-test__term {
     border: $il-test-dropzone-border;
     background-color: $il-test-term-bg-color;
     margin: 5px 10px 5px 0;
     padding: $il-test-matching-padding;
     cursor: move;
+}
+
+.c-test__term, .dd-item {
+    .ilc_qimg_QuestionImage {
+        pointer-events: none;
+    }
 }
 
 .draggableDisabled
