@@ -162,6 +162,8 @@ class ilImageFileInputGUI extends ilFileInputGUI
             $i_tpl->parseCurrentBlock();
         }
 
+        $i_tpl->setVariable('MAX_SIZE_WARNING', $this->lng->txt('form_msg_file_size_exceeds'));
+        $i_tpl->setVariable('MAX_SIZE', $this->upload_limit->getPhpUploadLimitInBytes());
         $i_tpl->setVariable("POST_VAR", $this->getPostVar());
         $i_tpl->setVariable("ID", $this->getFieldId());
 

@@ -19,6 +19,8 @@
 declare(strict_types=1);
 
 use ILIAS\FileUpload\Exception\IllegalStateException;
+use ILIAS\FileUpload\FileUpload;
+use ILIAS\UI\Implementation\Component\Input\UploadLimitResolver;
 
 /**
  * This class represents a file property in a property form.
@@ -36,7 +38,8 @@ class ilFileInputGUI extends ilSubEnabledFormPropertyGUI implements ilToolbarIte
     protected array $forbidden_suffixes = [];
     protected array $suffixes = [];
     protected string $value = "";
-    protected \ILIAS\FileUpload\FileUpload $upload_service;
+    protected FileUpload $upload_service;
+    protected UploadLimitResolver $upload_limit;
 
     public function __construct(
         string $a_title = "",
@@ -47,6 +50,7 @@ class ilFileInputGUI extends ilSubEnabledFormPropertyGUI implements ilToolbarIte
         $this->lng = $DIC->language();
         $lng = $DIC->language();
         $this->upload_service = $DIC->upload();
+        $this->upload_limit = $DIC['ui.upload_limit_resolver'];
 
         parent::__construct($a_title, $a_postvar);
         $this->setType("file");
@@ -339,7 +343,7 @@ class ilFileInputGUI extends ilSubEnabledFormPropertyGUI implements ilToolbarIte
         }
 
         $f_tpl->setVariable('MAX_SIZE_WARNING', $this->lng->txt('form_msg_file_size_exceeds'));
-        $f_tpl->setVariable('MAX_SIZE', $this->getMaxFileSizeInt());
+        $f_tpl->setVariable('MAX_SIZE', $this->upload_limit->getPhpUploadLimitInBytes());
         $f_tpl->setVariable("POST_VAR", $this->getPostVar());
         $f_tpl->setVariable("ID", $this->getFieldId());
         $f_tpl->setVariable("SIZE", $this->getSize());
@@ -386,37 +390,7 @@ class ilFileInputGUI extends ilSubEnabledFormPropertyGUI implements ilToolbarIte
     protected function getMaxFileSizeString(): string
     {
         //format for display in mega-bytes
-        return sprintf("%.1f MB", $this->getMaxFileSizeInt() / 1024 / 1024);
-    }
-
-    protected function getMaxFileSizeInt(): int
-    {
-        // get the value for the maximal uploadable filesize from the php.ini (if available)
-        $umf = ini_get("upload_max_filesize");
-        // get the value for the maximal post data from the php.ini (if available)
-        $pms = ini_get("post_max_size");
-
-        //convert from short-string representation to "real" bytes
-        $multiplier_a = array("K" => 1024, "M" => 1024 * 1024, "G" => 1024 * 1024 * 1024);
-
-        $umf_parts = preg_split("/(\d+)([K|G|M])/", $umf, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-        $pms_parts = preg_split("/(\d+)([K|G|M])/", $pms, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-
-        if (count($umf_parts) == 2) {
-            $umf = $umf_parts[0] * $multiplier_a[$umf_parts[1]];
-        }
-        if (count($pms_parts) == 2) {
-            $pms = $pms_parts[0] * $multiplier_a[$pms_parts[1]];
-        }
-
-        // use the smaller one as limit
-        $max_filesize = min($umf, $pms);
-
-        if (!$max_filesize) {
-            $max_filesize = max($umf, $pms);
-        }
-
-        return $max_filesize;
+        return sprintf("%.1f MB", $this->upload_limit->getPhpUploadLimitInBytes() / 1024 / 1024);
     }
 
     /**

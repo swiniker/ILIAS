@@ -16,10 +16,10 @@
  *
  *********************************************************************/
 
-use ILIAS\TestQuestionPool\QuestionPoolDIC;
 use ILIAS\TestQuestionPool\ilTestLegacyFormsHelper;
 use ILIAS\UI\Renderer;
 use ILIAS\UI\Component\Symbol\Glyph\Factory as GlyphFactory;
+use ILIAS\UI\Implementation\Component\Input\UploadLimitResolver;
 
 /**
  * This class represents a single choice wizard property in a property form.
@@ -44,17 +44,18 @@ class ilMatchingWizardInputGUI extends ilTextInputGUI
     protected ilTestLegacyFormsHelper $forms_helper;
     protected GlyphFactory $glyph_factory;
     protected Renderer $renderer;
+    protected UploadLimitResolver $upload_limit;
 
     public function __construct($a_title = "", $a_postvar = "")
     {
         parent::__construct($a_title, $a_postvar);
 
         global $DIC;
-        $local_dic = QuestionPoolDIC::dic();
 
         $this->forms_helper = new ilTestLegacyFormsHelper();
         $this->glyph_factory = $DIC->ui()->factory()->symbol()->glyph();
         $this->renderer = $DIC->ui()->renderer();
+        $this->upload_limit = $DIC['ui.upload_limit_resolver'];
 
         $this->setSuffixes(["jpg", "jpeg", "png", "gif"]);
         $this->setSize('40');
@@ -300,6 +301,8 @@ class ilMatchingWizardInputGUI extends ilTextInputGUI
                 $tpl->setCurrentBlock('addimage');
                 $tpl->setVariable("IMAGE_BROWSE", $lng->txt('select_file'));
                 $tpl->setVariable("IMAGE_ID", $this->getPostVar() . "[image][$i]");
+                $tpl->setVariable('MAX_SIZE_WARNING', $this->lng->txt('form_msg_file_size_exceeds'));
+                $tpl->setVariable('MAX_SIZE', $this->upload_limit->getPhpUploadLimitInBytes());
                 $tpl->setVariable("IMAGE_SUBMIT", $lng->txt("upload"));
                 $tpl->setVariable("IMAGE_ROW_NUMBER", $i);
                 $tpl->setVariable("IMAGE_POST_VAR", $this->getPostVar());

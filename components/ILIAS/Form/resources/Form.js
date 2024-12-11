@@ -49,7 +49,7 @@ il.Form = {
     // see http://www.abeautifulsite.net/whipping-file-inputs-into-shape-with-bootstrap-3/
 
     // trigger event on fileselect
-    $(document).on('change', `${selectorPrefix}.btn-file :file`, function () {
+    $(document).on('change', `${selectorPrefix}.btn-file :file`, function (e) {
       const input = $(this);
       const dt = new DataTransfer();
       let label = '';
@@ -62,6 +62,7 @@ il.Form = {
           } else {
             label = input.attr('data-maxsize-warning');
             input.parents('.input-group').next().removeClass('help-block').addClass('ui-input-file-input-error-msg');
+            e.stopImmediatePropagation();
           }
         }
       );
