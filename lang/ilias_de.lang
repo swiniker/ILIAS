@@ -10536,7 +10536,7 @@ iass#:#iass_file_required#:#Pflichtangabe Prüfungsblatt
 iass#:#iass_file_required_info#:#Ein Prüfungsblatt muss hochgeladen werden.
 iass#:#iass_file_visible_examinee#:#Datei für Teilnehmer sichtbar
 iass#:#iass_filter_all#:#Alle
-iass#:#iass_filter_failed#:#Nur nicht bestanden
+iass#:#iass_filter_failed#:#Nur nicht bestandene
 iass#:#iass_filter_finalized#:#Nur bestandene
 iass#:#iass_filter_not_finalized#:#Nur nicht abgeschlossene
 iass#:#iass_filter_not_started#:#Nur nicht bewertete
