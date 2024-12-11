@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This file is part of ILIAS, a powerful learning management system
  * published by ILIAS open source e-Learning e.V.
@@ -17,6 +15,8 @@ declare(strict_types=1);
  * https://github.com/ILIAS-eLearning
  *
  *********************************************************************/
+
+declare(strict_types=1);
 
 use ILIAS\UI\Factory;
 use ILIAS\UI\Renderer;
@@ -67,7 +67,7 @@ class ilIndividualAssessmentMembersTableGUI
     {
         $this->data = array_filter(
             $data,
-            fn ($record) =>
+            fn($record) =>
                  $this->iass_access->mayEditMembers()
                  || $this->iass_access->mayGradeUser($record->id())
                  || $this->iass_access->mayViewUser($record->id())
@@ -155,16 +155,16 @@ class ilIndividualAssessmentMembersTableGUI
         }
 
         if (!ilObjUser::userExists([$graded_by_id])) {
-            return [$this->txt('iass_graded_by') . ":" => $this->txt("user_deleted")];
+            return [$this->txt('iass_graded_by') => $this->txt("user_deleted")];
         }
 
         $full_name = $this->getFullNameFor($graded_by_id);
         if (!$this->hasPublicProfile($graded_by_id)) {
-            return [$this->txt('iass_graded_by') . ":" => $full_name];
+            return [$this->txt('iass_graded_by') => $full_name];
         }
 
         return [
-            $this->txt('iass_graded_by') . ":" => $this->getProfileLink($full_name, $graded_by_id)
+            $this->txt('iass_graded_by') => $this->getProfileLink($full_name, $graded_by_id)
         ];
     }
 
@@ -317,7 +317,7 @@ class ilIndividualAssessmentMembersTableGUI
             return [];
         }
         $event_time_str = $this->date_formatter->format($this->current_user, $event_time, true);
-        return [$this->txt("iass_event_time") . ": " => $event_time_str];
+        return [$this->txt("iass_event_time") => $event_time_str];
     }
 
     /**
