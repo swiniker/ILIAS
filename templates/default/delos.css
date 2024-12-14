@@ -7649,6 +7649,9 @@ button .minimize, button .close {
 .c-drilldown header.c-drilldown__header--showbacknav .c-drilldown__filter {
   display: none;
 }
+.c-drilldown .c-drilldown__menulevel--trigger:focus-visible {
+  z-index: 100;
+}
 .c-drilldown .c-drilldown__menu .c-drilldown__menulevel--trigger,
 .c-drilldown .c-drilldown__menu .btn-bulky,
 .c-drilldown .c-drilldown__menu .link-bulky,
