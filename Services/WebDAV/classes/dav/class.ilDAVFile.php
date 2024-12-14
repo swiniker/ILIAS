@@ -103,9 +103,9 @@ class ilDAVFile implements IFile
 
         if ($this->versioning_enabled === true ||
             $this->obj->getVersion() === 0 && $this->obj->getMaxVersion() === 0) {
-            $this->obj->appendStream($stream, $this->obj->getTitle());
+            $this->obj->appendStream($stream, $this->obj->getFileName());
         } else {
-            $this->obj->replaceWithStream($stream, $this->obj->getTitle());
+            $this->obj->replaceWithStream($stream, $this->obj->getFileName());
         }
 
         $stream->close();
@@ -132,7 +132,13 @@ class ilDAVFile implements IFile
 
     public function getName(): string
     {
-        return ilFileUtils::getValidFilename($this->obj->getTitle());
+        $name = $this->obj->getTitle();
+        $name_array = explode('.', $name);
+        $filename_array = explode('.', $this->obj->getFileName());
+        if (end($name_array) !== end($filename_array)) {
+            $name .= '.' . end($filename_array);
+        }
+        return ilFileUtils::getValidFilename($name);
     }
 
     public function getContentType(): ?string
