@@ -386,19 +386,24 @@ class ilLPTableBaseGUI extends ilTable2GUI
      */
     public function initBaseFilter(
         bool $a_split_learning_resources = false,
-        bool $a_include_no_status_filter = true
+        bool $a_include_no_status_filter = true,
+        bool $show_type_filter = true
     ) {
         $this->setDisableFilterHiding(true);
 
-        // object type selection
-        $si = new ilSelectInputGUI($this->lng->txt("obj_type"), "type");
-        $si->setOptions($this->getPossibleTypes($a_split_learning_resources));
-        $this->addFilterItem($si);
-        $si->readFromSession();
-        if (!$si->getValue()) {
-            $si->setValue("crs");
+        // only courses in Achievements > Learning Progress (ILIAS 10 only) #43289
+        if ($show_type_filter) {
+            // object type selection
+            $si = new ilSelectInputGUI($this->lng->txt("obj_type"), "type");
+            $si->setOptions($this->getPossibleTypes($a_split_learning_resources));
+            $this->addFilterItem($si);
+            $si->readFromSession();
+            if (!$si->getValue()) {
+                $si->setValue("crs");
+            }
+            $this->filter["type"] = $si->getValue();
         }
-        $this->filter["type"] = $si->getValue();
+
 
         // hidden items
         $msi = new ilMultiSelectInputGUI(

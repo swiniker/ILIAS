@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=0);
-
 /**
  * This file is part of ILIAS, a powerful learning management system
  * published by ILIAS open source e-Learning e.V.
@@ -17,6 +15,8 @@ declare(strict_types=0);
  * https://github.com/ILIAS-eLearning
  *
  *********************************************************************/
+
+declare(strict_types=0);
 
 /**
  * TableGUI class for learning progress
@@ -103,7 +103,11 @@ class ilLPProgressTableGUI extends ilLPTableBaseGUI
                     $user->getFullName()
                 )
             );
-            $this->initBaseFilter();
+            $this->initBaseFilter(
+                false,
+                true,
+                $obj_ids || $this->details
+            );
 
             $this->setSelectAllCheckbox("item_id");
             $this->addMultiCommand(
@@ -177,17 +181,20 @@ class ilLPProgressTableGUI extends ilLPTableBaseGUI
         $data = [];
         $obj_ids = $this->obj_ids;
         if (!$obj_ids && !$this->details) {
+            $filter = $this->getCurrentFilter(true);
+            // only courses in Achievements > Learning Progress (ILIAS 10 only) #43289
+            $filter['type'] = 'crs';
             switch ($this->lp_context) {
                 case ilLearningProgressGUI::LP_CONTEXT_ORG_UNIT:
                     $obj_ids = $this->searchObjects(
-                        $this->getCurrentFilter(true),
+                        $filter,
                         ''
                     );
                     break;
 
                 default:
                     $obj_ids = $this->searchObjects(
-                        $this->getCurrentFilter(true),
+                        $filter,
                         "read"
                     );
 
