@@ -710,9 +710,7 @@ class ilObjBadgeAdministrationGUI extends ilObjectGUI
             $filter = ['type' => '' , 'title' => '', 'object' => ''];
             $badge_ids = [];
             foreach (ilBadge::getObjectInstances($filter) as $badge_item) {
-                if (isset($badge_item['id'])) {
-                    $badge_ids[] = $badge_item['id'];
-                }
+                $badge_ids[] = $badge_item['id'];
             }
             foreach ($badge_ids as $badge_id) {
                 $badge = new ilBadge($badge_id);

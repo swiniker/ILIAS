@@ -68,11 +68,11 @@ class ilBadgeImage
             if ($identification !== null) {
                 $flavour = $this->resource_storage->flavours()->get($identification, new \ilBadgePictureDefinition());
                 $urls = $this->resource_storage->consume()->flavourUrls($flavour)->getURLsAsArray(false);
-                if (count($urls) === self::IMAGE_URL_COUNT && isset($urls[$size])) {
+                if (\count($urls) === self::IMAGE_URL_COUNT && isset($urls[$size])) {
                     $image_src = $urls[$size];
                 }
             }
-        } elseif (is_array($badge) && isset($badge['image'])) {
+        } elseif (\is_array($badge) && isset($badge['image'])) {
             $image_src = $badge['image'];
         } elseif ($badge instanceof ilBadge) {
             $image_src = $badge->getImage();

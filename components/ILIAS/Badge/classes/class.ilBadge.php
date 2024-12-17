@@ -170,56 +170,67 @@ class ilBadge
     }
 
     /**
-     * @param array<string, mixed>|null $a_filter
-     * @return array[]
+     * @param array{type: string, title: string, object: string}|null $filter
+     * @return list<array{
+     *     id: int,
+     *     parent_id: int,
+     *     type_id: string,
+     *     active: int,
+     *     title: ?string,
+     *     descr: ?string,
+     *     conf: ?string,
+     *     image: ?string,
+     *     valid: ?string,
+     *     crit: ?string,
+     *     image_rid: ?string,
+     *     parent_title: ?string,
+     *     parent_type: ?string,
+     *     deleted: bool
+     * }>
      */
     public static function getObjectInstances(
-        array $a_filter = null
+        ?array $filter = null
     ): array {
         global $DIC;
 
         $ilDB = $DIC->database();
 
-        $res = $raw = [];
+        $rows = [];
 
-        $where = "";
+        $where = '';
 
-        if ($a_filter["type"]) {
-            $where .= " AND bb.type_id = " . $ilDB->quote($a_filter["type"], "text");
+        if ($filter['type']) {
+            $where .= ' AND bb.type_id = ' . $ilDB->quote($filter['type'], ilDBConstants::T_TEXT);
         }
-        if ($a_filter["title"]) {
-            $where .= " AND " . $ilDB->like("bb.title", "text", "%" . $a_filter["title"] . "%");
+        if ($filter['title']) {
+            $where .= ' AND ' . $ilDB->like('bb.title', ilDBConstants::T_TEXT, '%' . $filter['title'] . '%');
         }
-        if ($a_filter["object"]) {
-            $where .= " AND " . $ilDB->like("od.title", "text", "%" . $a_filter["object"] . "%");
+        if ($filter['object']) {
+            $where .= ' AND ' . $ilDB->like('od.title', ilDBConstants::T_TEXT, '%' . $filter['object'] . '%');
         }
 
-        $set = $ilDB->query("SELECT bb.*, od.title parent_title, od.type parent_type" .
-            " FROM badge_badge bb" .
-            " JOIN object_data od ON (bb.parent_id = od.obj_id)" .
-            " WHERE od.type <> " . $ilDB->quote("bdga", "text") .
+        $set = $ilDB->query('SELECT bb.*, od.title parent_title, od.type parent_type' .
+            ' FROM badge_badge bb' .
+            ' INNER JOIN object_data od ON bb.parent_id = od.obj_id' .
+            ' WHERE od.type != ' . $ilDB->quote('bdga', ilDBConstants::T_TEXT) .
             $where);
         while ($row = $ilDB->fetchAssoc($set)) {
-            $raw[] = $row;
+            $row['deleted'] = false;
+            $rows[] = $row;
         }
 
-        $set = $ilDB->query("SELECT bb.*, od.title parent_title, od.type parent_type" .
-            " FROM badge_badge bb" .
-            " JOIN object_data_del od ON (bb.parent_id = od.obj_id)" .
-            " WHERE od.type <> " . $ilDB->quote("bdga", "text") .
+        $set = $ilDB->query('SELECT bb.*, od.title parent_title, od.type parent_type' .
+            ' FROM badge_badge bb' .
+            ' INNER JOIN object_data_del od ON bb.parent_id = od.obj_id' .
+            ' WHERE od.type != ' . $ilDB->quote('bdga', ilDBConstants::T_TEXT) .
             $where);
         while ($row = $ilDB->fetchAssoc($set)) {
-            $row["deleted"] = true;
-            $raw[] = $row;
+            $row['deleted'] = true;
+            $rows[] = $row;
         }
 
-        foreach ($raw as $row) {
-            $res[] = $row;
-        }
-
-        return $res;
+        return $rows;
     }
-
 
     //
     // setter/getter
