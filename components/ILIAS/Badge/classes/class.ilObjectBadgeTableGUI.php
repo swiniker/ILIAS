@@ -158,8 +158,8 @@ class ilObjectBadgeTableGUI
                     $type_caption = ilBadge::getExtendedTypeCaption($types[$badge_item['type_id']]);
 
                     $images = [
-                        'rendered' => '',
-                        'rendered_large' => '',
+                        'rendered' => null,
+                        'large' => null,
                     ];
                     $image_src = $this->badge_image_service->getImageFromResourceId(
                         $badge_item,
@@ -173,14 +173,14 @@ class ilObjectBadgeTableGUI
                             )
                         );
 
-                        $image_html_large = $this->badge_image_service->getImageFromResourceId(
+                        $image_src_large = $this->badge_image_service->getImageFromResourceId(
                             $badge_item,
                             $badge_item['image_rid'],
                             ilBadgeImage::IMAGE_SIZE_XL
                         );
-                        if ($image_html_large !== '') {
-                            $images['rendered_large'] = $this->ui_factory->image()->responsive(
-                                $image_html_large,
+                        if ($image_src_large !== '') {
+                            $images['large'] = $this->ui_factory->image()->responsive(
+                                $image_src_large,
                                 $badge_item['title']
                             );
                         }
@@ -216,16 +216,14 @@ class ilObjectBadgeTableGUI
                         }
                     }
 
-                    $badge_information = [
-                        'active' => $badge_item['active'] ? $this->lng->txt('yes') : $this->lng->txt('no'),
-                        'type' => $type_caption,
-                        'container' => implode(' ', \array_slice($container_title_parts, 1, null, true)),
-                    ];
-
                     $modal = $modal_container->constructModal(
-                        $images['rendered_large'] ?: null,
+                        $images['large'],
                         $badge_item['title'],
-                        $badge_information
+                        [
+                            'active' => $badge_item['active'] ? $this->lng->txt('yes') : $this->lng->txt('no'),
+                            'type' => $type_caption,
+                            'container' => implode(' ', \array_slice($container_title_parts, 1, null, true)),
+                        ]
                     );
 
                     $rows[] = [
@@ -237,7 +235,7 @@ class ilObjectBadgeTableGUI
                             $modal
                         ) . ' ') : '',
                         // Just an boolean-like indicator for sorting
-                        'image_sortable' => $images['rendered'] ? 'A' : 'Z',
+                        'image_sortable' => $images['rendered'] ? 'A' . $badge_item['id'] : 'Z' . $badge_item['id'],
                         'title' => implode('', [
                             $modal_container->renderShyButton($badge_item['title'], $modal),
                             $modal_container->renderModal($modal)
@@ -256,10 +254,14 @@ class ilObjectBadgeTableGUI
                     usort(
                         $rows,
                         static function (array $left, array $right) use ($order_field): int {
-                            if (\in_array($order_field, ['image', 'container', 'title'], true)) {
+                            if (\in_array($order_field, ['image', 'container', 'title', 'type'], true)) {
+                                if (\in_array($order_field, ['image', 'container', 'title'], true)) {
+                                    $order_field .= '_sortable';
+                                }
+
                                 return \ilStr::strCmp(
-                                    $left[$order_field . '_sortable'],
-                                    $right[$order_field . '_sortable']
+                                    $left[$order_field],
+                                    $right[$order_field]
                                 );
                             }
 

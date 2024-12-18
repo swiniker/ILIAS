@@ -70,7 +70,7 @@ class ilBadgeImageTemplateTableGUI
             }
 
             /**
-             * @return list<array{id: int, image: string, title: string}>
+             * @return list<array{id: int, image: string, title: string, title_sortable: string, image_sortable: string}>
              */
             private function getBadgeImageTemplates(): array
             {
@@ -78,25 +78,24 @@ class ilBadgeImageTemplateTableGUI
                 $rows = [];
 
                 foreach (ilBadgeImageTemplate::getInstances() as $template) {
-                    $badge_template_image = $template->getImageFromResourceId($template->getImageRid());
-
                     $image = '';
                     $title = $template->getTitle();
 
-                    if ($badge_template_image !== '') {
+                    $image_src = $template->getImageFromResourceId($template->getImageRid());
+                    if ($image_src !== '') {
                         $image_component = $this->ui_factory->image()->responsive(
-                            $badge_template_image,
+                            $image_src,
                             $template->getTitle()
                         );
                         $image_html = $this->ui_renderer->render($image_component);
 
-                        $badge_template_image_large = $template->getImageFromResourceId(
+                        $image_src_large = $template->getImageFromResourceId(
                             $template->getImageRid(),
                             null,
                             ilBadgeImage::IMAGE_SIZE_XL
                         );
                         $large_image_component = $this->ui_factory->image()->responsive(
-                            $badge_template_image_large,
+                            $image_src_large,
                             $template->getTitle()
                         );
 
@@ -112,7 +111,10 @@ class ilBadgeImageTemplateTableGUI
                     $rows[] = [
                         'id' => $template->getId(),
                         'image' => $image,
+                        // Just an boolean-like indicator for sorting
+                        'image_sortable' => $image ? 'A' . $template->getId() : 'Z' . $template->getId(),
                         'title' => $title,
+                        'title_sortable' => $template->getTitle(),
                     ];
                 }
 
@@ -142,7 +144,7 @@ class ilBadgeImageTemplateTableGUI
             }
 
             /**
-             * @return list<array{id: int, image: string, title: string}>
+             * @return list<array{id: int, image: string, title: string, title_sortable: string, image_sortable: string}>
              */
             private function getRecords(Range $range = null, Order $order = null): array
             {
@@ -156,10 +158,10 @@ class ilBadgeImageTemplateTableGUI
                     usort(
                         $rows,
                         static function (array $left, array $right) use ($order_field): int {
-                            if ($order_field === 'title') {
+                            if (\in_array($order_field, ['image', 'title'], true)) {
                                 return \ilStr::strCmp(
-                                    $left[$order_field],
-                                    $right[$order_field]
+                                    $left[$order_field . '_sortable'],
+                                    $right[$order_field . '_sortable']
                                 );
                             }
 
@@ -212,7 +214,7 @@ class ilBadgeImageTemplateTableGUI
         $df = new \ILIAS\Data\Factory();
 
         $columns = [
-            'image' => $f->table()->column()->text($this->lng->txt('image'))->withIsSortable(false),
+            'image' => $f->table()->column()->text($this->lng->txt('image')),
             'title' => $f->table()->column()->text($this->lng->txt('title')),
         ];
 
