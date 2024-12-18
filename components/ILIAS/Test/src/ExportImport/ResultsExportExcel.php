@@ -120,6 +120,13 @@ class ResultsExportExcel implements Exporter
     public function write(): ?string
     {
         $path = \ilFileUtils::ilTempnam() . $this->filename;
+
+        $this->worksheet->setFormat(\ilExcel::FORMAT_XML);
+        $extension = '.' . strtolower(\ilExcel::FORMAT_XML);
+        if (!str_ends_with($path, $extension)) {
+            $path .= $extension;
+        }
+
         $this->worksheet->writeToFile($path);
         return $path;
     }
