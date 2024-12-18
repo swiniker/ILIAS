@@ -373,8 +373,11 @@ class ilBadgeImageTemplate
         $this->image_rid = $image_rid;
     }
 
-    public function getImageFromResourceId(?string $image_rid, int $badge_id = null, $size = ilBadgeImage::IMAGE_SIZE_XS): string
-    {
+    public function getImageFromResourceId(
+        ?string $image_rid,
+        int $badge_id = null,
+        int $size = ilBadgeImage::IMAGE_SIZE_XS
+    ): string {
         $image_src = '';
 
         if ($image_rid !== null) {
@@ -382,7 +385,7 @@ class ilBadgeImageTemplate
             if ($identification !== null) {
                 $flavour = $this->resource_storage->flavours()->get($identification, new \ilBadgePictureDefinition());
                 $urls = $this->resource_storage->consume()->flavourUrls($flavour)->getURLsAsArray(false);
-                if (sizeof($urls) === ilBadgeImage::IMAGE_URL_COUNT && isset($urls[$size])) {
+                if (count($urls) === ilBadgeImage::IMAGE_URL_COUNT && isset($urls[$size])) {
                     $image_src = $urls[$size];
                 }
             }

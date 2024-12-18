@@ -70,48 +70,53 @@ class ilBadgeImageTemplateTableGUI
             }
 
             /**
-             * @return list<array{id: int, image_rid: string, title: string}>
+             * @return list<array{id: int, image: string, title: string}>
              */
             private function getBadgeImageTemplates(Container $DIC): array
             {
                 $modal_container = new ModalBuilder();
-                $data = [];
+                $rows = [];
 
                 foreach (ilBadgeImageTemplate::getInstances() as $template) {
-                    $image_html = '';
-                    if ($template->getId() !== null) {
-                        $badge_template_image = $template->getImageFromResourceId($template->getImageRid());
+                    $badge_template_image = $template->getImageFromResourceId($template->getImageRid());
+
+                    $image = '';
+                    $title = $template->getTitle();
+
+                    if ($badge_template_image !== '') {
+                        $image_component = $this->ui_factory->image()->responsive(
+                            $badge_template_image,
+                            $template->getTitle()
+                        );
+                        $image_html = $DIC->ui()->renderer()->render($image_component);
+
                         $badge_template_image_large = $template->getImageFromResourceId(
                             $template->getImageRid(),
                             null,
-                            0
+                            ilBadgeImage::IMAGE_SIZE_XL
                         );
-                        if ($badge_template_image !== '') {
-                            $badge_img = $DIC->ui()->factory()->image()->responsive(
-                                $badge_template_image,
-                                $template->getTitle()
-                            );
-                            $image_html = $DIC->ui()->renderer()->render($badge_img);
-                        }
+                        $large_image_component = $this->ui_factory->image()->responsive(
+                            $badge_template_image_large,
+                            $template->getTitle()
+                        );
 
-                        if ($badge_template_image_large !== '') {
-                            $badge_img_large = $DIC->ui()->factory()->image()->responsive(
-                                $badge_template_image_large,
-                                $template->getTitle()
-                            );
+                        $modal = $modal_container->constructModal($large_image_component, $template->getTitle());
 
-                            $modal = $modal_container->constructModal($badge_img_large, $template->getTitle());
-                            $data[] = [
-                                'id' => $template->getId(),
-                                'image_rid' => $modal_container->renderShyButton($image_html, $modal) . ' ' .
-                                    $modal_container->renderModal($modal),
-                                'title' => $modal_container->renderShyButton($template->getTitle(), $modal),
-                            ];
-                        }
+                        $image = implode('', [
+                            $modal_container->renderShyButton($image_html, $modal),
+                            $modal_container->renderModal($modal)
+                        ]);
+                        $title = $modal_container->renderShyButton($template->getTitle(), $modal);
                     }
+
+                    $rows[] = [
+                        'id' => $template->getId(),
+                        'image' => $image,
+                        'title' => $title,
+                    ];
                 }
 
-                return $data;
+                return $rows;
             }
 
             public function getRows(
@@ -137,30 +142,42 @@ class ilBadgeImageTemplateTableGUI
             }
 
             /**
-             * @return list<array{id: int, image_rid: string, title: string}>
+             * @return list<array{id: int, image: string, title: string}>
              */
             private function getRecords(Range $range = null, Order $order = null): array
             {
                 global $DIC;
 
-                $data = $this->getBadgeImageTemplates($DIC);
+                $rows = $this->getBadgeImageTemplates($DIC);
 
                 if ($order) {
                     [$order_field, $order_direction] = $order->join(
                         [],
                         fn($ret, $key, $value) => [$key, $value]
                     );
-                    usort($data, fn($a, $b) => $a[$order_field] <=> $b[$order_field]);
-                    if ($order_direction === 'DESC') {
-                        $data = array_reverse($data);
+                    usort(
+                        $rows,
+                        static function (array $left, array $right) use ($order_field): int {
+                            if ($order_field === 'title') {
+                                return \ilStr::strCmp(
+                                    $left[$order_field],
+                                    $right[$order_field]
+                                );
+                            }
+
+                            return $left[$order_field] <=> $right[$order_field];
+                        }
+                    );
+                    if ($order_direction === Order::DESC) {
+                        $rows = array_reverse($rows);
                     }
                 }
 
                 if ($range) {
-                    $data = \array_slice($data, $range->getStart(), $range->getLength());
+                    $rows = \array_slice($rows, $range->getStart(), $range->getLength());
                 }
 
-                return $data;
+                return $rows;
             }
         };
     }
@@ -197,7 +214,7 @@ class ilBadgeImageTemplateTableGUI
         $df = new \ILIAS\Data\Factory();
 
         $columns = [
-            'image_rid' => $f->table()->column()->text($this->lng->txt('image')),
+            'image' => $f->table()->column()->text($this->lng->txt('image'))->withIsSortable(false),
             'title' => $f->table()->column()->text($this->lng->txt('title')),
         ];
 
@@ -218,6 +235,8 @@ class ilBadgeImageTemplateTableGUI
 
         $table = $f->table()
                    ->data($this->lng->txt('badge_image_templates'), $columns, $data_retrieval)
+                   ->withId(self::class)
+                   ->withOrder(new Order('title', Order::ASC))
                    ->withActions($actions)
                    ->withRequest($request);
 
@@ -278,6 +297,7 @@ class ilBadgeImageTemplateTableGUI
                 }
             }
         }
+
         $this->tpl->setContent($r->render($out));
     }
 }
