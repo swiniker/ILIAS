@@ -54,8 +54,8 @@ class ilObjectBadgeTableGUI
     private readonly Services $http;
     private readonly ilLanguage $lng;
     private readonly ilGlobalTemplateInterface $tpl;
-    private ilObjBadgeAdministrationGUI $parent_obj;
-    private ilAccess $access;
+    private readonly ilObjBadgeAdministrationGUI $parent_obj;
+    private readonly ilAccess $access;
 
     public function __construct(ilObjBadgeAdministrationGUI $parentObj)
     {
@@ -87,9 +87,9 @@ class ilObjectBadgeTableGUI
             private \ilAccessHandler $access;
 
             public function __construct(
-                private Factory $ui_factory,
-                private Renderer $ui_renderer,
-                private ilObjBadgeAdministrationGUI $parent
+                private readonly Factory $ui_factory,
+                private readonly Renderer $ui_renderer,
+                private readonly ilObjBadgeAdministrationGUI $parent
             ) {
                 global $DIC;
 

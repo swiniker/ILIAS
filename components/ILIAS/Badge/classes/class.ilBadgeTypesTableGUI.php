@@ -65,8 +65,8 @@ class ilBadgeTypesTableGUI
     {
         return new class ($f, $r) implements DataRetrieval {
             public function __construct(
-                private Factory $ui_factory,
-                private Renderer $ui_renderer
+                private readonly Factory $ui_factory,
+                private readonly Renderer $ui_renderer
             ) {
             }
 
