@@ -2288,6 +2288,7 @@ badge#:#badge_notification_parent_goto#:#To repository
 badge#:#badge_notification_reason#:#You are receiving this message to be able to add the badges to your profile.
 badge#:#badge_notification_subject#:#Badges received
 badge#:#badge_object_badges#:#Object Badges
+badge#:#badge_personal_badges#:#My Badges
 badge#:#badge_profile_less#:#Show less
 badge#:#badge_profile_more#:#Show all
 badge#:#badge_remove_badge#:#Revoke Badge
@@ -10437,7 +10438,6 @@ grp#:#reg_grp_max_members#:#Maximum Number of Members
 grp#:#reg_grp_max_members_short#:#Limited Number of Members
 grp#:#reg_grp_min_members#:#Minimum Number of Members
 gsfo#:#accessibility#:#Accessibility
-gsfo#:#accessibility#:#Translations
 gsfo#:#confirm_delete#:#Do you really want to delete the following Item(s)?
 gsfo#:#confirm_reset#:#Resetting the footer will restore all entries to their original state. All customizations and manual entries will be deleted. Do you want to continue?
 gsfo#:#entries_add#:#Add Entry
