@@ -72,7 +72,7 @@ class ilBadgeImageTemplateTableGUI
             /**
              * @return list<array{id: int, image: string, title: string}>
              */
-            private function getBadgeImageTemplates(Container $DIC): array
+            private function getBadgeImageTemplates(): array
             {
                 $modal_container = new ModalBuilder();
                 $rows = [];
@@ -88,7 +88,7 @@ class ilBadgeImageTemplateTableGUI
                             $badge_template_image,
                             $template->getTitle()
                         );
-                        $image_html = $DIC->ui()->renderer()->render($image_component);
+                        $image_html = $this->ui_renderer->render($image_component);
 
                         $badge_template_image_large = $template->getImageFromResourceId(
                             $template->getImageRid(),
@@ -146,9 +146,7 @@ class ilBadgeImageTemplateTableGUI
              */
             private function getRecords(Range $range = null, Order $order = null): array
             {
-                global $DIC;
-
-                $rows = $this->getBadgeImageTemplates($DIC);
+                $rows = $this->getBadgeImageTemplates();
 
                 if ($order) {
                     [$order_field, $order_direction] = $order->join(
