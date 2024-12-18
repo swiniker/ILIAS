@@ -75,7 +75,7 @@ class ilBadgeTypesTableGUI
              */
             private function getBadgeImageTemplates(): array
             {
-                $data = [];
+                $rows = [];
                 $handler = ilBadgeHandler::getInstance();
                 $inactive = $handler->getInactiveTypes();
 
@@ -85,7 +85,7 @@ class ilBadgeTypesTableGUI
                         foreach ($provider->getBadgeTypes() as $badge_obj) {
                             $id = $handler->getUniqueTypeId($component, $badge_obj);
 
-                            $data[] = [
+                            $rows[] = [
                                 'id' => $id,
                                 'comp' => $handler->getComponentCaption($component),
                                 'name' => $badge_obj->getCaption(),
@@ -97,7 +97,7 @@ class ilBadgeTypesTableGUI
                     }
                 }
 
-                return $data;
+                return $rows;
             }
 
             public function getRows(
@@ -127,24 +127,36 @@ class ilBadgeTypesTableGUI
              */
             private function getRecords(Range $range = null, Order $order = null): array
             {
-                $data = $this->getBadgeImageTemplates();
+                $rows = $this->getBadgeImageTemplates();
 
                 if ($order) {
                     [$order_field, $order_direction] = $order->join(
                         [],
                         fn($ret, $key, $value) => [$key, $value]
                     );
-                    usort($data, static fn($a, $b) => $a[$order_field] <=> $b[$order_field]);
-                    if ($order_direction === 'DESC') {
-                        $data = array_reverse($data);
+                    usort(
+                        $rows,
+                        static function (array $left, array $right) use ($order_field): int {
+                            if (\in_array($order_field, ['name', 'comp'], true)) {
+                                return \ilStr::strCmp(
+                                    $left[$order_field],
+                                    $right[$order_field]
+                                );
+                            }
+
+                            return $left[$order_field] <=> $right[$order_field];
+                        }
+                    );
+                    if ($order_direction === Order::DESC) {
+                        $rows = array_reverse($rows);
                     }
                 }
 
                 if ($range) {
-                    $data = \array_slice($data, $range->getStart(), $range->getLength());
+                    $rows = \array_slice($rows, $range->getStart(), $range->getLength());
                 }
 
-                return $data;
+                return $rows;
             }
         };
     }
@@ -211,7 +223,6 @@ class ilBadgeTypesTableGUI
                 $active_txt . $this->lng->txt('no'),
                 $active_txt . $this->lng->txt('yes')
             ),
-
         ];
 
         $table_uri = $df->uri($request->getUri()->__toString());
@@ -230,6 +241,8 @@ class ilBadgeTypesTableGUI
 
         $table = $f->table()
                    ->data($this->lng->txt('badge_types'), $columns, $data_retrieval)
+                   ->withId(self::class)
+                   ->withOrder(new Order('name', Order::ASC))
                    ->withActions($actions)
                    ->withRequest($request);
 

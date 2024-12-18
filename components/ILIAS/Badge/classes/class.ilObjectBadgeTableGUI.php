@@ -267,10 +267,10 @@ class ilObjectBadgeTableGUI
                         }
                     );
                     if ($order_field === 'active') {
-                        if ($order_direction === 'ASC') {
+                        if ($order_direction === Order::ASC) {
                             $rows = array_reverse($rows);
                         }
-                    } elseif ($order_direction === 'DESC') {
+                    } elseif ($order_direction === Order::DESC) {
                         $rows = array_reverse($rows);
                     }
                 }
@@ -359,6 +359,7 @@ class ilObjectBadgeTableGUI
 
         $table = $f->table()
                    ->data($this->lng->txt('badge_object_badges'), $columns, $data_retrieval)
+                   ->withId(self::class)
                    ->withOrder(new Order('title', Order::ASC))
                    ->withActions($actions)
                    ->withRequest($request);
