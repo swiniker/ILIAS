@@ -632,9 +632,6 @@ class ilObjBadgeAdministrationGUI extends ilObjectGUI
 
     protected function listObjectBadgeUsers(): void
     {
-        $ilCtrl = $this->ctrl;
-        $lng = $this->lng;
-
         $parent_obj_id = $this->badge_request->getParentId();
         $parent_ref_ids = ilObject::_getAllReferences($parent_obj_id);
         $parent_ref_id = array_pop($parent_ref_ids);
@@ -643,18 +640,18 @@ class ilObjBadgeAdministrationGUI extends ilObjectGUI
             $parent_ref_id = $this->http->wrapper()->query()->retrieve('ref_id', $this->refinery->kindlyTo()->int());
         }
         if (!$parent_ref_id) {
-            $ilCtrl->redirect($this, 'listObjectBadges');
+            $this->ctrl->redirect($this, 'listObjectBadges');
         }
 
         $this->assertActive();
 
         $this->tabs_gui->clearTargets();
         $this->tabs_gui->setBackTarget(
-            $lng->txt('back'),
-            $ilCtrl->getLinkTarget($this, 'listObjectBadges')
+            $this->lng->txt('back'),
+            $this->ctrl->getLinkTarget($this, 'listObjectBadges')
         );
 
-        $ilCtrl->saveParameter($this, 'pid');
+        $this->ctrl->saveParameter($this, 'pid');
 
         $tbl = new ilBadgeUserTableGUI($parent_ref_id, null, $this->badge_request->getBadgeId());
         $tbl->renderTable();

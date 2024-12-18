@@ -32,7 +32,6 @@ use Psr\Http\Message\RequestInterface;
 use ILIAS\UI\Component\Table\DataRowBuilder;
 use Generator;
 use ILIAS\UI\Component\Table\DataRetrieval;
-use ILIAS\DI\Container;
 use ilBadgeHandler;
 use ilObject;
 use ilBadge;
@@ -41,6 +40,9 @@ use ilUserQuery;
 use DateTimeImmutable;
 use ILIAS\UI\URLBuilderToken;
 use ilObjectDataDeletionLog;
+use ilTree;
+use ilCalendarSettings;
+use ilObjUser;
 
 class ilBadgeUserTableGUI
 {
@@ -50,11 +52,13 @@ class ilBadgeUserTableGUI
     private readonly int $parent_ref_id;
     private readonly ilLanguage $lng;
     private readonly ilGlobalTemplateInterface $tpl;
+    private readonly ilTree $tree;
+    private readonly ilObjUser $user;
 
     public function __construct(
         int $parent_ref_id,
         private readonly ?ilBadge $award_badge = null,
-        private readonly int $restrict_badge_id = 0
+        private readonly ?int $restrict_badge_id = null
     ) {
         global $DIC;
 
@@ -63,75 +67,80 @@ class ilBadgeUserTableGUI
         $this->factory = $DIC->ui()->factory();
         $this->renderer = $DIC->ui()->renderer();
         $this->request = $DIC->http()->request();
+        $this->tree = $DIC->repositoryTree();
+        $this->user = $DIC->user();
         $this->parent_ref_id = $parent_ref_id;
     }
 
     private function buildDataRetrievalObject(
         Factory $f,
         Renderer $r,
+        ilTree $tree,
+        ilObjUser $user,
         int $parent_ref_id,
+        ?int $restrict_badge_id = null,
         ?ilBadge $award_badge = null
     ): DataRetrieval {
-        return new class ($f, $r, $parent_ref_id, $award_badge) implements DataRetrieval {
+        return new class ($f, $r, $tree, $user, $parent_ref_id, $restrict_badge_id, $award_badge) implements DataRetrieval {
             public function __construct(
-                private Factory $ui_factory,
-                private Renderer $ui_renderer,
-                private int $parent_ref_id,
-                private ?ilBadge $award_badge = null
+                private readonly Factory $ui_factory,
+                private readonly Renderer $ui_renderer,
+                private readonly ilTree $tree,
+                private readonly ilObjUser $user,
+                private readonly int $parent_ref_id,
+                private readonly ?int $restrict_badge_id = null,
+                private readonly ?ilBadge $award_badge = null
             ) {
             }
 
             /**
              * @return list<array{
-             *     user_id: string,
+             *     id: string,
              *     name: string,
              *     login: string,
              *     type: string,
              *     title: string,
-             *     issued: int,
-             *     parent_id: string,
-             *     parent_meta: array}>
+             *     issued: ?DateTimeImmutable
+             *  }>
              */
-            private function getBadgeImageTemplates(Container $DIC): array
+            private function getBadgeImageTemplates(): array
             {
-                $assignments = null;
-                $user_ids = null;
-                $parent_ref_id = $this->parent_ref_id;
-                $data = [];
+                /** @var array<int, list<ilBadgeAssignment>> $assignments */
+                $assignments = [];
+                $user_ids = [];
+                $rows = [];
                 $badges = [];
-                $tree = $DIC->repositoryTree();
-                $restrict_badge_id = 0;
 
-                $a_parent_obj_id = ilObject::_lookupObjId($parent_ref_id);
-
-                if ($parent_ref_id) {
-                    $user_ids = ilBadgeHandler::getInstance()->getUserIds($parent_ref_id, $a_parent_obj_id);
+                $a_parent_obj_id = ilObject::_lookupObjId($this->parent_ref_id);
+                if ($this->parent_ref_id) {
+                    $user_ids = ilBadgeHandler::getInstance()->getUserIds($this->parent_ref_id, $a_parent_obj_id);
                 }
 
                 $obj_ids = [$a_parent_obj_id];
-
-                foreach ($tree->getSubTree($tree->getNodeData($parent_ref_id)) as $node) {
+                foreach ($this->tree->getSubTree($this->tree->getNodeData($this->parent_ref_id)) as $node) {
                     $obj_ids[] = (int) $node['obj_id'];
                 }
 
+                $obj_ids = array_unique($obj_ids);
                 foreach ($obj_ids as $obj_id) {
                     foreach (ilBadge::getInstancesByParentId($obj_id) as $badge) {
                         $badges[$badge->getId()] = $badge;
                     }
+
                     foreach (ilBadgeAssignment::getInstancesByParentId($obj_id) as $ass) {
-                        if ($restrict_badge_id &&
-                            $restrict_badge_id !== $ass->getBadgeId()) {
+                        if ($this->restrict_badge_id && $this->restrict_badge_id !== $ass->getBadgeId()) {
                             continue;
                         }
-                        if ($this->award_badge &&
-                            $ass->getBadgeId() !== $this->award_badge->getId()) {
+
+                        if ($this->award_badge && $ass->getBadgeId() !== $this->award_badge->getId()) {
                             continue;
                         }
 
                         $assignments[$ass->getUserId()][] = $ass;
                     }
                 }
-                if (!$user_ids && $assignments !== null) {
+
+                if (!$user_ids) {
                     $user_ids = array_keys($assignments);
                 }
 
@@ -142,51 +151,40 @@ class ilBadgeUserTableGUI
                     $uquery->setUserFilter($user_ids);
                     $tmp = $uquery->query();
                 }
+
                 foreach ($tmp['set'] as $user) {
-                    if (\is_array($assignments) && \array_key_exists($user['usr_id'], $assignments)) {
+                    if (\array_key_exists($user['usr_id'], $assignments)) {
                         foreach ($assignments[$user['usr_id']] as $user_ass) {
                             $idx = $user_ass->getBadgeId() . '-' . $user['usr_id'];
+
                             $badge = $badges[$user_ass->getBadgeId()];
-                            $parent = $badge->getParentMeta();
-                            $timestamp = $user_ass->getTimestamp();
-                            $immutable = new DateTimeImmutable();
-                            $user_id = $user['usr_id'];
-                            $name = $user['lastname'] . ', ' . $user['firstname'];
-                            $login = $user['login'];
-                            $type = ilBadge::getExtendedTypeCaption($badge->getTypeInstance());
-                            $title = $badge->getTitle();
-                            $issued = $immutable->setTimestamp($timestamp);
-                            $parent_id = $parent['id'];
-                            $data[$idx] = [
-                                'id' => $user_id,
-                                'user_id' => $user_id,
-                                'name' => $name,
-                                'login' => $login,
-                                'type' => $type,
-                                'title' => $title,
-                                'issued' => $issued,
-                                'parent_id' => $parent_id,
-                                'parent_meta' => $parent
+
+                            $rows[] = [
+                                'id' => $idx,
+                                'name' => $user['lastname'] . ', ' . $user['firstname'],
+                                'login' => $user['login'],
+                                'type' => ilBadge::getExtendedTypeCaption($badge->getTypeInstance()),
+                                'title' => $badge->getTitle(),
+                                'issued' => (new DateTimeImmutable())
+                                    ->setTimestamp($user_ass->getTimestamp())
+                                    ->setTimezone(new \DateTimeZone($this->user->getTimeZone()))
                             ];
                         }
                     } elseif ($this->award_badge) {
                         $idx = '0-' . $user['usr_id'];
-                        $user_id = $user['usr_id'];
-                        $name = $user['lastname'] . ', ' . $user['firstname'];
-                        $login = $user['login'];
-                        $data[$idx] = [
-                            'id' => $user_id,
-                            'user_id' => $user_id,
-                            'name' => $name,
-                            'login' => $login,
+
+                        $rows[] = [
+                            'id' => $idx,
+                            'name' => $user['lastname'] . ', ' . $user['firstname'],
+                            'login' => $user['login'],
                             'type' => '',
                             'title' => '',
-                            'parent_id' => ''
+                            'issued' => null,
                         ];
                     }
                 }
 
-                return $data;
+                return $rows;
             }
 
             public function getRows(
@@ -199,13 +197,7 @@ class ilBadgeUserTableGUI
             ): Generator {
                 $records = $this->getRecords($range, $order);
                 foreach ($records as $record) {
-
-                    $row_id = (string) $record['id'];
-                    if ($this->award_badge !== null) {
-                        $row_id = $record['id'] . '_' . $this->award_badge->getId();
-                    }
-
-                    yield $row_builder->buildDataRow($row_id, $record);
+                    yield $row_builder->buildDataRow($record['id'], $record);
                 }
             }
 
@@ -218,20 +210,17 @@ class ilBadgeUserTableGUI
 
             /**
              * @return list<array{
-             *     user_id: string,
+             *     id: string,
              *     name: string,
              *     login: string,
              *     type: string,
              *     title: string,
-             *     issued: int,
-             *     parent_id: string,
-             *     parent_meta: array}>
+             *     issued: ?DateTimeImmutable
+             *  }>
              */
             private function getRecords(Range $range = null, Order $order = null): array
             {
-                global $DIC;
-
-                $rows = $this->getBadgeImageTemplates($DIC);
+                $rows = $this->getBadgeImageTemplates();
 
                 if ($order) {
                     [$order_field, $order_direction] = $order->join(
@@ -241,7 +230,7 @@ class ilBadgeUserTableGUI
                     usort(
                         $rows,
                         static function (array $left, array $right) use ($order_field): int {
-                            if ($order_field === 'title') {
+                            if (\in_array($order_field, ['name', 'login', 'type', 'title'], true)) {
                                 return \ilStr::strCmp(
                                     $left[$order_field],
                                     $right[$order_field ]
@@ -273,8 +262,9 @@ class ilBadgeUserTableGUI
         URLBuilderToken $action_parameter_token,
         URLBuilderToken $row_id_token,
     ): array {
-        $f = $this->factory;
         if ($this->award_badge) {
+            $f = $this->factory;
+
             return [
                 'badge_award_badge' =>
                     $f->table()->action()->multi(
@@ -299,7 +289,13 @@ class ilBadgeUserTableGUI
         $f = $this->factory;
         $r = $this->renderer;
         $request = $this->request;
+
         $df = new \ILIAS\Data\Factory();
+        if ((int) $this->user->getTimeFormat() === ilCalendarSettings::TIME_FORMAT_12) {
+            $date_format = $df->dateFormat()->withTime12($this->user->getDateFormat());
+        } else {
+            $date_format = $df->dateFormat()->withTime24($this->user->getDateFormat());
+        }
 
         $columns = [
             'name' => $f->table()->column()->text($this->lng->txt('name')),
@@ -308,7 +304,7 @@ class ilBadgeUserTableGUI
             'title' => $f->table()->column()->text($this->lng->txt('title')),
             'issued' => $f->table()->column()->date(
                 $this->lng->txt('badge_issued_on'),
-                $df->dateFormat()->germanShort()
+                $date_format
             )
         ];
 
@@ -323,7 +319,15 @@ class ilBadgeUserTableGUI
                 'id',
             );
 
-        $data_retrieval = $this->buildDataRetrievalObject($f, $r, $this->parent_ref_id, $this->award_badge);
+        $data_retrieval = $this->buildDataRetrievalObject(
+            $f,
+            $r,
+            $this->tree,
+            $this->user,
+            $this->parent_ref_id,
+            $this->restrict_badge_id,
+            $this->award_badge
+        );
         $actions = $this->getActions($url_builder, $action_parameter_token, $row_id_token);
 
         if ($this->award_badge) {
@@ -349,9 +353,10 @@ class ilBadgeUserTableGUI
             }
             $title = $parent . $this->lng->txt('users');
         }
+
         $table = $f->table()
                    ->data($title, $columns, $data_retrieval)
-                   ->withId(self::class)
+                   ->withId(self::class . '_' . $this->parent_ref_id)
                    ->withOrder(new Order('name', Order::ASC))
                    ->withActions($actions)
                    ->withRequest($request);

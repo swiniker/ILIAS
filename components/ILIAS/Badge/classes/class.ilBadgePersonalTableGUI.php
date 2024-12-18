@@ -118,14 +118,15 @@ class ilBadgePersonalTableGUI
              *     image_sortable: string,
              *     awarded_by: string,
              *     awarded_by_sortable: string,
+             *     badge_issued_on: DateTimeImmutable,
              *     title: string,
-             *     title_sortable: string}>
+             *     title_sortable: string
+             *  }>
              */
             private function getRecords(Range $range = null, Order $order = null): array
             {
                 $rows = [];
                 $a_user_id = $this->user->getId();
-                $badge_img_large = new Image(Image::STANDARD, '', '');
 
                 foreach (ilBadgeAssignment::getInstancesByUserId($a_user_id) as $ass) {
                     $badge = new ilBadge($ass->getBadgeId());
@@ -159,7 +160,7 @@ class ilBadgePersonalTableGUI
                             ilBadgeImage::IMAGE_SIZE_XL
                         );
                         if ($image_src_large !== '') {
-                            $badge_img_large = $this->ui_factory->image()->responsive(
+                            $images['large'] = $this->ui_factory->image()->responsive(
                                 $image_src_large,
                                 $badge->getTitle()
                             );
@@ -184,7 +185,7 @@ class ilBadgePersonalTableGUI
                     }
 
                     $modal = $modal_container->constructModal(
-                        $badge_img_large,
+                        $images['large'],
                         $badge->getTitle(),
                         [
                             'awarded_by' => $awarded_by
@@ -204,7 +205,7 @@ class ilBadgePersonalTableGUI
                             $modal_container->renderModal($modal)
                         ]),
                         'title_sortable' => $badge->getTitle(),
-                        'badge_issued_on' => (new \DateTimeImmutable())
+                        'badge_issued_on' => (new DateTimeImmutable())
                             ->setTimestamp($ass->getTimestamp())
                             ->setTimezone(new DateTimeZone($this->user->getTimeZone())),
                         'awarded_by' => $awarded_by,
@@ -221,12 +222,12 @@ class ilBadgePersonalTableGUI
                     usort(
                         $rows,
                         static function (array $left, array $right) use ($order_field): int {
-                            if (\in_array($order_field, ['title', 'image', 'awarded_by'], true)) {
-                                if (\in_array($order_field, ['title', 'image', 'awarded_by'], true)) {
+                            if (in_array($order_field, ['title', 'image', 'awarded_by'], true)) {
+                                if (in_array($order_field, ['title', 'image', 'awarded_by'], true)) {
                                     $order_field .= '_sortable';
                                 }
 
-                                return \ilStr::strCmp(
+                                return ilStr::strCmp(
                                     $left[$order_field],
                                     $right[$order_field]
                                 );
