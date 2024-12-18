@@ -272,7 +272,7 @@ class TitlesBuilder
         return true;
     }
 
-    private function getObjectiveTitle(ilLOTestRun $loRun)
+    private function getObjectiveTitle(\ilLOTestRun $loRun)
     {
         return \ilCourseObjective::lookupObjectiveTitle($loRun->getObjectiveId());
     }
