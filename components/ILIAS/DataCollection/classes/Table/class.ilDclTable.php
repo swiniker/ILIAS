@@ -18,6 +18,8 @@
 
 declare(strict_types=1);
 
+use ILIAS\Modules\DataCollection\Fields\Formula\FormulaParser\Token\Tokenizer;
+
 class ilDclTable
 {
     protected int $id = 0;
@@ -528,23 +530,14 @@ class ilDclTable
      */
     public function getFieldsForFormula(): array
     {
-        $unsupported = [
-            ilDclDatatype::INPUTFORMAT_ILIAS_REF,
-            ilDclDatatype::INPUTFORMAT_FORMULA,
-            ilDclDatatype::INPUTFORMAT_MOB,
-            ilDclDatatype::INPUTFORMAT_REFERENCELIST,
-            ilDclDatatype::INPUTFORMAT_REFERENCE,
-            ilDclDatatype::INPUTFORMAT_FILEUPLOAD,
-            ilDclDatatype::INPUTFORMAT_RATING,
-        ];
-
-        $this->loadCustomFields();
-        $return = $this->getStandardFields();
-        /**
-         * @var $field ilDclBaseFieldModel
-         */
-        foreach ($this->fields as $field) {
-            if (!in_array($field->getDatatypeId(), $unsupported)) {
+        $syntax_chars = array_merge(Tokenizer::$operators, Tokenizer::$functions, ['(', ')', ',']);
+        foreach ($this->getFields() as $field) {
+            if (in_array($field->getDatatypeId(), ilDclFormulaFieldModel::SUPPORTED_FIELDS)) {
+                foreach ($syntax_chars as $element) {
+                    if (str_contains($field->getTitle(), $element)) {
+                        continue 2;
+                    }
+                }
                 $return[] = $field;
             }
         }
