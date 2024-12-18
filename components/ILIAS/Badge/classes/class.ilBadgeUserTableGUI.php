@@ -231,24 +231,36 @@ class ilBadgeUserTableGUI
             {
                 global $DIC;
 
-                $data = $this->getBadgeImageTemplates($DIC);
+                $rows = $this->getBadgeImageTemplates($DIC);
 
                 if ($order) {
                     [$order_field, $order_direction] = $order->join(
                         [],
                         fn($ret, $key, $value) => [$key, $value]
                     );
-                    usort($data, static fn($a, $b) => $a[$order_field] <=> $b[$order_field]);
-                    if ($order_direction === 'DESC') {
-                        $data = array_reverse($data);
+                    usort(
+                        $rows,
+                        static function (array $left, array $right) use ($order_field): int {
+                            if ($order_field === 'title') {
+                                return \ilStr::strCmp(
+                                    $left[$order_field],
+                                    $right[$order_field ]
+                                );
+                            }
+
+                            return $left[$order_field] <=> $right[$order_field];
+                        }
+                    );
+                    if ($order_direction === ORDER::DESC) {
+                        $rows = array_reverse($rows);
                     }
                 }
 
                 if ($range) {
-                    $data = \array_slice($data, $range->getStart(), $range->getLength());
+                    $rows = \array_slice($rows, $range->getStart(), $range->getLength());
                 }
 
-                return $data;
+                return $rows;
             }
         };
     }
@@ -263,7 +275,6 @@ class ilBadgeUserTableGUI
     ): array {
         $f = $this->factory;
         if ($this->award_badge) {
-
             return [
                 'badge_award_badge' =>
                     $f->table()->action()->multi(
@@ -340,10 +351,13 @@ class ilBadgeUserTableGUI
         }
         $table = $f->table()
                    ->data($title, $columns, $data_retrieval)
+                   ->withId(self::class)
+                   ->withOrder(new Order('name', Order::ASC))
                    ->withActions($actions)
                    ->withRequest($request);
 
         $out = [$table];
+
         $this->tpl->setContent($r->render($out));
     }
 }

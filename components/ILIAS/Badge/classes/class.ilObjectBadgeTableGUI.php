@@ -43,7 +43,7 @@ use ilLink;
 use ilObjBadgeAdministrationGUI;
 use ILIAS\Filesystem\Stream\Streams;
 use ILIAS\UI\Component\Table\Action\Action;
-use ilAccess;
+use ilAccessHandler;
 
 class ilObjectBadgeTableGUI
 {
@@ -55,7 +55,7 @@ class ilObjectBadgeTableGUI
     private readonly ilLanguage $lng;
     private readonly ilGlobalTemplateInterface $tpl;
     private readonly ilObjBadgeAdministrationGUI $parent_obj;
-    private readonly ilAccess $access;
+    private readonly ilAccessHandler $access;
 
     public function __construct(ilObjBadgeAdministrationGUI $parentObj)
     {
@@ -70,25 +70,22 @@ class ilObjectBadgeTableGUI
         $this->http = $DIC->http();
         $this->access = $DIC->access();
         $this->parent_obj = $parentObj;
-
     }
 
     private function buildDataRetrievalObject(
         Factory $f,
         Renderer $r,
+        ilAccessHandler $access,
         ilObjBadgeAdministrationGUI $p
     ): DataRetrieval {
-        return new class ($f, $r, $p) implements DataRetrieval {
-            private ilBadgeImage $badge_image_service;
-            private Factory $factory;
-            private Renderer $renderer;
-            private \ilCtrlInterface $ctrl;
-            private ilLanguage $lng;
-            private \ilAccessHandler $access;
+        return new class ($f, $r, $access, $p) implements DataRetrieval {
+            private readonly ilBadgeImage $badge_image_service;
+            private readonly ilLanguage $lng;
 
             public function __construct(
                 private readonly Factory $ui_factory,
                 private readonly Renderer $ui_renderer,
+                private readonly ilAccessHandler $access,
                 private readonly ilObjBadgeAdministrationGUI $parent
             ) {
                 global $DIC;
@@ -98,11 +95,7 @@ class ilObjectBadgeTableGUI
                     $DIC->upload(),
                     $DIC->ui()->mainTemplate()
                 );
-                $this->factory = $this->ui_factory;
-                $this->renderer = $this->ui_renderer;
-                $this->ctrl = $DIC->ctrl();
                 $this->lng = $DIC->language();
-                $this->access = $DIC->access();
             }
 
             public function getRows(
@@ -166,8 +159,8 @@ class ilObjectBadgeTableGUI
                         $badge_item['image_rid']
                     );
                     if ($image_src !== '') {
-                        $images['rendered'] = $this->renderer->render(
-                            $this->factory->image()->responsive(
+                        $images['rendered'] = $this->ui_renderer->render(
+                            $this->ui_factory->image()->responsive(
                                 $image_src,
                                 $badge_item['title']
                             )
@@ -204,7 +197,7 @@ class ilObjectBadgeTableGUI
                         $ref_ids = ilObject::_getAllReferences($badge_item['parent_id']);
                         $ref_id = array_shift($ref_ids);
                         if ($ref_id && $this->access->checkAccess('read', '', $ref_id)) {
-                            $container_title_parts['title'] = $this->renderer->render(
+                            $container_title_parts['title'] = $this->ui_renderer->render(
                                 new Standard(
                                     $container_title_parts['title'],
                                     (string) new URI(ilLink::_getLink($ref_id))
@@ -355,7 +348,7 @@ class ilObjectBadgeTableGUI
                 'id'
             );
 
-        $data_retrieval = $this->buildDataRetrievalObject($f, $r, $this->parent_obj);
+        $data_retrieval = $this->buildDataRetrievalObject($f, $r, $this->access, $this->parent_obj);
 
         $actions = $this->getActions($url_builder, $action_parameter_token, $row_id_token);
 

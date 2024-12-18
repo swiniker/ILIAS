@@ -52,14 +52,13 @@ class ilBadgeImage
 
     public function getImageFromBadge(ilBadge $badge, int $size = self::IMAGE_SIZE_XS): string
     {
-        $image_rid = $badge->getImageRid();
-        return $this->getImageFromResourceId($badge, (string) $image_rid, $size);
+        return $this->getImageFromResourceId($badge, (string) $badge->getImageRid(), $size);
     }
 
     public function getImageFromResourceId(
         ilBadge|array $badge,
         ?string $image_rid,
-        $size = self::IMAGE_SIZE_XS
+        int $size = self::IMAGE_SIZE_XS
     ): string {
         $image_src = '';
 

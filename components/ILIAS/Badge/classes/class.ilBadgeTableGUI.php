@@ -88,8 +88,6 @@ class ilBadgeTableGUI
     {
         return new class ($f, $r, $p, $type) implements DataRetrieval {
             private ilBadgeImage $badge_image_service;
-            private Factory $factory;
-            private Renderer $renderer;
 
             public function __construct(
                 private readonly Factory $ui_factory,
@@ -103,8 +101,6 @@ class ilBadgeTableGUI
                     $DIC->upload(),
                     $DIC->ui()->mainTemplate()
                 );
-                $this->factory = $this->ui_factory;
-                $this->renderer = $this->ui_renderer;
             }
 
             /**
@@ -130,18 +126,17 @@ class ilBadgeTableGUI
                         'rendered' => null,
                         'large' => null,
                     ];
-                    $image_src = $this->badge_image_service->getImageFromResourceId($badge, $badge->getImageRid());
+                    $image_src = $this->badge_image_service->getImageFromBadge($badge);
                     if ($image_src !== '') {
-                        $images['rendered'] = $this->renderer->render(
-                            $this->factory->image()->responsive(
+                        $images['rendered'] = $this->ui_renderer->render(
+                            $this->ui_factory->image()->responsive(
                                 $image_src,
                                 $badge->getTitle()
                             )
                         );
 
-                        $image_src_large = $this->badge_image_service->getImageFromResourceId(
+                        $image_src_large = $this->badge_image_service->getImageFromBadge(
                             $badge,
-                            $badge->getImageRid(),
                             ilBadgeImage::IMAGE_SIZE_XL
                         );
                         if ($image_src_large !== '') {
