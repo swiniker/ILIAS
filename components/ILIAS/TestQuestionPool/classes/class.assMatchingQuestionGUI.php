@@ -488,7 +488,7 @@ class assMatchingQuestionGUI extends assQuestionGUI implements ilGuiQuestionScor
     public function renderSolutionOutput(
         mixed $user_solutions,
         int $active_id,
-        int $pass,
+        ?int $pass,
         bool $graphical_output = false,
         bool $result_output = false,
         bool $show_question_only = true,
