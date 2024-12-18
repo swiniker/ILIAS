@@ -211,7 +211,9 @@ class ilCalendarPresentationGUI
         }
 
         $this->initSeed();
-        $this->prepareOutput();
+        if (!$this->ctrl->isAsynch()) {
+            $this->prepareOutput();
+        }
 
         $this->help->setScreenIdComponent("cal");
         switch ($cmd) {
