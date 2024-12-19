@@ -18,7 +18,9 @@
 
 declare(strict_types=1);
 
-use ILIAS\Modules\DataCollection\Fields\Formula\FormulaParser\Token\Tokenizer;
+
+use ILIAS\Modules\DataCollection\Fields\Formula\FormulaParser\Math\Functions;
+use ILIAS\Modules\DataCollection\Fields\Formula\FormulaParser\Math\Operators;
 
 class ilDclTable
 {
@@ -530,7 +532,11 @@ class ilDclTable
      */
     public function getFieldsForFormula(): array
     {
-        $syntax_chars = array_merge(Tokenizer::$operators, Tokenizer::$functions, ['(', ')', ',']);
+        $syntax_chars = array_merge(
+            array_map(static fn(Operators $function): string => $function->value, Operators::cases()),
+            array_map(static fn(Functions $function): string => $function->value, Functions::cases()),
+            ['(', ')', ',']
+        );
         foreach ($this->getFields() as $field) {
             if (in_array($field->getDatatypeId(), ilDclFormulaFieldModel::SUPPORTED_FIELDS)) {
                 foreach ($syntax_chars as $element) {
