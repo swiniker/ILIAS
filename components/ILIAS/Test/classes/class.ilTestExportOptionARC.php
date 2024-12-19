@@ -57,8 +57,8 @@ class ilTestExportOptionARC extends ilBasicLegacyExportOption
 
     public function getLabel(): string
     {
-        $this->lng->loadLanguageModule('exp');
-        return $this->lng->txt('exp_format_dropdown-arc');
+        $this->lng->loadLanguageModule('assessment');
+        return $this->lng->txt('ass_create_export_test_archive');
     }
 
     public function onDeleteFiles(

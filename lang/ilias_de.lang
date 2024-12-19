@@ -505,10 +505,8 @@ assessment#:#ass_comments#:#Kommentare
 assessment#:#ass_competence_respect_level_ordering#:#Bitte beachten Sie, dass die Kompetenz-Schwellenwerte gemäß der Reihenfolge der Kompetenzstufen in aufsteigender Reihenfolge definiert werden müssen.
 assessment#:#ass_completion_by_submission#:#Bestehen durch Abgabe
 assessment#:#ass_completion_by_submission_info#:#Falls aktiviert, führt die Abgabe einer Lösungsdatei zur Vergabe der Maximalpunktzahl für diese Frage. Die Bewertung kann jederzeit manuell angepasst werden. Das Ändern dieser Einstellung hat keine nachträglichen Auswirkungen auf bereits eingereichte Lösungen.
-assessment#:#ass_create_export_file#:#Erstelle Exportdatei
-assessment#:#ass_create_export_file_with_results#:#Erstelle Exportdatei (inkl. Teilnehmerergebnisse)
-assessment#:#ass_create_export_test_archive#:#Erstelle Archivdatei für Test
-assessment#:#ass_create_export_test_results#:#Erstelle Ergebnisdatei
+assessment#:#ass_create_export_file_with_results#:#inkl. Teilnehmerergebnisse
+assessment#:#ass_create_export_test_archive#:#als Archivdatei
 assessment#:#ass_create_question#:#Frage erstellen
 assessment#:#ass_imap_hint#:#Hinweis (angezeigt als Tooltip)
 assessment#:#ass_imap_map_file_not_readable#:#Die hochgeladene Imagemap kann nicht gelesen werden.
@@ -9760,6 +9758,7 @@ exp#:#exp_export_single_option#:#Export %s
 exp#:#exp_file_created#:#Eine Exportdatei wurde erstellt.
 exp#:#exp_format_dropdown-csv#:#als CSV
 exp#:#exp_format_dropdown-html#:#als HTML
+exp#:#exp_format_dropdown-xls#:#als XLS
 exp#:#exp_format_dropdown-xml#:#als XML
 exp#:#exp_html#:#HTML
 exp#:#exp_import_validation_err_no_matching_xsd#:#Eine Schema Datei für Version %s existiert nicht.

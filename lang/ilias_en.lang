@@ -505,10 +505,8 @@ assessment#:#ass_comments#:#Comments
 assessment#:#ass_competence_respect_level_ordering#:#Please note that the competence thresholds have to be defined in an ascending order according to the available competence levels.
 assessment#:#ass_completion_by_submission#:#Completed by Submission
 assessment#:#ass_completion_by_submission_info#:#If enabled, the submission of at least one file causes the completion of this question by granting the maximum score for this question. The score could be manually changed later. Switching this setting does not effect already submitted solutions.
-assessment#:#ass_create_export_file#:#Create Test Export File
-assessment#:#ass_create_export_file_with_results#:#Create Test Export File (incl. Participant Results)
-assessment#:#ass_create_export_test_archive#:#Create Test Archive File
-assessment#:#ass_create_export_test_results#:#Create Test Results Export File
+assessment#:#ass_create_export_file_with_results#:#incl. Participant Results
+assessment#:#ass_create_export_test_archive#:#as Archive File
 assessment#:#ass_create_question#:#Create Question
 assessment#:#ass_imap_hint#:#Hint to be shown as Tooltip
 assessment#:#ass_imap_map_file_not_readable#:#The uploaded image map could not be read.
@@ -9760,7 +9758,6 @@ exp#:#exp_export_dropdown#:#Export
 exp#:#exp_export_files#:#Export Files
 exp#:#exp_export_single_option#:#Export %s
 exp#:#exp_file_created#:#The export file has been created.
-exp#:#exp_format_dropdown-arc#:#as ARCHIVE
 exp#:#exp_format_dropdown-csv#:#as CSV
 exp#:#exp_format_dropdown-html#:#as HTML
 exp#:#exp_format_dropdown-xls#:#as XLS

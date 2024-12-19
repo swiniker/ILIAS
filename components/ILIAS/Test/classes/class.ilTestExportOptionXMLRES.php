@@ -50,7 +50,7 @@ class ilTestExportOptionXMLRES extends ilBasicLegacyExportOption
 
     public function getSupportedRepositoryObjectTypes(): array
     {
-        return ['tst', 'crs'];
+        return ['tst'];
     }
 
     public function getLabel(): string
