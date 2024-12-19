@@ -9756,6 +9756,7 @@ exp#:#exp_create_file#:#Exportdatei erzeugen
 exp#:#exp_error_disabled#:#Der Export von Container-Objekten ist deaktiviert. Bei Fragen wenden Sie sich bitte an die technische Betreuung.
 exp#:#exp_error_too_many_objects#:#Der Export überschreitet die maximal erlaubte Zahl an Objekten (%1). Bitte wählen Sie eine kleinere Anzahl an Objekten.
 exp#:#exp_export_files#:#Exportdateien
+exp#:#exp_export_single_option#:#Export %s
 exp#:#exp_file_created#:#Eine Exportdatei wurde erstellt.
 exp#:#exp_format_dropdown-csv#:#als CSV
 exp#:#exp_format_dropdown-html#:#als HTML
