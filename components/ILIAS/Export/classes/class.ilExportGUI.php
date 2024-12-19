@@ -203,7 +203,7 @@ class ilExportGUI
         }
         if (count($infos) === 1) {
             $this->toolbar->addComponent($this->ui_services->factory()->button()->standard(
-                array_keys($infos)[0],
+                sprintf($this->lng->txt("exp_export_single_option"), array_keys($infos)[0]),
                 array_values($infos)[0]
             ));
         }
