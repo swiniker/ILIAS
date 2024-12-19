@@ -57,7 +57,8 @@ class ilBlogExportOptionHTMLWithComments extends ilBasicLegacyExportOption
 
     public function getLabel(): string
     {
-        return "HTML (" . $this->lng->txt("blog_incl_comments") . ")";
+        $this->lng->loadLanguageModule('exp');
+        return $this->lng->txt("exp_format_dropdown-html") . " (" . $this->lng->txt("blog_incl_comments") . ")";
     }
 
     public function onExportOptionSelected(
