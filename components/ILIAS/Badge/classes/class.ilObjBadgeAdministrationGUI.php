@@ -63,22 +63,6 @@ class ilObjBadgeAdministrationGUI extends ilObjectGUI
         $this->lng->loadLanguageModule('badge');
     }
 
-    /**
-     * @return list<string>
-     */
-    private function getTemplateIdsFromUrl(): array
-    {
-        $tmpl_ids = [];
-        if ($this->http->wrapper()->query()->has('tid_id')) {
-            $tmpl_ids = $this->http->wrapper()->query()->retrieve(
-                'tid_id',
-                $this->refinery->kindlyTo()->listOf($this->refinery->kindlyTo()->string())
-            );
-        }
-
-        return $tmpl_ids;
-    }
-
     public function executeCommand(): void
     {
         $next_class = $this->ctrl->getNextClass($this) ?? '';
@@ -105,12 +89,8 @@ class ilObjBadgeAdministrationGUI extends ilObjectGUI
                     $cmd = 'editSettings';
                 }
 
-                if ($this->http->wrapper()->query()->has('tid_id')) {
-                    $id = $this->http->wrapper()->query()->retrieve(
-                        'tid_id',
-                        $this->refinery->kindlyTo()->listOf($this->refinery->kindlyTo()->string())
-                    );
-                    $this->ctrl->setParameter($this, 'tid', array_pop($id));
+                if ($this->badge_request->getBadgeIdFromUrl()) {
+                    $this->ctrl->setParameter($this, 'tid', $this->badge_request->getBadgeIdFromUrl());
                 }
 
                 $table_action = $this->http->wrapper()->query()->retrieve(
@@ -286,8 +266,7 @@ class ilObjBadgeAdministrationGUI extends ilObjectGUI
         $lng = $this->lng;
         $this->assertActive();
 
-        $tmpl_ids = $this->getTemplateIdsFromUrl();
-
+        $tmpl_ids = $this->badge_request->getMultiActionBadgeIdsFromUrl();
         if ($this->checkPermissionBool('write') && count($tmpl_ids) > 0) {
             $handler = ilBadgeHandler::getInstance();
             $change_state = [];
@@ -313,7 +292,7 @@ class ilObjBadgeAdministrationGUI extends ilObjectGUI
         $lng = $this->lng;
         $this->assertActive();
 
-        $tmpl_ids = $this->getTemplateIdsFromUrl();
+        $tmpl_ids = $this->badge_request->getMultiActionBadgeIdsFromUrl();
         if ($this->checkPermissionBool('write') && count($tmpl_ids) > 0) {
             $handler = ilBadgeHandler::getInstance();
             $change_state = [];
@@ -348,7 +327,6 @@ class ilObjBadgeAdministrationGUI extends ilObjectGUI
 
     protected function listImageTemplates(): void
     {
-        $ilAccess = $this->access;
         $lng = $this->lng;
         $ilToolbar = $this->toolbar;
         $ilCtrl = $this->ctrl;
@@ -472,14 +450,16 @@ class ilObjBadgeAdministrationGUI extends ilObjectGUI
 
         $this->assertActive();
         $this->tabs_gui->setTabActive('imgtmpl');
-        $tmpl_ids = $this->getTemplateIdsFromUrl();
-        if (count($tmpl_ids) === 1) {
-            $tmpl_ids = array_pop($tmpl_ids);
+
+        $tmpl_ids = $this->badge_request->getMultiActionBadgeIdsFromUrl();
+        if (count($tmpl_ids) !== 1) {
+            $this->ctrl->redirect($this, 'listImageTemplates');
         }
 
-        $ilCtrl->setParameter($this, 'tid', $tmpl_ids);
+        $template_id = (int) array_pop($tmpl_ids);
+        $ilCtrl->setParameter($this, 'tid', $template_id);
 
-        $tmpl = new ilBadgeImageTemplate($tmpl_ids);
+        $tmpl = new ilBadgeImageTemplate($template_id);
 
         if (!$a_form) {
             $a_form = $this->initImageTemplateForm('edit');
@@ -633,13 +613,12 @@ class ilObjBadgeAdministrationGUI extends ilObjectGUI
     protected function listObjectBadgeUsers(): void
     {
         $parent_obj_id = $this->badge_request->getParentId();
-        $parent_ref_ids = ilObject::_getAllReferences($parent_obj_id);
-        $parent_ref_id = array_pop($parent_ref_ids);
-
-        if ($this->http->wrapper()->query()->has('ref_id')) {
-            $parent_ref_id = $this->http->wrapper()->query()->retrieve('ref_id', $this->refinery->kindlyTo()->int());
+        if (!$parent_obj_id && $this->badge_request->getBadgeIdFromUrl()) {
+            // In this case, we want't to list the users that have been awarded a specific badge
+            $badge = new ilBadge($this->badge_request->getBadgeIdFromUrl());
+            $parent_obj_id = $badge->getParentId();
         }
-        if (!$parent_ref_id) {
+        if (!$parent_obj_id) {
             $this->ctrl->redirect($this, 'listObjectBadges');
         }
 
@@ -653,7 +632,7 @@ class ilObjBadgeAdministrationGUI extends ilObjectGUI
 
         $this->ctrl->saveParameter($this, 'pid');
 
-        $tbl = new ilBadgeUserTableGUI($parent_ref_id, null, $this->badge_request->getBadgeId());
+        $tbl = new ilBadgeUserTableGUI(null, null, $parent_obj_id, $this->badge_request->getBadgeId());
         $tbl->renderTable();
     }
 
@@ -669,9 +648,6 @@ class ilObjBadgeAdministrationGUI extends ilObjectGUI
 
     protected function listObjectBadges(): void
     {
-        $ilAccess = $this->access;
-        $tpl = $this->tpl;
-
         $this->assertActive();
         $this->tabs_gui->setTabActive('obj_badges');
 

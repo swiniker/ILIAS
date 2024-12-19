@@ -169,6 +169,9 @@ class ilBadgeGUIRequest
         return $id;
     }
 
+    /**
+     * @return list<string>
+     */
     public function getMultiActionBadgeIdsFromUrl(): array
     {
         $tmpl_ids = [];
@@ -182,7 +185,6 @@ class ilBadgeGUIRequest
 
         return $tmpl_ids;
     }
-
 
     public function getBadgeId(): int
     {

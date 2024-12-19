@@ -108,8 +108,7 @@ class ilObjectBadgeTableGUI
             ): Generator {
                 $records = $this->getRecords($range, $order);
                 foreach ($records as $record) {
-                    $row_id = (string) $record['id'];
-                    yield $row_builder->buildDataRow($row_id, $record);
+                    yield $row_builder->buildDataRow((string) $record['id'], $record);
                 }
             }
 

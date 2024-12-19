@@ -96,31 +96,34 @@ class ilBadgeManagementGUI
         $this->flavour_definition = new ilBadgePictureDefinition();
     }
 
-    protected function splitBadgeAndUserIdsFromString(array $splittable_user_ids): array
+    /**
+     * @param list<string> $splittable_user_ids
+     * @return array{0: list<int>, 1: int}
+     */
+    private function splitBadgeAndUserIdsFromString(array $splittable_user_ids): array
     {
         $user_ids = [];
         $badge_id = null;
 
         if ($splittable_user_ids !== []) {
-
             foreach ($splittable_user_ids as $row) {
                 if (str_contains($row, '_')) {
                     $split = explode('_', $row);
 
-                    if ($badge_id === null && $split[1] !== '') {
-                        $badge_id = $split[1];
+                    if ($badge_id === null && $split[0] !== '') {
+                        $badge_id = (int) $split[0];
                     }
 
-                    if ($split[0] !== '') {
-                        $user_ids[] = $split[0];
+                    if ($split[1] !== '') {
+                        $user_ids[] = (int) $split[1];
                     }
                 } else {
                     return [$user_ids, 0];
                 }
             }
-
         }
-        return array($user_ids, $badge_id);
+
+        return [$user_ids, $badge_id];
     }
 
     public function executeCommand(): void
@@ -606,7 +609,6 @@ class ilBadgeManagementGUI
         $ilTabs = $this->tabs;
 
         $badge_ids = $this->request->getMultiActionBadgeIdsFromUrl();
-
         if ($badge_ids === ['ALL_OBJECTS']) {
             $badge_ids = [];
             foreach (ilBadge::getInstancesByParentId($this->parent_obj_id) as $badge) {
@@ -747,19 +749,18 @@ class ilBadgeManagementGUI
         $lng = $this->lng;
 
         $badge_ids = $this->request->getMultiActionBadgeIdsFromUrl();
-
         if (count($badge_ids) > 0) {
             foreach ($badge_ids as $badge_id) {
-                if ($badge_id !== self::TABLE_ALL_OBJECTS_ACTION) {
-                    $badge = new ilBadge((int) $badge_id);
-                    $badge->setActive($a_status);
-                    $badge->update();
-                } elseif ($badge_id === self::TABLE_ALL_OBJECTS_ACTION) {
+                if ($badge_id === self::TABLE_ALL_OBJECTS_ACTION) {
                     foreach (ilBadge::getInstancesByParentId($this->parent_obj_id) as $badge) {
                         $badge = new ilBadge($badge->getId());
                         $badge->setActive($a_status);
                         $badge->update();
                     }
+                } else {
+                    $badge = new ilBadge((int) $badge_id);
+                    $badge->setActive($a_status);
+                    $badge->update();
                 }
                 $this->tpl->setOnScreenMessage('success', $lng->txt('settings_saved'), true);
             }
@@ -871,7 +872,7 @@ class ilBadgeManagementGUI
         $lng = $this->lng;
 
         $splittable_user_ids = $this->request->getBadgeAssignableUsers();
-        list($user_ids, $badge_id) = $this->splitBadgeAndUserIdsFromString($splittable_user_ids);
+        [$user_ids, $badge_id] = $this->splitBadgeAndUserIdsFromString($splittable_user_ids);
 
         if (!$user_ids ||
             !$badge_id ||
@@ -881,8 +882,8 @@ class ilBadgeManagementGUI
 
         $new_badges = [];
         foreach ($user_ids as $user_id) {
-            if (!ilBadgeAssignment::exists($badge_id, (int) $user_id)) {
-                $ass = new ilBadgeAssignment($badge_id, (int) $user_id);
+            if (!ilBadgeAssignment::exists($badge_id, $user_id)) {
+                $ass = new ilBadgeAssignment($badge_id, $user_id);
                 $ass->setAwardedBy($ilUser->getId());
                 $ass->store();
 
@@ -903,9 +904,8 @@ class ilBadgeManagementGUI
         $tpl = $this->tpl;
         $ilTabs = $this->tabs;
 
-        $user_ids = $this->request->getIds();
         $splittable_user_ids = $this->request->getMultiActionBadgeIdsFromUrl();
-        list($user_ids, $badge_id) = $this->splitBadgeAndUserIdsFromString($splittable_user_ids);
+        [$user_ids, $badge_id] = $this->splitBadgeAndUserIdsFromString($splittable_user_ids);
 
         if (!$user_ids ||
             !$badge_id ||
@@ -934,10 +934,10 @@ class ilBadgeManagementGUI
         $assigned_users = ilBadgeAssignment::getAssignedUsers($badge->getId());
 
         foreach ($user_ids as $user_id) {
-            if (in_array($user_id, $assigned_users)) {
+            if (in_array($user_id, $assigned_users, true)) {
                 $confirmation_gui->addItem(
                     "id[$user_id]",
-                    $badge_id,
+                    (string) $badge_id,
                     ilUserUtil::getNamePresentation($user_id, false, false, '', true)
                 );
             }
@@ -958,7 +958,6 @@ class ilBadgeManagementGUI
             $badge_id = $found_badge_id;
             $user_ids[] = $usr_id;
         }
-
 
         if (!$user_ids ||
             !$badge_id ||

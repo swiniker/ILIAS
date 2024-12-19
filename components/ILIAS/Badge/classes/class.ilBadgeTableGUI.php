@@ -192,7 +192,11 @@ class ilBadgeTableGUI
                 $records = $this->getRecords($range, $order);
                 foreach ($records as $record) {
                     $row_id = (string) $record['id'];
-                    yield $row_builder->buildDataRow($row_id, $record);
+                    yield $row_builder->buildDataRow($row_id, $record)
+                        ->withDisabledAction(
+                            'award_revoke_badge',
+                            !$record['manual'] || !$record['active']
+                        );
                 }
             }
 
