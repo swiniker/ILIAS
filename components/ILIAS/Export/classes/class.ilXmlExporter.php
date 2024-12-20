@@ -126,11 +126,11 @@ abstract class ilXmlExporter
         $svs = $this->getValidSchemaVersions($a_entity);
         $rsv = [];
         foreach ($svs as $k => $sv) {
-            $min_version = $sv["min"] ?? ILIAS_VERSION_NUMERIC;
-            $max_version = $sv["max"] ?? ILIAS_VERSION_NUMERIC;
+            $min_version = $sv["min"] ?? "";
+            $max_version = $sv["max"] ?? "";
             if (
-                version_compare($min_version, ILIAS_VERSION_NUMERIC, "<=") &&
-                version_compare($max_version, ILIAS_VERSION_NUMERIC, ">=")
+                ($min_version === "" || version_compare($min_version, ILIAS_VERSION_NUMERIC, "<=")) &&
+                ($max_version === "" || version_compare($max_version, ILIAS_VERSION_NUMERIC, ">="))
             ) {
                 $rsv = $sv;
                 $rsv["schema_version"] = $k;
