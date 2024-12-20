@@ -87,6 +87,10 @@ class ilImportExportFactory
      */
     public static function getImporterClass(string $a_component): string
     {
+        # Compatibility with older exports
+        # Object changed to ILIASObject with the component revision
+        $a_component = "components/ILIAS/Object" ? "components/ILIAS/ILIASObject" : $a_component;
+
         /**
          * @var $objDefinition ilObjectDefinition
          */
