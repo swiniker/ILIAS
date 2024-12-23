@@ -14619,6 +14619,9 @@ li.ilWikiBlockItem {
 .il_VAccordionContent, .il_HAccordionContent {
   padding-top: 9px;
 }
+.il_VAccordionContent > .c-form.c-form--horizontal, .il_HAccordionContent > .c-form.c-form--horizontal {
+  padding: 0px 15px;
+}
 
 .il_HAccordionHeadActive, .il_VAccordionHeadActive {
   background-image: url("../images/nav/tree_exp.svg");
