@@ -1975,6 +1975,10 @@ class ilObjStyleSheet extends ilObject
                     }
                 }
 
+                if ($tag["type"] === "text_block" && $tag["tag"] === "div") {
+                    $tag["tag"] = "p";
+                }
+
                 $q = "INSERT INTO style_parameter (id,style_id, tag, class, parameter, type, value, custom) VALUES " .
                     "(" .
                     $ilDB->quote($id, "integer") . "," .
