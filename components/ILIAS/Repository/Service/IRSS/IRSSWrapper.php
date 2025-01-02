@@ -86,6 +86,7 @@ class IRSSWrapper
         $this->irss->collection()->remove($id, $stakeholder, true);
     }
 
+    /*
     public function copyResourcesToDir(
         string $rcid,
         ResourceStakeholder $stakeholder,
@@ -99,7 +100,7 @@ class IRSSWrapper
             $stream = $this->irss->consume()->stream($rid);
             $stream->getContents();
         }
-    }
+    }*/
 
     public function importFilesFromLegacyUploadToCollection(
         ResourceCollection $collection,
@@ -399,6 +400,7 @@ class IRSSWrapper
     }
 
     // this currently does not work due to issues in the irss
+    /*
     public function importContainerFromZipUploadResult(
         UploadResult $result,
         ResourceStakeholder $stakeholder
@@ -414,7 +416,7 @@ class IRSSWrapper
             $stakeholder
         );
         return $container_id->serialize();
-    }
+    }*/
 
     /**
      * @return \Generator<Stream>
