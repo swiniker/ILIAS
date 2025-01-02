@@ -46,6 +46,9 @@ class IRSSWrapper
     ) {
         global $DIC;
 
+        if (!$DIC->isDependencyAvailable("resourceStorage")) {
+            return;
+        }
         $this->irss = $DIC->resourceStorage();
         $this->archives = $DIC->archives();
         $this->upload = $DIC->upload();
