@@ -574,7 +574,7 @@ assessment#:#circle_click_center#:#Bitte klicken Sie auf den Mittelpunkt der gew
 assessment#:#circle_click_circle#:#Bitte klicken Sie auf einen Punkt auf dem Umkreis der gewünschten Region
 assessment#:#client_ip_range#:#Client IP Bereich
 assessment#:#clientip#:#Client IP
-assessment#:#close_text_hint#:#Um eine Lücke in den Text einzufügen, setzen Sie den Cursor an die entsprechende Position und nutzen Sie die Schaltfläche "Textlücke". Anschließend stehen weiter unten entsprechende Bearbeitungsbereiche zur Verfügung. Ebenso können Sie die Lücken zur Bearbeitung im Lückentext direkt anklicken.
+assessment#:#close_text_hint#:#Um eine Lücke in den Text einzufügen, setzen Sie den Cursor an die entsprechende Position und nutzen Sie die Schaltfläche „Textlücke“. Anschließend stehen weiter unten entsprechende Bearbeitungsbereiche zur Verfügung. Ebenso können Sie die Lücken zur Bearbeitung im Lückentext direkt anklicken.
 assessment#:#cloze_answer_text_info#:#Vorangestellte oder nachfolgende Leerzeichen werden beim Speichern aus der Antwort gelöscht.
 assessment#:#cloze_fixed_textlength#:#Länge des Textfeldes
 assessment#:#cloze_fixed_textlength_description#:#Wenn Sie hier einen Wert eintragen, werden Textlücken, welche keinen eigenen Wert für eine maximale Länge definieren, sowie numerische Lücken mit dieser Länge erzeugt, so dass es nicht möglich ist eine größere Anzahl an Zeichen einzugeben. Für numerische Lücken ist darüber hinaus zu beachten, dass das Dezimaltrennzeichen dabei mit gezählt wird.
@@ -687,7 +687,7 @@ assessment#:#exam_id_of_attempt#:#Test ID des Versuchs
 assessment#:#examid_in_test_pass#:#ILIAS-Prüfungsnummer anzeigen
 assessment#:#examid_in_test_pass_desc#:#Im Test wird eine ILIAS-Prüfungsnummer angezeigt. Für jeden Testdurchlauf wird eine eigene Nummer erzeugt.
 assessment#:#examid_in_test_res#:#ILIAS-Prüfungsnummer anzeigen
-assessment#:#examid_in_test_res_desc#:#In den Testergebnissen, der Statistik und dem Excel-Export wird die ILIAS-Prüfungsnummer dargestellt.
+assessment#:#examid_in_test_res_desc#:#In den Testergebnissen und dem Excel-Export wird die ILIAS-Prüfungsnummer dargestellt.
 assessment#:#exp_all_test_runs#:#Alle Durchläufe
 assessment#:#exp_eval_data#:#Daten exportieren
 assessment#:#exp_file_created#:#Exportdatei erzeugt.
@@ -764,7 +764,7 @@ assessment#:#formula#:#Formel
 assessment#:#fq_formula_desc#:#Erlaubt ist die Verwendung von bereits definierten Variablen ($v1 bis $vn), von bereits definierten Ergebnissen (z.B. $r1), das beliebige Klammern von Ausdrücken, die mathematischen Operatoren + (Addition), - (Subtraktion), * (Multiplikation), / (Division), ^ (Potenzieren), die Verwendung der Konstanten 'pi' für die Zahl Pi und 'e‘ für die Eulersche Zahl, sowie die mathematischen Funktionen 'sin', 'sinh', 'arcsin', 'asin', 'arcsinh', 'asinh', 'cos', 'cosh', 'arccos', 'acos', 'arccosh', 'acosh', 'tan', 'tanh', 'arctan', 'atan', 'arctanh', 'atanh', 'sqrt', 'abs', 'ln', 'log'.
 assessment#:#fq_no_restriction_info#:#Sowohl Dezimalzahlen als auch Brüche werden als Eingabe akzeptiert.
 assessment#:#fq_precision_info#:#Geben Sie hier die Anzahl der gewünschten Nachkommastellen an.
-assessment#:#fq_question_desc#:#Sie definieren Variablen durch die Angabe von $v1, $v2 ... $vn, Ergebnisfelder mit $r1, $r2 .... $rn an den gewünschten Positionen im Text. Klicken Sie dann auf die Schaltfläche "Frage analysieren", um Bearbeitungsformulare für alle Variablen und Ergebnisse zu erzeugen.
+assessment#:#fq_question_desc#:#Sie definieren Variablen durch die Angabe von $v1, $v2 ... $vn, Ergebnisfelder mit $r1, $r2 .... $rn an den gewünschten Positionen im Text. Klicken Sie dann auf die Schaltfläche „Frage analysieren“, um Bearbeitungsformulare für alle Variablen und Ergebnisse zu erzeugen.
 assessment#:#gap#:#Lücke
 assessment#:#gap_combination#:#Lückentext-Kombination
 assessment#:#glossary_term#:#Glossarbegriff
@@ -788,7 +788,7 @@ assessment#:#insert_gap#:#Lücke einfügen
 assessment#:#interaction_type#:#Interaktion
 assessment#:#internal_links#:#Interne Verweise
 assessment#:#intprecision#:#Teilbar durch
-assessment#:#intprecision_info#:#"Teilbar durch" hat nur Auswirkungen auf die Variablenerzeugung, wenn der Wert für die Präzision 0 beträgt. In diesem Fall legt "Teilbar durch" fest, durch welche ganze Zahl die erzeugte Variable teilbar sein muss. Ein Wert von 10 erzeugt also nur ganze Zahlen, die durch 10 teilbar sind, ein Wert von 5 erzeugt ganze Zahlen, die durch 5 teilbar sind usw. Bei einer Präzision von 0 ist "Teilbar durch" ein Pflichtfeld und muss eine positive, ganze Zahl enthalten. Voreingestellt ist der Wert 1 für beliebige ganze Zahlen.
+assessment#:#intprecision_info#:#„Teilbar durch“ hat nur Auswirkungen auf die Variablenerzeugung, wenn der Wert für die Präzision 0 beträgt. In diesem Fall legt „Teilbar durch“ fest, durch welche ganze Zahl die erzeugte Variable teilbar sein muss. Ein Wert von 10 erzeugt also nur ganze Zahlen, die durch 10 teilbar sind, ein Wert von 5 erzeugt ganze Zahlen, die durch 5 teilbar sind usw. Bei einer Präzision von 0 ist „Teilbar durch“ ein Pflichtfeld und muss eine positive, ganze Zahl enthalten. Voreingestellt ist der Wert 1 für beliebige ganze Zahlen.
 assessment#:#invalid_ip#:#Ungültige IP
 assessment#:#ip_range_byline#:#Nur IP Adressen die innerhalb der IP Bereich liegen, können den Test starten. Sie können entweder IPv4 ODER IPv6 verwenden.
 assessment#:#ip_range_for_all_participants#:#Sie bearbeiten die IP Bereich für alle Teilnehmer.
@@ -796,15 +796,14 @@ assessment#:#ip_range_for_selected_participants#:#Sie bearbeiten die IP Bereich 
 assessment#:#ip_range_for_single_participant#:#Sie bearbeiten die IP Bereich für folgenden Teilnehmer:
 assessment#:#ip_range_info#:#Nur Geräte mit einer IP aus der festgelegten Spanne können den Test starten.
 assessment#:#ip_range_label#:#Beschränkung auf IPs
-assessment#:#ip_range_updated#:#Die IP-Rang wurde für die gewählten Teilnehmer aktualisiert.
-assessment#:#javaapplet#:#Java-Applet
+assessment#:#ip_range_updated#:#Die IP Bereich wurde für die gewählten Teilnehmer aktualisiert.
 assessment#:#kiosk#:#Prüfungsansicht
-assessment#:#kiosk_description#:#Die Prüfungsansicht zeigt den Test im Kiosk-Modus. Dabei werden alle Bildschirmelemente, die nicht zum Test gehören, ausgeblendet. Um Teilnehmer effektiv daran zu hindern, während des Tests andere Webseiten zu öffnen, setzen Sie bitte zusätzlich einen auf E-Klausuren spezialisierten Browser ein (z.B. den 'Safe Exam Browser').
+assessment#:#kiosk_description#:#Die Prüfungsansicht zeigt den Test im Kiosk-Modus. Dabei werden alle Bildschirmelemente, die nicht zum Test gehören, ausgeblendet. Um Teilnehmer effektiv daran zu hindern, während des Tests andere Webseiten zu öffnen, setzen Sie bitte zusätzlich einen auf E-Klausuren spezialisierten Browser ein (z.B. den „Safe Exam Browser“).
 assessment#:#kiosk_options#:#Angezeigte Informationen
 assessment#:#kiosk_options_desc#:#Die ausgewählten Informationen werden im Kopfbereich der Seite angezeigt.
 assessment#:#kiosk_show_participant#:#Name des Teilnehmers
 assessment#:#kiosk_show_title#:#Titel des Tests
-assessment#:#kprim_answers_info#:#Der Multiple Choice-Fragetyp "Vierfache Entscheidung richtig/falsch" (Typ K', genannt Kprim) zeichnet sich dadurch aus, dass auf eine Frage oder unvollständige Aussage vier Antworten oder Ergänzungen folgen. Für jede dieser vier Möglichkeiten muss jeweils entschieden werden, ob sie zutrifft (richtig/+) oder nicht zutrifft (falsch/-). Um die maximal erreichbare Punktezahl zu erhalten, müssen alle vier Antworten korrekt sein.
+assessment#:#kprim_answers_info#:#Der Multiple Choice-Fragetyp „Vierfache Entscheidung richtig/falsch“ (Typ K', genannt Kprim) zeichnet sich dadurch aus, dass auf eine Frage oder unvollständige Aussage vier Antworten oder Ergänzungen folgen. Für jede dieser vier Möglichkeiten muss jeweils entschieden werden, ob sie zutrifft (richtig/+) oder nicht zutrifft (falsch/-). Um die maximal erreichbare Punktezahl zu erhalten, müssen alle vier Antworten korrekt sein.
 assessment#:#kprim_instruction_text#:#Für jede Aussage muss entschieden werden: [%s] oder [%s]
 assessment#:#lacex_assClozeTest_NumberOfResultExpression_d#:#Bei der 4ten Antwortoption handelt es sich um eine Auswahllücke und es wurde dort die 2te Option ausgewählt
 assessment#:#lacex_assClozeTest_NumberOfResultExpression_e#:#R[4] = +2+
@@ -851,7 +850,7 @@ assessment#:#log_deletion_not_allowed#:#Es fehlen Ihnen die Berechtigung, um Pro
 assessment#:#log_entry_type#:#Typ des Protokolleintrags
 assessment#:#log_ip#:#IP-Adresse protokollieren
 assessment#:#log_ip_info#:#Die IP-Adresse wird bei Interaktionen von Teilnehmenden protokolliert. Bestehende Protokolleinträge werden beim Deaktivieren nicht gelöscht.
-assessment#:#log_participant_data_delete_warning#:#Für diesen Test sind Protokolldaten von Teilnehmenden vorhanden. Diese werden beim Umstellen auf "Testergebnisse ohne Namen/Anonymer Test" gelöscht.
+assessment#:#log_participant_data_delete_warning#:#Für diesen Test sind Protokolldaten von Teilnehmenden vorhanden. Diese werden beim Umstellen auf „Testergebnisse ohne Namen/Anonymer Test“ gelöscht.
 assessment#:#log_text#:#Protokolleintrag
 assessment#:#log_user_solution_willingly_deleted#:#Der Benutzer hat seine Antwort entfernt.
 assessment#:#logging_settings#:#Protokolldaten
@@ -896,7 +895,7 @@ assessment#:#logs_test_run_started#:#Testdurchlauf gestartet
 assessment#:#logs_wrong_test_password_provided#:#Teilnehmer hat falsches Testpasswort eingegeben.
 assessment#:#longmenu#:#Longmenu
 assessment#:#longmenu_answeroptions_differ#:#Diese Frage funktioniert nicht richtig, denn sie hat nicht die gleiche Anzahl Lücken im Text wie in den Antwortoptionen.
-assessment#:#longmenu_text#:#‘Long Menu’-Text
+assessment#:#longmenu_text#:#„Long Menu“-Text
 assessment#:#mailnottype#:#Ein Versand findet auch beim Beenden einzelner Testdurchläufe statt
 assessment#:#mailnottype_desc#:#Der Besitzer des Tests wird auch dann benachrichtigt, wenn die Anzahl Durchläufe nicht beschränkt ist.
 assessment#:#mainbar_button_label_questionlist#:#Fragenliste
@@ -965,8 +964,8 @@ assessment#:#option_label_adequate_or_not#:#adäquat / nicht adäquat
 assessment#:#option_label_applicable#:#zutreffend
 assessment#:#option_label_applicable_or_not#:#zutreffend / nicht zutreffend
 assessment#:#option_label_custom#:#Benutzerdefinierte Bezeichnungen
-assessment#:#option_label_custom_false#:#Bezeichnung für "FALSCH"
-assessment#:#option_label_custom_true#:#Bezeichnung für "WAHR"
+assessment#:#option_label_custom_false#:#Bezeichnung für „FALSCH“
+assessment#:#option_label_custom_true#:#Bezeichnung für „WAHR“
 assessment#:#option_label_info#:#Die hier konfigurierten Bezeichnungen werden als Beschriftung für die Entscheidungsoptionen verwendet.
 assessment#:#option_label_minus#:#-
 assessment#:#option_label_not_adequate#:#nicht adäquat
@@ -1134,7 +1133,7 @@ assessment#:#question_id_short#:#ID
 assessment#:#question_instances_title#:#Diese Frage wird in den folgenden Tests verwendet
 assessment#:#question_is_part_of_running_test#:#Die Frage ist Teil eines laufenden Tests und darf nicht geändert werden.
 assessment#:#question_marking#:#Fragen markieren
-assessment#:#question_marking_description#:#Teilnehmer erhalten die Möglichkeit, Fragen für sich zu markieren. Die Markierungen werden auch in der 'Übersicht Testdurchlauf' angezeigt, sofern diese aktiviert ist.
+assessment#:#question_marking_description#:#Teilnehmer erhalten die Möglichkeit, Fragen für sich zu markieren. Die Markierungen werden auch in der „Übersicht Testdurchlauf“ angezeigt, sofern diese aktiviert ist.
 assessment#:#question_not_answered#:#Die Frage wurde nicht beantwortet
 assessment#:#question_saved_for_upload#:#Die Frage wurde automatisch gespeichert, um das Hochladen einer Datei zu ermöglichen. Wenn Sie die Bearbeitung dieser Frage jetzt abbrechen, beachten Sie bitte, dass Sie die Frage im Fragenpool löschen müssen, wenn Sie sie nicht behalten wollen.
 assessment#:#question_summary#:#Übersicht Testdurchlauf
@@ -1168,7 +1167,7 @@ assessment#:#rectangle_click_tl_corner#:#Bitte klicken Sie auf die obere linke E
 assessment#:#redirectAfterSave#:#Die maximale Bearbeitungszeit für diesen Test wurde erreicht. In wenigen Sekunden werden Sie weitergeleitet...
 assessment#:#redirect_after_finishing_rule#:#Weiterleitung
 assessment#:#redirect_after_finishing_tst#:#Weiterleitung
-assessment#:#redirect_after_finishing_tst_desc#:#Teilnehmer werden nach Beenden des Tests automatisch zu einer definierten Webseite weitergeleitet. Dies geschieht nur, wenn der Test so konfiguriert wurde, dass die Teilnehmer ihre Testergebnisse nach Beenden des Tests nicht einsehen können. Wenn Sie die Adresse einer externen Webseite eingeben, verwenden Sie die vollständige URL (einschließlich "https://"). Wenn Sie zu einem Objekt in ILIAS weiterleiten, verwenden Sie den Permalink, der in der Fußzeile des betreffenden Objekts zu finden ist.
+assessment#:#redirect_after_finishing_tst_desc#:#Teilnehmer werden nach Beenden des Tests automatisch zu einer definierten Webseite weitergeleitet. Dies geschieht nur, wenn der Test so konfiguriert wurde, dass die Teilnehmer ihre Testergebnisse nach Beenden des Tests nicht einsehen können. Wenn Sie die Adresse einer externen Webseite eingeben, verwenden Sie die vollständige URL (einschließlich „https://”). Wenn Sie zu einem Objekt in ILIAS weiterleiten, verwenden Sie den Permalink, der in der Fußzeile des betreffenden Objekts zu finden ist.
 assessment#:#redirect_always#:#immer zur definierten Zielseite
 assessment#:#redirect_in_kiosk_mode#:#nur bei aktivierter Prüfungsansicht
 assessment#:#redirection_url#:#URL Zielseite
@@ -1192,7 +1191,7 @@ assessment#:#result_dec_info#:#Gültige Dezimalzahlen sind beispielsweise 2,3 un
 assessment#:#result_frac#:#Bruch
 assessment#:#result_frac_info#:#Die Eingaben 1/3 und 2/6  sind beides gültige Ergebnisse
 assessment#:#result_type_selection#:#Ergebnistypauswahl
-assessment#:#result_unit_info#:#Bitte beachten Sie, dass die hier festgelegte Einheit auch innerhalb der "Auswählbaren Einheiten" selektiert werden muss.
+assessment#:#result_unit_info#:#Bitte beachten Sie, dass die hier festgelegte Einheit auch innerhalb der „Auswählbaren Einheiten“ selektiert werden muss.
 assessment#:#result_units#:#Auswählbare Einheiten
 assessment#:#result_units_info#:#Zum Beantworten der Frage werden die aktivierten Einheiten angeboten.###Modified as part of gender mainstreaming activities for ILIAS 8
 assessment#:#result_x#:#Ergebnis %s
@@ -1238,7 +1237,7 @@ assessment#:#set_manual_feedback#:#Manuelle Rückmeldung
 assessment#:#shape#:#Form
 assessment#:#showSuggestedSolution#:#Art
 assessment#:#show_all_test_properties_on_info_page#:#Testeigenschaften anzeigen
-assessment#:#show_all_test_properties_on_info_page_byline#:#Den Benutzern werden auf dem 'Info'-Reiter alle Testeigenschaften angezeigt, z.B. Reihenfolge, Bewertung oder Ergebnisausgabe.
+assessment#:#show_all_test_properties_on_info_page_byline#:#Den Benutzern werden auf dem „Info“-Reiter alle Testeigenschaften angezeigt, z.B. Reihenfolge, Bewertung oder Ergebnisausgabe.
 assessment#:#show_answer_overview#:#Antwortübersicht zeigen
 assessment#:#show_best_solution#:#Beste Antworten einblenden
 assessment#:#show_detailed_results#:#Detaillierte Testergebnisse (bewerteter Testdurchlauf)
@@ -1331,7 +1330,7 @@ assessment#:#total_duration#:#Dauer Gesamt
 assessment#:#true#:#Wahr
 assessment#:#tst_access_code_created#:#Damit Sie dauerhaften Zugriff auf Ihre Testergebnisse haben und einen unterbrochenen Test wieder aufnehmen können, wurde für Sie ein persönlicher Zugangsschlüssel erzeugt. Bitte notieren Sie sich den nachfolgenden Code, um später den Test fortführen zu können.
 assessment#:#tst_activate_skill_service#:#Kompetenzen
-assessment#:#tst_activate_skill_service_desc#:#Erlaubt die Zuordnung von Fragen zu Kompetenzen , sowie die Definition von Schwellenwerten für die Erreichung bestimmter Kompetenzstufen.
+assessment#:#tst_activate_skill_service_desc#:#Erlaubt die Zuordnung von Fragen zu Kompetenzen, sowie die Definition von Schwellenwerten für die Erreichung bestimmter Kompetenzstufen.
 assessment#:#tst_activation_limited_visibility_info#:#Außerhalb des angegebenen Zeitraums wird der Testtitel angezeigt. Der Test kann aber nicht gestartet werden. Der weitere Zugriff, auch auf bereits laufende Tests, wird zum Ende des Zeitraums unterbunden.
 assessment#:#tst_activation_online_info#:#Nur wenn der Test online geschaltet ist, können Benutzer am Test teilnehmen.
 assessment#:#tst_add_quest_cont_edit_mode#:#Editor
@@ -1404,7 +1403,7 @@ assessment#:#tst_corr_answ_stat_tbl_header_frequency#:#Häufigkeit
 assessment#:#tst_corrections_answers_tbl#:#Antwortstatistik
 assessment#:#tst_corrections_answers_tbl_subindex#:#Antwortstatistik für %s
 assessment#:#tst_corrections_incompatible_question_set_type#:#Eine Nachkorrektur ist nur möglich, wenn der Test eine fest definierte Fragenauswahl verwendet.
-assessment#:#tst_corrections_manscore_reset_warning#:#Es liegen %s manuelle Bewertungen für die Frage "%s (ID: %s)" vor. Alle manuellen Bewertungen werden zurückgesetzt wenn die Frage gespeichert wird.
+assessment#:#tst_corrections_manscore_reset_warning#:#Es liegen %s manuelle Bewertungen für die Frage „%s (ID: %s)” vor. Alle manuellen Bewertungen werden zurückgesetzt wenn die Frage gespeichert wird.
 assessment#:#tst_corrections_qst_form#:#Korrektur der Punkte
 assessment#:#tst_corrections_tab_question#:#Frage
 assessment#:#tst_corrections_tab_solution#:#Lösung
@@ -1433,7 +1432,7 @@ assessment#:#tst_enable_questionlist#:#Fragenliste
 assessment#:#tst_enable_questionlist_description#:#Teilnehmer können sich links neben den Testfragen eine Fragenliste anzeigen lassen.
 assessment#:#tst_ending_time#:#Ende
 assessment#:#tst_ending_time_before_starting_time#:#Bitte geben Sie für das Ende des Tests ein Datum ein, das nach dem Startdatum liegt.
-assessment#:#tst_ending_time_desc#:#Zeitpunkt, ab dem Teilnehmer keine Antworten mehr abgeben können. <strong>Wichtig</strong>: Benutzen Sie diese Option <strong>nicht</strong> für E-Klausuren/Fernklausuren. Verwenden Sie stattdessen die Funktion „Bearbeitungsdauer begrenzen“, siehe unten. Nur dann wird der Test serverseitig beendet und die letzte Eingabe bei Freitext-Fragen jedes Teilnehmers automatisch als Auto-Save-Inhalt gespeichert.
+assessment#:#tst_ending_time_desc#:#Zeitpunkt, ab dem Teilnehmer keine Antworten mehr abgeben können. <strong>Wichtig</strong>: Benutzen Sie diese Option <strong>nicht</strong> für E-Klausuren/Fernklausuren. Verwenden Sie stattdessen z.B. die Funktion „Bearbeitungsdauer begrenzen“, siehe unten. Nur dann wird der Test serverseitig beendet und die letzte Eingabe bei Freitext-Fragen jedes Teilnehmers automatisch als Auto-Save-Inhalt gespeichert. <strong>VORSICHT:</strong> Dieser Inhalt wird <strong>NICHT</strong> automatisch bewertet.
 assessment#:#tst_enter_questionpool#:#Bitte geben Sie den Namen eines Fragenpools an, in dem die neue Frage abgelegt werden soll
 assessment#:#tst_eval_question_points#:#Fragenergebnisse für Testdurchlauf %s
 assessment#:#tst_eval_results_by_pass#:#Liste der Antworten für Testdurchlauf %s
@@ -1499,7 +1498,7 @@ assessment#:#tst_heading_scoring#:#Bewertung
 assessment#:#tst_hide_info_tab#:#Info-Tab ausblenden
 assessment#:#tst_hide_info_tab_desc#:#Blendet den Tab „Info“ des Tests aus.
 assessment#:#tst_hide_pagecontents#:#Seiteninhalte ausblenden
-assessment#:#tst_hide_pagecontents_desc#:#ILIAS-Inhalte, die über den Button "Seite bearbeiten" vor und hinter dem eigentlichen Fragentext platziert wurden, werden in den Ergebnisansichten und der Druckausgabe nicht angezeigt.
+assessment#:#tst_hide_pagecontents_desc#:#ILIAS-Inhalte, die über den Button „Seite bearbeiten" vor und hinter dem eigentlichen Fragentext platziert wurden, werden in den Ergebnisansichten und der Druckausgabe nicht angezeigt.
 assessment#:#tst_hide_side_list#:#Fragenliste aus
 assessment#:#tst_highscore_achieved_ts#:#Datum
 assessment#:#tst_highscore_achieved_ts_description#:#Es wird eine zusätzliche Spalte mit dem Zeitpunkt des Tests eingeblendet.
@@ -1507,7 +1506,7 @@ assessment#:#tst_highscore_all_tables#:#Eigener Rang und Bestenliste
 assessment#:#tst_highscore_all_tables_description#:#Zeigt sowohl eine Tabelle mit der eigenen Platzierung als auch eine Tabelle mit den besten Platzierungen.
 assessment#:#tst_highscore_anon#:#Keine Namen anzeigen
 assessment#:#tst_highscore_anon_description#:#Die Platzierungen anderer Teilnehmerinnen und Teilnehmer werden ohne Angabe der Namen angezeigt. Dies geschieht automatisch bei anonymisierten Tests.
-assessment#:#tst_highscore_description#:#Im Reiter 'Ergebnisse' wird ein zusätzlicher Unterreiter 'Platzierung' angezeigt. Es wird eine Tabelle über das Abschneiden der verschiedenen Personen im Test angezeigt. Sie müssen die Option „Eigenes Testergebnis einsehen“ aktivieren, um diese Funktion zu nutzen.
+assessment#:#tst_highscore_description#:#Im Reiter „Meine Ergebnisse“ wird ein zusätzlicher Unterreiter „Platzierung“ angezeigt. Es wird eine Tabelle über das Abschneiden der verschiedenen Personen im Test angezeigt. Sie müssen die Option „Eigenes Testergebnis einsehen“ aktivieren, um diese Funktion zu nutzen.
 assessment#:#tst_highscore_enabled#:#Platzierungen
 assessment#:#tst_highscore_hints#:#Lösungshinweise
 assessment#:#tst_highscore_hints_description#:#Es wird einen zusätzliche Spalte eingeblendet, in welcher angezeigt wird, wie viele Lösungshinweise angefordert wurden.
@@ -1557,23 +1556,23 @@ assessment#:#tst_insert_missing_question#:#Bitte wählen Sie mindestens eine Fra
 assessment#:#tst_insert_questions#:#Sind Sie sicher, dass Sie die folgenden Fragen dem Test hinzufügen wollen?
 assessment#:#tst_instant_feedback#:#Direkte Rückmeldung
 assessment#:#tst_instant_feedback_answer_generic#:#Rückmeldung zur richtigen Lösung
-assessment#:#tst_instant_feedback_answer_generic_desc#:#Ist die Gesamtheit der Antwort richtig, so zeigt ILIAS beim Anklicken des 'Rückmeldung anfordern'-Buttons die eine Art hinterlegter Rückmeldung an. Ist die Gesamtheit der Antwort nicht vollständig richtig, wird eine andere  Rückmeldung angezeigt. Beide Versionen müssen bei der Frage im Reiter 'Rückmeldung' hinterlegt werden.
+assessment#:#tst_instant_feedback_answer_generic_desc#:#Ist die Gesamtheit der Antwort richtig, so zeigt ILIAS beim Anklicken des „Rückmeldung anfordern“-Buttons die eine Art hinterlegter Rückmeldung an. Ist die Gesamtheit der Antwort nicht vollständig richtig, wird eine andere Rückmeldung angezeigt. Beide Versionen müssen bei der Frage im Reiter „Rückmeldung“ hinterlegt werden.
 assessment#:#tst_instant_feedback_answer_specific#:#Unterschiedliche Rückmeldungen pro gegebener Antwort
-assessment#:#tst_instant_feedback_answer_specific_desc#:#Bei Anklicken des 'Rückmeldung anfordern'-Buttons zeigt ILIAS zu jeder abgegebenen Antwort die jeweils hinterlegte  Rückmeldung an. Nicht alle Fragetypen unterstützen diese Art von Rückmeldungen. Die Rückmeldungen müssen bei der Frage im Reiter 'Rückmeldung' hinterlegt werden.
+assessment#:#tst_instant_feedback_answer_specific_desc#:#Bei Anklicken des 'Rückmeldung anfordern'-Buttons zeigt ILIAS zu jeder abgegebenen Antwort die jeweils hinterlegte  Rückmeldung an. Nicht alle Fragetypen unterstützen diese Art von Rückmeldungen. Die Rückmeldungen müssen bei der Frage im Reiter „Rückmeldung“ hinterlegt werden.
 assessment#:#tst_instant_feedback_contents#:#Inhalte der Rückmeldung
 assessment#:#tst_instant_feedback_desc#:#Sofern Fragen mit Rückmeldungen versehen sind, stehen diese den Teilnehmern während des Tests zur Verfügung.
 assessment#:#tst_instant_feedback_forced#:#Rückmeldung immer beim Einreichen einer Antwort anzeigen
 assessment#:#tst_instant_feedback_results#:#Erreichte Punkte
-assessment#:#tst_instant_feedback_results_desc#:#Klicken Teilnehmer beim Beantworten einer Frage auf den Button 'Rückmeldung anfordern' zeigt ILIAS an, wie viele Punkte für die gegebene Antwort erreichen wurden.
+assessment#:#tst_instant_feedback_results_desc#:#Klicken Teilnehmer beim Beantworten einer Frage auf den Button „Rückmeldung anfordern“ zeigt ILIAS an, wie viele Punkte für die gegebene Antwort erreichen wurden.
 assessment#:#tst_instant_feedback_solution#:#Bestmögliche Lösung anzeigen
-assessment#:#tst_instant_feedback_solution_desc#:#Bei Anklicken des 'Rückmeldung anfordern'-Buttons zeigt ILIAS die bestmögliche Lösung der Frage an.
+assessment#:#tst_instant_feedback_solution_desc#:#Bei Anklicken des „Rückmeldung anfordern“-Buttons zeigt ILIAS die bestmögliche Lösung der Frage an.
 assessment#:#tst_instant_feedback_trigger#:#Auslöser der Rückmeldung
 assessment#:#tst_instant_feedback_trigger_forced#:#Die Rückmeldung wird bei Beantwortung von Fragen gezeigt
 assessment#:#tst_instant_feedback_trigger_forced_desc#:#Durch Beantwortung einer Frage wird die Rückmeldung automatisch ausgelöst.
 assessment#:#tst_instant_feedback_trigger_manual#:#Teilnehmer können die Rückmeldung selbst auslösen
 assessment#:#tst_instant_feedback_trigger_manual_desc#:#Die Rückmeldung steht Teilnehmern zur Verfügung, wird aber erst gezeigt, wenn der Teilnehmer diese auslöst.
 assessment#:#tst_introduction#:#Einleitung
-assessment#:#tst_introduction_desc#:#Zeigt einen Einleitungstext auf dem "Test"-Reiter an. Der Einleitungstext kann im Unterreiter "Einleitung bearbeiten" geändert werden und ist bereits vor Beginn des Tests zugänglich.
+assessment#:#tst_introduction_desc#:#Zeigt einen Einleitungstext auf dem „Test”-Reiter an. Der Einleitungstext kann im Unterreiter „Einleitung bearbeiten” geändert werden und ist bereits vor Beginn des Tests zugänglich.
 assessment#:#tst_introduction_text#:#Einleitungstext
 assessment#:#tst_invited_nobody#:#Es wurden keine Benutzer, Gruppen oder Rollen als feste Teilnehmer hinzugefügt
 assessment#:#tst_invited_selected_users#:#Die ausgewählten Benutzer wurden als feste Teilnehmer hinzugefügt
@@ -1846,13 +1845,13 @@ assessment#:#tst_result_user_name#:#Testergebnisse für %s
 assessment#:#tst_result_user_name_pass#:#Ergebnisse von Testdurchlauf %s für %s
 assessment#:#tst_results#:#Testergebnisse
 assessment#:#tst_results_access_always#:#Sofort
-assessment#:#tst_results_access_always_desc#:#Schon während eines Testdurchlaufs kann ein Zwischenergebnis über den Reiter "Ergebnisse" eingesehen werden. Nach Abschluss des Durchlaufs wird automatisch das Testergebnis angezeigt.
+assessment#:#tst_results_access_always_desc#:#Schon während eines Testdurchlaufs kann ein Zwischenergebnis über den Reiter „Meine Ergebnisse“ eingesehen werden. Nach Abschluss des Durchlaufs wird automatisch das Testergebnis angezeigt.
 assessment#:#tst_results_access_date#:#Ab definiertem Datum
-assessment#:#tst_results_access_date_desc#:#Erst ab dem gewählten Datum werden Ergebnisse im Reiter "Ergebnisse" anzeigt.
+assessment#:#tst_results_access_date_desc#:#Erst ab dem gewählten Datum werden Ergebnisse im Reiter „Meine Ergebnisse” anzeigt.
 assessment#:#tst_results_access_enabled#:#Eigenes Testergebnis einsehen
-assessment#:#tst_results_access_enabled_desc#:#Teilnehmerinnen und Teilnehmer erhalten Zugriff auf Ihre Testergebnisse über den Reiter "Ergebnisse".
+assessment#:#tst_results_access_enabled_desc#:#Teilnehmerinnen und Teilnehmer erhalten Zugriff auf Ihre Testergebnisse über den Reiter „Meine Ergebnisse“.
 assessment#:#tst_results_access_finished#:#Nach Durchlauf des Tests
-assessment#:#tst_results_access_finished_desc#:#Nach Abschluss eines Testdurchlaufs werden die Ergebnisse automatisch im Reiter "Ergebnisse" angezeigt.
+assessment#:#tst_results_access_finished_desc#:#Nach Abschluss eines Testdurchlaufs werden die Ergebnisse automatisch im Reiter „Meine Ergebnisse” angezeigt.
 assessment#:#tst_results_access_passed#:#Nach Bestehen des Tests
 assessment#:#tst_results_access_passed_desc#:#Erst wenn der Test bestanden wurde, werden die Ergebnisse angezeigt. Teilnehmerinnen und Teilnehmern, die den Test nicht bestehen, wird kein Ergebnis angezeigt.
 assessment#:#tst_results_access_setting#:#Zeitpunkt
@@ -1862,11 +1861,11 @@ assessment#:#tst_results_back_overview#:#Zurück zur Ergebnisübersicht
 assessment#:#tst_results_details_options#:#Weitere Optionen
 assessment#:#tst_results_gamification#:#Gamification
 assessment#:#tst_results_grading_opt_show_details#:#Detaillierte Testergebnisse anzeigen
-assessment#:#tst_results_grading_opt_show_details_desc#:#Zusätzlich zum zusammenfassenden Testergebnis wird eine Aktion "Detaillierte Ergebnisse" angeboten. Die Tabelle "Detaillierte Testergebnisse" zeigt für jeden Durchlauf die Titel der Fragen, die erreichten Punkte und die gewählten Antworten an. Der Inhalt der Tabelle kann im Abschnitt "Weitere Optionen" weiter ergänzt werden.
+assessment#:#tst_results_grading_opt_show_details_desc#:#Zusätzlich zum zusammenfassenden Testergebnis wird eine Aktion „Detaillierte Ergebnisse“ angeboten. Die Tabelle „Detaillierte Testergebnisse” zeigt für jeden Durchlauf die Titel der Fragen, die erreichten Punkte und die gewählten Antworten an. Der Inhalt der Tabelle kann im Abschnitt „Weitere Optionen“ weiter ergänzt werden.
 assessment#:#tst_results_grading_opt_show_mark#:#Note anzeigen
-assessment#:#tst_results_grading_opt_show_mark_desc#:#Eine Meldung im Reiter "Ergebnisse" informiert Teilnehmerinnen und Teilnehmer, welche Note sie erzielt haben.
-assessment#:#tst_results_grading_opt_show_status#:#"Bestanden" / "Nicht bestanden" anzeigen
-assessment#:#tst_results_grading_opt_show_status_desc#:#Eine Meldung im Reiter "Ergebnisse" informiert Teilnehmerinnen und Teilnehmer, ob sie bestanden haben oder nicht.
+assessment#:#tst_results_grading_opt_show_mark_desc#:#Eine Meldung im Reiter „Meine Ergebnisse“ informiert Teilnehmerinnen und Teilnehmer, welche Note sie erzielt haben.
+assessment#:#tst_results_grading_opt_show_status#:#„Bestanden“ / „Nicht bestanden“ anzeigen
+assessment#:#tst_results_grading_opt_show_status_desc#:#Eine Meldung im Reiter „Meine Ergebnisse“ informiert Teilnehmerinnen und Teilnehmer, ob sie bestanden haben oder nicht.
 assessment#:#tst_results_overview#:#Übersicht der Testdurchläufe
 assessment#:#tst_results_print_best_solution#:#Bestmögliche Lösung
 assessment#:#tst_results_print_best_solution_info#:#Den eigenen Antworten werden die bestmöglichen Lösungen gegenübergestellt.
@@ -1902,36 +1901,36 @@ assessment#:#tst_session_settings#:#Durchführung
 assessment#:#tst_set_offline_due_to_switched_question_set_type_setting#:#Der Test wurde offline gesetzt, da sich die Einstellung zur Auswahl der Testfragen geändert hat. Weisen Sie dem Test wieder Fragen zu. Anschließend können Sie den Test wieder online setzen.
 assessment#:#tst_setting_offer_hints_info#:#Teilnehmer können Lösungshinweise anfordern, um eine Frage zu beantworten. Pro gegebenem Lösungshinweis verringern sich die Punkte für die richtige Antwort.
 assessment#:#tst_setting_offer_hints_label#:#Lösungshinweise
-assessment#:#tst_settings_conflict_postpone_and_lock#:#"Nicht beantwortete Fragen werden ans Testende geschoben" kann nicht zusammen mit "Antworten bei Anzeige der Folgefrage festschreiben" verwendet werden.
-assessment#:#tst_settings_conflict_shuffle_and_lock#:#"Fragen mischen" kann nicht zusammen mit "Antworten bei Anzeige der Folgefrage festschreiben" verwendet werden.
+assessment#:#tst_settings_conflict_postpone_and_lock#:#„Nicht beantwortete Fragen werden ans Testende geschoben“ kann nicht zusammen mit „Antworten bei Anzeige der Folgefrage festschreiben“ verwendet werden.
+assessment#:#tst_settings_conflict_shuffle_and_lock#:#„Fragen mischen“ kann nicht zusammen mit „Antworten bei Anzeige der Folgefrage festschreiben“ verwendet werden.
 assessment#:#tst_settings_header_additional#:#Zusätzliche Funktionen
 assessment#:#tst_settings_header_execution#:#Durchführung: Zugang
 assessment#:#tst_settings_header_intro#:#Informationen zum Einstieg
 assessment#:#tst_settings_header_test_run#:#Durchführung: Steuerung Testdurchlauf
 assessment#:#tst_show_answer_sheet#:#Antwortenübersicht anzeigen
 assessment#:#tst_show_cancel#:#"Test unterbrechen" anzeigen
-assessment#:#tst_show_cancel_description#:#Zeigt während der Durchführung des Tests einen Button an, mit der der Test unterbrochen werden kann. Achtung: Das Unterbrechen des Tests hält nicht die unter 'Maximale Bearbeitungsdauer' festgelegte Bearbeitungszeit an.
+assessment#:#tst_show_cancel_description#:#Zeigt während der Durchführung des Tests einen Button an, mit der der Test unterbrochen werden kann. Achtung: Das Unterbrechen des Tests hält nicht die unter „Maximale Bearbeitungsdauer“ festgelegte Bearbeitungszeit an.
 assessment#:#tst_show_comp_results#:#Kompetenz-Ergebnisse
 assessment#:#tst_show_results#:#Testergebnisse
 assessment#:#tst_show_side_list#:#Fragenliste an
 assessment#:#tst_show_solution_answers_only#:#Druckausgabe der Ergebnisse (nur Antworten)
-assessment#:#tst_show_solution_answers_only_desc#:#Wenn "Druckausgabe der Ergebnisse (nur Antworten)" ausgewählt ist, werden ILIAS-Inhalte, die Sie über den "Inhalt bearbeiten"-Reiter der Fragen vor und hinter dem eigentlichen Fragentext platzieren können, in einem Ausdruck nicht angezeigt.
-assessment#:#tst_show_solution_compare#:#Zeige bestmögliche Lösung in 'Tabelle mit detaillierten Testergebnissen'
-assessment#:#tst_show_solution_compare_desc#:#Teilnehmern wird als Teil der 'Tabelle mit detaillierten Testergebnissen' eine Übersicht präsentiert, welche ihre eigenen Antworten und die bestmögliche Lösung gegenüberstellt. <br> Diese Übersicht wird nicht im Unterreiter 'Bewertete Antworten' des 'Ergebnisse'-Reiters angezeigt, auch wenn diese Einstellung hier vorgenommen wird.
+assessment#:#tst_show_solution_answers_only_desc#:#Wenn „Druckausgabe der Ergebnisse (nur Antworten)“ ausgewählt ist, werden ILIAS-Inhalte, die Sie über den „Inhalt bearbeiten“-Reiter der Fragen vor und hinter dem eigentlichen Fragentext platzieren können, in einem Ausdruck nicht angezeigt.
+assessment#:#tst_show_solution_compare#:#Zeige bestmögliche Lösung in „Tabelle mit detaillierten Testergebnissen“
+assessment#:#tst_show_solution_compare_desc#:#Teilnehmern wird als Teil der Tabelle „Detallierte Testergebnisse“ eine Ansicht präsentiert, welche ihre eigenen Antworten und die bestmögliche Lösung gegenüberstellt. <br> Diese Ansicht wird nicht im Unterreiter „Bewertete Antworten“ des „Meine Ergebnisse“-Reiters angezeigt, auch wenn diese Einstellung hier vorgenommen wird.
 assessment#:#tst_show_solution_details#:#Bewertete Antworten als Liste
-assessment#:#tst_show_solution_details_desc#:#Die Tabelle "Detallierte Testergebnisse" wird um eine Liste der eigenen Antworten ergänzt.
+assessment#:#tst_show_solution_details_desc#:#Die Tabelle „Detallierte Testergebnisse“ wird um eine Liste der eigenen Antworten ergänzt.
 assessment#:#tst_show_solution_details_singlepage#:#Bewertete Antworten auf Einzelseiten
 assessment#:#tst_show_solution_details_singlepage_desc#:#Teilnehmerinnen und Teilnehmer können jede Frage einzeln aufrufen und sehen, ob ihre Antworten richtig waren und wie viele Punkte sie damit erreicht haben.
 assessment#:#tst_show_solution_feedback#:#Rückmeldungen
-assessment#:#tst_show_solution_feedback_desc#:#Falls Rückmeldungen zu den gegebenen Antworten bei der Frage hinterlegt worden sind, werden diese angezeigt. Sie müssen die Option "Detallierte Testergebnisse anzeigen" aktivieren, um diese Funktion zu nutzen.
+assessment#:#tst_show_solution_feedback_desc#:#Falls Rückmeldungen zu den gegebenen Antworten bei der Frage hinterlegt worden sind, werden diese angezeigt. Sie müssen die Option „Detallierte Testergebnisse anzeigen“ aktivieren, um diese Funktion zu nutzen.
 assessment#:#tst_show_solution_printview#:#Druckbare Liste der Antworten
-assessment#:#tst_show_solution_printview_desc#:#Nach dem Klick auf "Test beenden" wird im Reiter "Ergebnisse" ein zusätzlicher Reiter "Bewertete Antworten" eingeblendet. Den Teilnehmerinnen und Teilnehmern werden hier ihre Antworten zu den einzelnen Testfragen angezeigt.
+assessment#:#tst_show_solution_printview_desc#:#Nach dem Klick auf „Test beenden“ wird im Reiter „Meine Ergebnisse“ ein zusätzlicher Reiter „Bewertete Antworten“ eingeblendet. Den Teilnehmerinnen und Teilnehmern werden hier ihre Antworten zu den einzelnen Testfragen angezeigt.
 assessment#:#tst_show_solution_signature#:#Platzhalter für Unterschrift
 assessment#:#tst_show_solution_signature_desc#:#Ist die Option „Detaillierte Testergebnisse anzeigen“ oder „Druckbare Liste der Antworten“ aktiviert, fügt ILIAS zusätzlich ein Unterschriftenfeld in den Ausdruck ein. In diesem kann die Person, die den Test durchgeführt hat, unterschreiben.
 assessment#:#tst_show_solution_suggested#:#Inhalte zur Wiederholung
-assessment#:#tst_show_solution_suggested_desc#:#Falls den Fragen im Test Inhalte zur Wiederholung des Stoffs zugeordnet wurden, werden diese angezeigt. Sie müssen die Option "Detaillierte Testergebnissen anzeigen" aktivieren, um diese Funktion zu nutzen. Teilnehmerinnen und Teilnehmer können so etwaige Wissenslücken schließen.
+assessment#:#tst_show_solution_suggested_desc#:#Falls den Fragen im Test Inhalte zur Wiederholung des Stoffs zugeordnet wurden, werden diese angezeigt. Sie müssen die Option „Detaillierte Testergebnissen anzeigen“ aktivieren, um diese Funktion zu nutzen. Teilnehmerinnen und Teilnehmer können so etwaige Wissenslücken schließen.
 assessment#:#tst_show_summary#:#Übersicht Testdurchlauf
-assessment#:#tst_show_summary_description#:#Mit der Schaltfläche 'Übersicht Testdurchlauf' können Teilnehmer eine Übersicht aufrufen, die zeigt, welche Fragen sie jeweils bereits bearbeitet oder markiert haben. Das Verhalten des 'Übersicht Testdurchlauf' können Sie noch weiter konfigurieren:
+assessment#:#tst_show_summary_description#:#Mit der Schaltfläche „Übersicht Testdurchlauf“ können Teilnehmer eine Übersicht aufrufen, die zeigt, welche Fragen sie jeweils bereits bearbeitet oder markiert haben. Das Verhalten des „Übersicht Testdurchlauf“ können Sie noch weiter konfigurieren:
 assessment#:#tst_show_toplist#:#Platzierung
 assessment#:#tst_shuffle_questions#:#Fragen mischen
 assessment#:#tst_shuffle_questions_description#:#Die Reihenfolge der Fragen wird pro Teilnehmer und pro Testdurchlauf neu gemischt.
@@ -2050,7 +2049,7 @@ assessment#:#uploaded_material#:#Hochgeladene Materialien
 assessment#:#use_previous_solution#:#Verwende vorherige Lösung
 assessment#:#use_previous_solution_advice#:#Die angezeigte Lösung wurde vormals von Ihnen abgegeben. Sie müssen die Übernahme dieser Lösung unterhalb der Frage bestätigen, falls Sie die Lösung ohne Änderungen übernehmen wollen.
 assessment#:#user_has_finished_a_test#:#Ein Teilnehmer hat einen Test beendet.
-assessment#:#user_ip_outside_range#:#Sie dürfen von Ihrer IP aus, nicht auf den Test zugreifen.
+assessment#:#user_ip_outside_range#:#Sie dürfen von Ihrer IP aus nicht auf den Test zugreifen.
 assessment#:#user_not_invited#:#Sie sind kein Teilnehmer der Prüfung.
 assessment#:#value_between_x_and_y#:#Der Wert muss zwischen %s und %s liegen
 assessment#:#values#:#Werte
