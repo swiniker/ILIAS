@@ -398,7 +398,7 @@ adn#:#msg_type_3#:#Breaking News
 adn#:#msg_type_during_event#:#During Event
 adn#:#msg_type_info#:#the importance has an influence on the color representation of the notification
 adve#:#advanced_editing_excass_settings#:#Exercise Text Assignments
-adve#:#advanced_editing_tst_editing#:#Page Editor for additional question content
+adve#:#advanced_editing_tst_editing#:#ILIAS Page Editor for additional question content
 adve#:#advanced_editing_tst_editing_desc#:#Activates ILIAS Page Editor for feedback and hint text editing.
 adve#:#adve_activation#:#Activation
 adve#:#adve_auto_url_linking#:#URL Auto-Linking
@@ -424,7 +424,7 @@ adve#:#adve_rte_settings#:#TinyMCE Editor
 adve#:#adve_text_content_features#:#Text Content Menu
 adve#:#adve_use_physical#:#Use b/i/u instead of str/emp/imp
 adve#:#adve_use_physical_info#:#This setting replaces the semantic style class buttons for ‘strong’, ‘emphatic’ and ‘important’ with physical attribute buttons ‘b’ (bold), ‘i’ (italic) and ‘u’ (underline). Please note, that this may result in inconsistencies if the style editor is used and other physical attributes are assigned to the strong/emphatic/important style classes.
-adve#:#adve_use_tiny_mce#:#Enable TinyMCE for WYSIWYG Editing
+adve#:#adve_use_tiny_mce#:#Enable TinyMCE Editor for WYSIWYG Editing
 assessment#:#activate_logging#:#Activate Test and Assessment Logging
 assessment#:#activate_manual_scoring#:#Enable Manual Scoring
 assessment#:#activate_manual_scoring_desc#:#Enables manual Scoring for all question types.
@@ -4882,7 +4882,7 @@ common#:#obj_adm#:#Administration
 common#:#obj_adm_desc#:#Main system settings folder containing all panels to administrate your ILIAS installation.
 common#:#obj_adn#:#Administrative Notifications
 common#:#obj_adve#:#Editing
-common#:#obj_adve_desc#:#Administration settings for ILIAS page editor and TinyMCE.
+common#:#obj_adve_desc#:#Administration settings for the ILIAS Page Editor and the TinyMCE Editor
 common#:#obj_ass#:#Asset
 common#:#obj_assf#:#Test and Assessment
 common#:#obj_assf_desc#:#Platform settings for the Test and Assessment tool
@@ -6856,7 +6856,7 @@ content#:#cont_other_resources#:#Content (Other Remaining Resources)
 content#:#cont_out_of_focus_message#:#This page is not related to your current learning objective anymore.
 content#:#cont_out_of_focus_message_last_page#:#This is the last page of the content related to your current learning objective.
 content#:#cont_ov_all_correct#:#You have correctly answered all questions.
-content#:#cont_ov_preview#:#The question overview does not work in the page editor context. Use the SCO or SCORM level preview instead.
+content#:#cont_ov_preview#:#The question overview does not work in the ILIAS Page Editor context. Use the SCO or SCORM level preview instead.
 content#:#cont_ov_some_correct#:#You have correctly answered [x] out of [y] questions.
 content#:#cont_ov_wrong_answered#:#The following questions were not answered or answered wrong
 content#:#cont_overlay_image#:#Overlay Image
