@@ -833,7 +833,7 @@ class ilMediaItem
                 if (is_file($med_file)) {
                     $mob = new ilObjMediaObject($this->getMobId());
                     $mob->makeThumbnail($this->getLocation(), $this->getPurpose() . "." . $format, $format, "80");
-                    $mob->makeThumbnail($this->getLocation(), $this->getPurpose() . "_small." . $format, $format, "40");
+                    //$mob->makeThumbnail($this->getLocation(), $this->getPurpose() . "_small." . $format, $format, "40");
                 }
             }
             if ($this->getFormat() === "image/svg+xml") {

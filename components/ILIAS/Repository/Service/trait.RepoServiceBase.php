@@ -18,27 +18,16 @@
 
 declare(strict_types=1);
 
-namespace ILIAS\Exercise\PeerReview;
+namespace ILIAS\Repository;
 
 use ILIAS\Repository\IRSS\IRSSWrapper;
-use ILIAS\Exercise\InternalDataService;
-use ILIAS\Exercise\PeerReview\Criteria\CriteriaFileRepository;
 
-class RepoService
+trait RepoServiceBase
 {
-    public function __construct(
-        protected IRSSWrapper $irss_wrapper,
-        protected InternalDataService $data,
-        protected \ilDBInterface $db
-    ) {
-    }
-
-    public function criteriaFile(): CriteriaFileRepository
+    public function irss(): IRSSWrapper
     {
-        return new CriteriaFileRepository(
-            $this->irss_wrapper,
-            $this->data,
-            $this->db
+        return new IRSSWrapper(
+            new IRSS\DataService()
         );
     }
 }

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This file is part of ILIAS, a powerful learning management system
  * published by ILIAS open source e-Learning e.V.
@@ -18,6 +16,8 @@ declare(strict_types=1);
  *
  *********************************************************************/
 
+declare(strict_types=1);
+
 namespace ILIAS\Style\Content;
 
 use ILIAS\Filesystem;
@@ -27,16 +27,11 @@ use Generator;
 use ILIAS\FileUpload\DTO\ProcessingStatus;
 use ILIAS\FileUpload\Location;
 use ILIAS\FileUpload\DTO\UploadResult;
-use ILIAS\ResourceStorage\Stakeholder\ResourceStakeholder;
-use ILIAS\Exercise\IRSS\IRSSWrapper;
+use ILIAS\Repository\IRSS\IRSSWrapper;
 
-/**
- * @author Alexander Killing <killing@leifos.de>
- */
 class ImageFileRepo
 {
     protected const DIR_PATH = "sty/sty_%id%/images";
-    protected IRSSWrapper $irss;
 
     protected InternalDataService $factory;
     protected Filesystem\Filesystem $web_files;
@@ -45,14 +40,12 @@ class ImageFileRepo
     public function __construct(
         InternalDataService $factory,
         Filesystem\Filesystem $web_files,
-        FileUpload $upload
+        FileUpload $upload,
+        protected IRSSWrapper $irss
     ) {
         $this->web_files = $web_files;
         $this->factory = $factory;
         $this->upload = $upload;
-        // to do: migrate this on merge
-        $data = new \ILIAS\Exercise\InternalDataService();
-        $this->irss = new IRSSWrapper($data);
     }
 
     // get image directory

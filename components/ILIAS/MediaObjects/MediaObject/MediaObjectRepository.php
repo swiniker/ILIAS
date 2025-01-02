@@ -21,11 +21,10 @@ declare(strict_types=1);
 namespace ILIAS\MediaObjects;
 
 use ilDBInterface;
-use ILIAS\Exercise\IRSS\IRSSWrapper;
+use ILIAS\Repository\IRSS\IRSSWrapper;
 use ILIAS\FileUpload\DTO\UploadResult;
 use ILIAS\Filesystem\Stream\ZIPStream;
 use ILIAS\Filesystem\Stream\FileStream;
-use _PHPStan_9815bbba4\Nette\Neon\Exception;
 use ILIAS\ResourceStorage\Resource\StorableResource;
 
 class MediaObjectRepository
@@ -103,18 +102,22 @@ class MediaObjectRepository
         }
     }
 
-    public function addFileFromUpload(int $mob_id, UploadResult $result): void
+    public function addFileFromUpload(
+        int $mob_id,
+        UploadResult $result,
+        string $path = "/"
+    ): void
     {
         if ($rid = $this->getRidForMobId($mob_id)) {
             $this->irss->importFileFromUploadResultToContainer(
                 $rid,
                 $result,
-                "/"
+                $path
             );
         }
     }
 
-    public function getLocationSrc(int $mob_id, string $location): string
+    public function getLocalSrc(int $mob_id, string $location): string
     {
         return $this->irss->getContainerSrc($this->getRidForMobId($mob_id), $location);
     }
@@ -151,6 +154,23 @@ class MediaObjectRepository
         int $mob_id
     ): ?StorableResource {
         return $this->irss->getResource($this->getRidForMobId($mob_id));
+    }
+
+    public function removeLocation(
+        int $mob_id,
+        string $location
+    ): void {
+        $this->irss->removePathFromContainer($this->getRidForMobId($mob_id), $location);
+    }
+
+    public function getFilesOfPath(
+        int $mob_id,
+        string $dir_path
+    ): array {
+        return $this->irss->getContainerEntriesOfPath(
+            $this->getRidForMobId($mob_id),
+            $dir_path
+        );
     }
 
 }

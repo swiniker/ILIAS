@@ -60,14 +60,36 @@ class MediaObjectManager
         $this->repo->addFileFromLegacyUpload($mob_id, $tmp_name);
     }
 
-    public function addFileFromUpload(int $mob_id, UploadResult $result): void
+    public function addFileFromUpload(
+        int $mob_id,
+        UploadResult $result,
+        string $path = "/"
+    ): void
     {
-        $this->repo->addFileFromUpload($mob_id, $result);
+        $this->repo->addFileFromUpload($mob_id, $result, $path);
     }
 
-    public function getLocationSrc(int $mob_id, string $location): string
+    public function removeLocation(
+        int $mob_id,
+        string $location
+    ): void {
+        $this->repo->removeLocation($mob_id, $location);
+    }
+
+    public function getLocalSrc(int $mob_id, string $location): string
     {
-        return $this->repo->getLocationSrc($mob_id, $location);
+        $src = $this->repo->getLocalSrc(
+            $mob_id,
+            $location
+        );
+        if ($src === "") {  // fallback: old source
+            $path_to_file = \ilObjMediaObject::_getURL($mob_id) . "/" . $location;
+            try {
+                $src = \ilWACSignedPath::signFile($path_to_file);
+            } catch (Exception $e) {
+            }
+        }
+        return $src;
     }
 
     public function getContainerResource(
@@ -76,12 +98,20 @@ class MediaObjectManager
         return $this->repo->getContainerResource($mob_id);
     }
 
+    public function getFilesOfPath(
+        int $mob_id,
+        string $dir_path
+    ): array {
+        return $this->repo->getFilesOfPath($mob_id, $dir_path);
+    }
+
     public function generatePreview(
         int $mob_id,
-        string $std_location,
+        string $location,
         bool $local,
         string $format,
-        int $sec = 1
+        int $sec = 1,
+        string $target_location = "mob_vpreview.png"
     ): void {
 
         $is_image = is_int(strpos($format, "image/"));
@@ -95,7 +125,7 @@ class MediaObjectManager
                 // the zip stream is not seekable, which is needed by Imagick
                 // so we create a seekable stream first
                 $tempStream = fopen('php://temp', 'w+');
-                stream_copy_to_stream($this->repo->getLocationStream($mob_id, $std_location)->detach(), $tempStream);
+                stream_copy_to_stream($this->repo->getLocationStream($mob_id, $location)->detach(), $tempStream);
                 rewind($tempStream);
                 $stream = new Stream($tempStream);
 
@@ -110,7 +140,7 @@ class MediaObjectManager
                 );
                 $this->repo->addStream(
                     $mob_id,
-                    "mob_vpreview.png",
+                    $target_location,
                     $converter->getStream()
                 );
                 fclose($tempStream);
@@ -119,7 +149,7 @@ class MediaObjectManager
                 $zip_uri = $this->repo->getContainerPath($mob_id);
                 $image_str = \ilFFmpeg::extractPNGFromVideoInZip(
                     $zip_uri,
-                    $std_location,
+                    $location,
                     $sec
                 );
                 $png_res = fopen('php://memory', 'r+');
@@ -128,7 +158,7 @@ class MediaObjectManager
                 $png_stream = new Stream($png_res);
                 $this->repo->addStream(
                     $mob_id,
-                    "mob_vpreview.png",
+                    $target_location,
                     $png_stream
                 );
             }

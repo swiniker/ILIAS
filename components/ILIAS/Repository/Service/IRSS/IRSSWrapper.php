@@ -18,12 +18,11 @@
 
 declare(strict_types=1);
 
-namespace ILIAS\Exercise\IRSS;
+namespace ILIAS\Repository\IRSS;
 
 use ILIAS\ResourceStorage\Identification\ResourceCollectionIdentification;
 use ILIAS\ResourceStorage\Collection\ResourceCollection;
 use ILIAS\ResourceStorage\Stakeholder\ResourceStakeholder;
-use ILIAS\Exercise\InternalDataService;
 use ILIAS\ResourceStorage\Identification\ResourceIdentification;
 use ILIAS\FileUpload\DTO\UploadResult;
 use ILIAS\Filesystem\Stream\FileStream;
@@ -34,23 +33,22 @@ use ILIAS\Filesystem\Util\Archive\Archives;
 use ILIAS\Filesystem\Util\Archive\Unzip;
 use ILIAS\Filesystem\Stream\ZIPStream;
 use ILIAS\ResourceStorage\Resource\StorableResource;
+use ILIAS\components\ResourceStorage\Container\Wrapper\ZipReader;
 
 class IRSSWrapper
 {
-    protected InternalDataService $data;
     protected \ILIAS\FileUpload\FileUpload $upload;
     protected \ILIAS\ResourceStorage\Services $irss;
     protected Archives $archives;
 
     public function __construct(
-        InternalDataService $data
+        protected DataService $data
     ) {
         global $DIC;
 
         $this->irss = $DIC->resourceStorage();
         $this->archives = $DIC->archives();
         $this->upload = $DIC->upload();
-        $this->data = $data;
         $this->archives = $DIC->archives();
     }
 
@@ -382,6 +380,10 @@ class IRSSWrapper
         $this->irss->collection()->store($target_collection);
     }
 
+    //
+    // Container
+    //
+
     public function getStreamOfContainerEntry(
         string $rid,
         string $entry
@@ -423,6 +425,43 @@ class IRSSWrapper
         )->getZIP()->getFileStreams() as $stream) {
             yield $stream;
         }
+    }
+
+    public function getContainerPaths(
+        string $container_id
+    ): \Generator {
+        foreach ($this->irss->consume()->containerZIP(
+            $this->getResourceIdForIdString($container_id)
+        )->getZIP()->getPaths() as $path) {
+            yield $path;
+        }
+    }
+
+    public function getContainerEntries(
+        string $container_id
+    ): array {
+        $reader = new ZipReader(
+            $this->irss->consume()->stream($this->getResourceIdForIdString($container_id))->getStream()
+        );
+        return $reader->getStructure();
+    }
+
+    public function getContainerEntriesOfPath(
+        string $container_id,
+        string $dir_path
+    ): array {
+        $reader = new ZipReader(
+            $this->irss->consume()->stream($this->getResourceIdForIdString($container_id))->getStream()
+        );
+        $entries = [];
+        foreach ($reader->getStructure() as $path => $entry) {
+            $dirname = $entry['dirname'] ?? '';
+            if ($dirname !== $dir_path) {
+                continue;
+            }
+            $entries[$path] = $entry;
+        }
+        return $entries;
     }
 
     public function createContainer(
@@ -632,4 +671,15 @@ class IRSSWrapper
             );
         }
     }
+
+    public function removePathFromContainer(
+        string $rid,
+        string $path
+    ): void {
+        $id = $this->getResourceIdForIdString($rid);
+        if (!is_null($id)) {
+            $this->irss->manageContainer()->removePathInsideContainer($id, $path);
+        }
+    }
+
 }

@@ -25,6 +25,7 @@ class ilPCInteractiveImage extends ilPageContent
 {
     public const AREA = "Area";
     public const MARKER = "Marker";
+    protected \ILIAS\COPage\Xsl\XslManager $xsl;
     protected DOMNode $mal_node;
     protected DOMNode $med_alias_node;
     protected \ILIAS\DI\UIServices $ui;
@@ -45,6 +46,7 @@ class ilPCInteractiveImage extends ilPageContent
         $this->manager = $DIC->copage()->internal()->domain()->pc()->interactiveImage();
         $this->htmlTransform = $DIC->copage()->internal()->domain()->htmlTransformUtil();
         $this->ui = $DIC->copage()->internal()->gui()->ui();
+        $this->xsl = $DIC->copage()->internal()->domain()->xsl();
     }
 
     public function readMediaObject(int $a_mob_id = 0): void
@@ -793,33 +795,19 @@ EOT;
     {
         $mob = $this->getMediaObject();
 
-        //$ilCtrl = $this->ctrl;
-
-        $st_item = $mob->getMediaItem("Standard");
-
         // output image map
         $xml = "<dummy>";
         $xml .= $mob->getXML(IL_MODE_ALIAS);
         $xml .= $mob->getXML(IL_MODE_OUTPUT);
         $xml .= "</dummy>";
-        $xsl = file_get_contents("./components/ILIAS/COPage/xsl/page.xsl");
-        //echo htmlentities($xml); exit;
-        $args = array( '/_xml' => $xml, '/_xsl' => $xsl );
-        $xh = xslt_create();
         $wb_path = \ilFileUtils::getWebspaceDir("output") . "/";
-        $mode = "media";
-        //echo htmlentities($ilCtrl->getLinkTarget($this, "showImageMap"));
-
-        $random = new \ilRandom();
         $params = array(
             'media_mode' => 'enable',
             'pg_frame' => "",
             'enlarge_path' => \ilUtil::getImagePath("enlarge.svg"),
             'webspace_path' => $wb_path);
-        $output = xslt_process($xh, "arg:/_xml", "arg:/_xsl", null, $args, $params);
-        xslt_error($xh);
-        xslt_free($xh);
 
+        $output = $this->xsl->process($xml, $params);
         return $output;
     }
 
