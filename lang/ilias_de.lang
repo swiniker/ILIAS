@@ -16652,10 +16652,10 @@ survey#:#survey_question_obligatory#:#(Diese Frage ist eine Pflichtfrage. Sie mu
 survey#:#survey_question_pool#:#Fragenpool
 survey#:#survey_question_pool_title#:#Pool-Titel
 survey#:#survey_question_pool_usage#:#Fragenpool verwenden
-survey#:#survey_question_pool_usage_active#:#Fragen können optional in einem Fragenpool angelegt werden
-survey#:#survey_question_pool_usage_active_info#:#Beim Anlegen einer Fragen muss jeweils entschieden werden, ob ein Fragenpool verwendet werden soll.
-survey#:#survey_question_pool_usage_inactive#:#Fragen werden direkt in der Umfrage angelegt.
-survey#:#survey_question_pool_usage_inactive_info#:#Die Frage wird zuerst nur für diese Umfrage erstellt und kann später manuell zu einem Fragenpool hinzugefügt werden.
+survey#:#survey_question_pool_usage_active#:#Fragen optional aus Pool hinzufügen
+survey#:#survey_question_pool_usage_active_info#:#Beim Anlegen einer Frage kann gewählt werden, ob die Frage direkt in der Umfrage erstellt oder aus einem bestehenden Fragenpool übernommen wird.
+survey#:#survey_question_pool_usage_inactive#:#Fragen nur in der Umfrage erstellen
+survey#:#survey_question_pool_usage_inactive_info#:#Die Umfrage bietet nur die Möglichkeit, Fragen direkt in der Umfrage zu erstellen. Eine Wiederverwendung von Fragen aus einem Fragenpool wird nicht unterstützt.
 survey#:#survey_question_title#:#Fragetitel
 survey#:#survey_questions#:#Fragen
 survey#:#survey_questions_to_clipboard_copy#:#Es wurden Fragen in die Zwischenablage kopiert. Wählen Sie ein Ziel oder leeren Sie die Zwischenablage.

@@ -16651,11 +16651,11 @@ survey#:#survey_question_editor#:#List View
 survey#:#survey_question_obligatory#:#This question is compulsory. You must answer the question!
 survey#:#survey_question_pool#:#Question Pool
 survey#:#survey_question_pool_title#:#Pool Title
-survey#:#survey_question_pool_usage#:#Question Pool
-survey#:#survey_question_pool_usage_active#:#Questions can be added optionally to a question pool
-survey#:#survey_question_pool_usage_active_info#:#Each time a question is created it has to be decided if a question pool is to be used.
-survey#:#survey_question_pool_usage_inactive#:#Questions are created directly in the survey.
-survey#:#survey_question_pool_usage_inactive_info#:#The questions can be added to a question pool manually later but are created only for this survey first.
+survey#:#survey_question_pool_usage#:#Use Question Pool
+survey#:#survey_question_pool_usage_active#:#Questions created in survey or re-used from pool
+survey#:#survey_question_pool_usage_active_info#:#Questions can be created directly in the survey or be added to the survey from a question pool.
+survey#:#survey_question_pool_usage_inactive#:#Create questions in survey only
+survey#:#survey_question_pool_usage_inactive_info#:#All questions have to be created directly in the survey. A re-use of existing questions from a pool is not possible.
 survey#:#survey_question_title#:#Question Title
 survey#:#survey_questions#:#Questions
 survey#:#survey_questions_to_clipboard_copy#:#Question(s) were copied to the clipboard. Please select a target or empty the clipboard.
