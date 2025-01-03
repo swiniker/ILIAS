@@ -322,7 +322,7 @@ class ResultsExportExcel implements Exporter
                 $this->worksheet->setCell($current_row, $col++, $this->convertToUserDateFormat($user_data->getFirstVisit()));
                 $this->worksheet->setCell($current_row, $col++, $this->convertToUserDateFormat($user_data->getLastVisit()));
                 $this->worksheet->setCell($current_row, $col++, $this->secondsToHoursMinutesSecondsString(
-                    $user_data->getQuestionsWorkedThrough() ? $user_data->getTimeOnTask() / $user_data->getQuestionsWorkedThrough() : 0
+                    $user_data->getQuestionsWorkedThrough() !== 0 ? intdiv($user_data->getTimeOnTask(), $user_data->getQuestionsWorkedThrough()) : 0
                 ));
 
                 if ($this->test_obj->isShowExamIdInTestResultsEnabled()) {
@@ -337,7 +337,7 @@ class ResultsExportExcel implements Exporter
                 $this->worksheet->setCell($current_row, $col++, $test_attempt_data->getReachedPointsInPercent());
                 $this->worksheet->setCell($current_row, $col++, $this->secondsToHoursMinutesSecondsString($test_attempt_data->getWorkingTime()));
                 $this->worksheet->setCell($current_row, $col++, $this->secondsToHoursMinutesSecondsString(
-                    $test_attempt_data->getAnsweredQuestionCount() ? $test_attempt_data->getWorkingTime() / $test_attempt_data->getAnsweredQuestionCount() : 0
+                    $test_attempt_data->getAnsweredQuestionCount() !== 0 ? intdiv($test_attempt_data->getWorkingTime(), $test_attempt_data->getAnsweredQuestionCount()) : 0
                 ));
 
                 $this->worksheet->setCell(
