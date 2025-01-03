@@ -32,7 +32,6 @@ use ILIAS\Test\Participants\ParticipantRepository;
 use ILIAS\Test\Settings\MainSettings\SettingsMainGUI;
 use ILIAS\Test\Settings\ScoreReporting\SettingsScoringGUI;
 use ILIAS\Test\Scoring\Settings\Settings as SettingsScoring;
-use ILIAS\Test\Settings\ScoreReporting\SettingsResultSummary;
 use ILIAS\Test\Scoring\Marks\MarkSchemaGUI;
 use ILIAS\Test\Scoring\Manual\TestScoringByQuestionGUI;
 use ILIAS\Test\Scoring\Manual\TestScoringByParticipantGUI;
@@ -64,6 +63,7 @@ use ILIAS\Filesystem\Util\Archive\Archives;
 use ILIAS\Skill\Service\SkillService;
 use ILIAS\ResourceStorage\Services as IRSS;
 use ILIAS\Taxonomy\DomainService as TaxonomyService;
+use ILIAS\Style\Content\Service as ContentStyle;
 
 /**
  * Class ilObjTestGUI
@@ -140,6 +140,7 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
     protected UIFactory $ui_factory;
     protected UIRenderer $ui_renderer;
     protected ilUIService $ui_service;
+    private ContentStyle $content_style;
     protected HTTPServices $http;
     protected ilHelpGUI $help;
     protected GlobalScreen $global_screen;
@@ -189,6 +190,7 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
         $this->ui_service = $DIC->uiService();
         $this->taxonomy = $DIC->taxonomy()->domain();
         $this->ui_service = $DIC->uiService();
+        $this->content_style = $DIC->contentStyle();
 
         $local_dic = TestDIC::dic();
         $this->questionrepository = $local_dic['question.general_properties.repository'];
@@ -865,7 +867,8 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
                     $this->tabs_gui,
                     $this->lng,
                     $this->help,
-                    $this->qplrequest
+                    $this->qplrequest,
+                    $this->content_style
                 );
                 $this->ctrl->forwardCommand($gui);
                 break;
