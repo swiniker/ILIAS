@@ -306,22 +306,27 @@ class ilTestEvaluationFactory
         foreach ($evaluation_data->getParticipantIds() as $active_id) {
             $user_eval_data = $evaluation_data->getParticipant($active_id);
 
-            $percentage = $user_eval_data->getReachedPointsInPercent();
-            $mark = $mark_schema->getMatchingMark($percentage);
+            $mark = $mark_schema->getMatchingMark(
+                $user_eval_data->getReachedPointsInPercent()
+            );
 
-            if ($mark !== null) {
-                $user_eval_data->setMark($mark);
-                for ($i = 0;$i < $user_eval_data->getPassCount();$i++) {
-                    $pass_data = $user_eval_data->getPass($i);
-                    $mark = $mark_schema->getMatchingMark(
-                        $pass_data->getReachedPointsInPercent()
-                    );
-                    if ($mark !== null) {
-                        $pass_data->setMark($mark);
-                    }
-                }
+            if ($mark === null) {
+                continue;
             }
 
+            $user_eval_data->setMark($mark);
+            for ($i = 0; $i < $user_eval_data->getPassCount(); $i++) {
+                $pass_data = $user_eval_data->getPass($i);
+                if ($pass_data === null) {
+                    continue;
+                }
+                $mark = $mark_schema->getMatchingMark(
+                    $pass_data->getReachedPointsInPercent()
+                );
+                if ($mark !== null) {
+                    $pass_data->setMark($mark);
+                }
+            }
         }
 
         return $evaluation_data;
