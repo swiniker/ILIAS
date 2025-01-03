@@ -5762,6 +5762,16 @@ class ilObjTest extends ilObject
             'HideInfoTab' => (int) $main_settings->getAdditionalSettings()->getHideInfoTab(),
         ];
 
+        $marks = array_map(
+            fn(Mark $v): array => [
+                'short_name' => $v->getShortName(),
+                'official_name' => $v->getOfficialName(),
+                'minimum_level' => $v->getMinimumLevel(),
+                'passed' => $v->getPassed()
+            ],
+            $this->getMarkSchema()->getMarkSteps()
+        );
+
         $next_id = $this->db->nextId('tst_test_defaults');
         $this->db->insert(
             'tst_test_defaults',
@@ -5770,29 +5780,34 @@ class ilObjTest extends ilObject
                 'name' => ['text', $a_name],
                 'user_fi' => ['integer', $this->user->getId()],
                 'defaults' => ['clob', serialize($testsettings)],
-                'marks' => ['clob', serialize($this->getMarkSchema()->getMarkSteps())],
+                'marks' => ['clob', json_encode($marks)],
                 'tstamp' => ['integer', time()]
             ]
         );
     }
 
-    /**
-     * Applies given test defaults to this test
-     *
-     * @param array $test_default The test defaults database id.
-     *
-     * @return boolean TRUE if the application succeeds, FALSE otherwise
-     */
-    public function applyDefaults(array $test_defaults): bool
+    public function applyDefaults(array $test_defaults): string
     {
         $testsettings = unserialize($test_defaults['defaults'], ['allowed_classes' => [DateTimeImmutable::class]]);
-        try {
-            $unserialized_marks = unserialize($test_defaults['marks'], ['allowed_classes' => [Mark::class]]);
-        } catch (Exception $e) {
-            return false;
-        }
+        $unserialized_marks = json_decode($test_defaults['marks'], true);
 
-        $this->mark_schema = $this->getMarkSchema()->withMarkSteps($unserialized_marks);
+        $info = '';
+        if (is_array($unserialized_marks)
+            && is_array($unserialized_marks[0])) {
+            $this->mark_schema = $this->getMarkSchema()->withMarkSteps(
+                array_map(
+                    fn(array $v): Mark => new Mark(
+                        $v['short_name'],
+                        $v['official_name'],
+                        $v['minimum_level'],
+                        $v['passed']
+                    ),
+                    $unserialized_marks
+                )
+            );
+        } else {
+            $info = 'old_mark_default_not_applied';
+        }
 
         $this->storeActivationSettings([
             'is_activation_limited' => $testsettings['activation_limited'],
@@ -5924,7 +5939,7 @@ class ilObjTest extends ilObject
         $this->getScoreSettingsRepository()->store($score_settings);
         $this->saveToDb();
 
-        return true;
+        return $info;
     }
 
     private function convertTimeToDateTimeImmutableIfNecessary(

@@ -1398,13 +1398,13 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
     */
     public function afterSave(ilObject $new_object): void
     {
+        $info = '';
         $new_object->saveToDb();
 
         $test_def_id = $this->getSelectedPersonalDefaultsSettingsFromForm();
         if ($test_def_id !== null
-            && ($defaults = $new_object->getTestDefaults($test_def_id)) !== null
-            && !$new_object->applyDefaults($defaults)) {
-            $this->tpl->setOnScreenMessage('failure', $this->lng->txt('tst_defaults_apply_not_possible'));
+            && ($defaults = $new_object->getTestDefaults($test_def_id)) !== null) {
+            $info = $new_object->applyDefaults($defaults);
         }
 
         $new_object->saveToDb();
@@ -1420,8 +1420,11 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
             );
         }
 
-        // always send a message
-        $this->tpl->setOnScreenMessage('success', $this->lng->txt('object_added'), true);
+        if ($info === '') {
+            $this->tpl->setOnScreenMessage('success', $this->lng->txt('object_added'), true);
+        } else {
+            $this->tpl->setOnScreenMessage('info', $this->lng->txt($info), true);
+        }
         $this->ctrl->setParameter($this, 'ref_id', $new_object->getRefId());
         $this->ctrl->redirectByClass(SettingsMainGUI::class);
     }
@@ -2007,13 +2010,13 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
         }
 
         // do not apply if user datasets exist
-        if ($this->getTestObject()->evalTotalPersons() > 0) {
+        if ($this->getTestObject()->evalTotalPersons() > 0
+            || ($defaults = $this->getTestObject()->getTestDefaults($defaults_id[0])) === null) {
             $this->tpl->setOnScreenMessage('info', $this->lng->txt('tst_defaults_apply_not_possible'));
             $this->defaultsObject();
             return;
         }
 
-        $defaults = $this->getTestObject()->getTestDefaults($defaults_id[0]);
         $default_settings = unserialize(
             $defaults['defaults'],
             ['allowed_classes' => [DateTimeImmutable::class]]
@@ -2068,12 +2071,14 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
             $this->tpl->setOnScreenMessage('info', $info, true);
         }
 
-        if (is_array($defaults) && !$this->getTestObject()->applyDefaults($defaults)) {
-            $this->tpl->setOnScreenMessage('failure', $this->lng->txt('tst_defaults_apply_not_possible'));
-            $this->ctrl->redirect($this, 'defaults');
+        $info = $this->getTestObject()->applyDefaults($defaults);
+        if ($info === '') {
+            $this->tpl->setOnScreenMessage('success', $this->lng->txt('tst_defaults_applied'), true);
+        } else {
+            $this->tpl->setOnScreenMessage('info', $this->lng->txt($info), true);
         }
 
-        $this->tpl->setOnScreenMessage('success', $this->lng->txt('tst_defaults_applied'), true);
+
 
         if ($question_set_type_setting_switched && $old_question_set_config->doesQuestionSetRelatedDataExist()) {
             $old_question_set_config->removeQuestionSetRelatedData();

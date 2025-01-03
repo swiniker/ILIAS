@@ -958,6 +958,7 @@ assessment#:#not_yet_accessed#:#Noch kein Zugriff erfolgt
 assessment#:#nr_of_correct_answers#:#Anzahl der erwünschten Antworten
 assessment#:#number_of_answers#:#Anzahl der Antworten
 assessment#:#numeric_gap#:#Numerische Lücke
+assessment#:#old_mark_default_not_applied#:#Das Notenschma aus Ihren persönlichen Einstellungen konnte nicht übernommen werden, da es ein altes Format verwendet. Alle anderen Einstellungen wurden angewendet.
 assessment#:#option_label#:#Optionsbezeichnungen
 assessment#:#option_label_adequate#:#adäquat
 assessment#:#option_label_adequate_or_not#:#adäquat / nicht adäquat

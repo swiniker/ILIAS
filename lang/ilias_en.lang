@@ -959,6 +959,7 @@ assessment#:#not_yet_accessed#:#Not yet accessed
 assessment#:#nr_of_correct_answers#:#Number of Requested Answers
 assessment#:#number_of_answers#:#Number of Answers
 assessment#:#numeric_gap#:#Numeric Gap
+assessment#:#old_mark_default_not_applied#:#The marks from your personal settings could not be applied as they use an old format. All other settings have been updated.
 assessment#:#option_label#:#Option Labels
 assessment#:#option_label_adequate#:#adequate
 assessment#:#option_label_adequate_or_not#:#adequate / not adequate
