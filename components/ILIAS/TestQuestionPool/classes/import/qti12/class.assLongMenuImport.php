@@ -199,8 +199,8 @@ class assLongMenuImport extends assQuestionImport
         $this->object->setAuthor($item->getAuthor());
         $this->object->setOwner($user_id);
         $this->object->setObjId($questionpool_id);
-        $this->object->setMinAutoComplete((int) $item->getMetadataEntry("minAutoCompleteLength"));
-        $this->object->setIdenticalscoring((int) $item->getMetadataEntry("identical_scoring"));
+        $this->object->setMinAutoComplete((int) ($item->getMetadataEntry('minAutoCompleteLength') ?? assLongMenu::MIN_LENGTH_AUTOCOMPLETE));
+        $this->object->setIdenticalscoring((int) $item->getMetadataEntry('identical_scoring'));
         $this->object->setCorrectAnswers($correct_answers);
         $this->object->setPoints($sum);
         // additional content editing mode information

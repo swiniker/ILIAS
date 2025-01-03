@@ -83,7 +83,7 @@ class assLongMenuGUI extends assQuestionGUI implements ilGuiQuestionScoringAdjus
 
     public function writeQuestionSpecificPostData(ilPropertyFormGUI $form): void
     {
-        $min_auto_complete = (int) $form->getInput('min_auto_complete');
+        $min_auto_complete = (int) ($form->getInput('min_auto_complete') ?? assLongMenu::MIN_LENGTH_AUTOCOMPLETE);
         $hidden_text_files = $this->request_data_collector->string('hidden_text_files');
         $hidden_correct_answers = $this->request_data_collector->string('hidden_correct_answers');
         $long_menu_type = $this->request_data_collector->raw('long_menu_type') ?? [];
