@@ -5807,8 +5807,6 @@ common#:#tst_history_read#:#View History
 common#:#tst_new#:#New test
 common#:#tst_results#:#Test Results
 common#:#tst_run#:#Run
-common#:#tst_statistical_evaluation#:#Statistics
-common#:#tst_statistics#:#Statistics
 common#:#tst_user_not_invited#:#You are not supposed to take this test.
 common#:#tst_warning_test_not_complete#:#The test is not complete!
 common#:#tutors#:#Tutors
@@ -14783,8 +14781,8 @@ rbac#:#tst_edit_learning_progress#:#User can edit learning progress settings
 rbac#:#tst_edit_permission#:#User can change permission settings
 rbac#:#tst_read#:#User can perform the test
 rbac#:#tst_read_learning_progress#:#User can view learning progress of other users
+rbac#:#tst_tst_history_read#:#View History
 rbac#:#tst_tst_results#:#User has access to test results of others
-rbac#:#tst_tst_statistics#:#User has access to test statistics
 rbac#:#tst_visible#:#Test is visible
 rbac#:#tst_write#:#User can edit content and settings of test
 rbac#:#upload_blacklisted_files#:#Bypass Negative List

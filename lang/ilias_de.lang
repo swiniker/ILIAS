@@ -5805,8 +5805,6 @@ common#:#tst_history_read#:#Verlauf einsehen
 common#:#tst_new#:#Neuen Test anlegen
 common#:#tst_results#:#Testergebnisse
 common#:#tst_run#:#Ausführen
-common#:#tst_statistical_evaluation#:#Statistik
-common#:#tst_statistics#:#Statistik
 common#:#tst_user_not_invited#:#Sie dürfen an dieser Online-Prüfung nicht teilnehmen.
 common#:#tst_warning_test_not_complete#:#Der Test ist nicht vollständig!
 common#:#tutors#:#Kursbetreuung
@@ -14783,8 +14781,8 @@ rbac#:#tst_edit_learning_progress#:#Benutzer kann Lernfortschrittseinstellungen 
 rbac#:#tst_edit_permission#:#Rechteeinstellungen bearbeiten
 rbac#:#tst_read#:#Test durchführen
 rbac#:#tst_read_learning_progress#:#Benutzer kann Lernfortschritt anderer Benutzer einsehen
+rbac#:#tst_tst_history_read#:#Verlauf einsehen
 rbac#:#tst_tst_results#:#Zugriff auf Testergebnisse
-rbac#:#tst_tst_statistics#:#Zugriff auf Teststatistik
 rbac#:#tst_visible#:#Test ist sichtbar
 rbac#:#tst_write#:#Test zusammenstellen und Einstellungen bearbeiten
 rbac#:#upload_blacklisted_files#:#Negativliste umgehen
