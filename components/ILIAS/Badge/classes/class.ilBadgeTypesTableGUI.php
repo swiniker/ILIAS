@@ -47,7 +47,7 @@ class ilBadgeTypesTableGUI
     private readonly ilLanguage $lng;
     private readonly ilGlobalTemplateInterface $tpl;
 
-    public function __construct()
+    public function __construct(protected bool $a_has_write = false)
     {
         global $DIC;
 
@@ -170,19 +170,24 @@ class ilBadgeTypesTableGUI
         URLBuilderToken $row_id_token
     ): array {
         $f = $this->factory;
-        return [
-            'badge_type_activate' => $f->table()->action()->multi(
-                $this->lng->txt('activate'),
-                $url_builder->withParameter($action_parameter_token, 'badge_type_activate'),
-                $row_id_token
-            ),
-            'badge_type_deactivate' =>
-                $f->table()->action()->multi(
-                    $this->lng->txt('deactivate'),
-                    $url_builder->withParameter($action_parameter_token, 'badge_type_deactivate'),
+        if ($this->a_has_write) {
+            return [
+                'badge_type_activate' => $f->table()->action()->multi(
+                    $this->lng->txt('activate'),
+                    $url_builder->withParameter($action_parameter_token, 'badge_type_activate'),
                     $row_id_token
-                )
-        ];
+                ),
+                'badge_type_deactivate' =>
+                    $f->table()->action()->multi(
+                        $this->lng->txt('deactivate'),
+                        $url_builder->withParameter($action_parameter_token, 'badge_type_deactivate'),
+                        $row_id_token
+                    )
+            ];
+        } else {
+            return [];
+        }
+
     }
 
     public function renderTable(): void

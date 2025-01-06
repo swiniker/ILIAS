@@ -13,7 +13,6 @@
  * us at:
  * https://www.ilias.de
  * https://github.com/ILIAS-eLearning
- *
  *********************************************************************/
 
 declare(strict_types=1);
@@ -34,7 +33,6 @@ use ILIAS\UI\Component\Table\DataRowBuilder;
 use Generator;
 use ILIAS\UI\Component\Table\DataRetrieval;
 use ILIAS\UI\URLBuilderToken;
-use ILIAS\DI\Container;
 use ilBadge;
 use ilBadgeAuto;
 use ILIAS\Filesystem\Stream\Streams;
@@ -52,7 +50,7 @@ class ilBadgeTableGUI
     private readonly ilLanguage $lng;
     private readonly ilGlobalTemplateInterface $tpl;
 
-    public function __construct(int $parent_obj_id, string $parent_obj_type)
+    public function __construct(int $parent_obj_id, string $parent_obj_type, protected bool $has_write = false)
     {
         global $DIC;
 
@@ -193,10 +191,10 @@ class ilBadgeTableGUI
                 foreach ($records as $record) {
                     $row_id = (string) $record['id'];
                     yield $row_builder->buildDataRow($row_id, $record)
-                        ->withDisabledAction(
-                            'award_revoke_badge',
-                            !$record['manual'] || !$record['active']
-                        );
+                                      ->withDisabledAction(
+                                          'award_revoke_badge',
+                                          !$record['manual'] || !$record['active']
+                                      );
                 }
             }
 
@@ -269,37 +267,42 @@ class ilBadgeTableGUI
     ): array {
         $f = $this->factory;
 
-        return [
-            'badge_table_activate' =>
-                $f->table()->action()->multi(
-                    $this->lng->txt('activate'),
-                    $url_builder->withParameter($action_parameter_token, 'badge_table_activate'),
+        if ($this->has_write) {
+            return [
+                'badge_table_activate' =>
+                    $f->table()->action()->multi(
+                        $this->lng->txt('activate'),
+                        $url_builder->withParameter($action_parameter_token, 'badge_table_activate'),
+                        $row_id_token
+                    ),
+                'badge_table_deactivate' =>
+                    $f->table()->action()->multi(
+                        $this->lng->txt('deactivate'),
+                        $url_builder->withParameter($action_parameter_token, 'badge_table_deactivate'),
+                        $row_id_token
+                    ),
+                'badge_table_edit' => $f->table()->action()->single(
+                    $this->lng->txt('edit'),
+                    $url_builder->withParameter($action_parameter_token, 'badge_table_edit'),
                     $row_id_token
                 ),
-            'badge_table_deactivate' =>
-                $f->table()->action()->multi(
-                    $this->lng->txt('deactivate'),
-                    $url_builder->withParameter($action_parameter_token, 'badge_table_deactivate'),
-                    $row_id_token
-                ),
-            'badge_table_edit' => $f->table()->action()->single(
-                $this->lng->txt('edit'),
-                $url_builder->withParameter($action_parameter_token, 'badge_table_edit'),
-                $row_id_token
-            ),
-            'badge_table_delete' =>
-                $f->table()->action()->standard(
-                    $this->lng->txt('delete'),
-                    $url_builder->withParameter($action_parameter_token, 'badge_table_delete'),
-                    $row_id_token
-                ),
-            'award_revoke_badge' =>
-                $f->table()->action()->single(
-                    $this->lng->txt('badge_award_revoke'),
-                    $url_builder->withParameter($action_parameter_token, 'award_revoke_badge'),
-                    $row_id_token
-                )
-        ];
+                'badge_table_delete' =>
+                    $f->table()->action()->standard(
+                        $this->lng->txt('delete'),
+                        $url_builder->withParameter($action_parameter_token, 'badge_table_delete'),
+                        $row_id_token
+                    ),
+                'award_revoke_badge' =>
+                    $f->table()->action()->single(
+                        $this->lng->txt('badge_award_revoke'),
+                        $url_builder->withParameter($action_parameter_token, 'award_revoke_badge'),
+                        $row_id_token
+                    )
+            ];
+        } else {
+            return [];
+        }
+
     }
 
     public function renderTable(): void

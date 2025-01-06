@@ -13,7 +13,6 @@
  * us at:
  * https://www.ilias.de
  * https://github.com/ILIAS-eLearning
- *
  *********************************************************************/
 
 use ILIAS\Badge\ilBadgeImage;
@@ -292,7 +291,7 @@ class ilBadgeManagementGUI
             }
         }
 
-        $table = new ilBadgeTableGUI($this->parent_obj_id, $this->parent_obj_type);
+        $table = new ilBadgeTableGUI($this->parent_obj_id, $this->parent_obj_type, $this->hasWrite());
         $table->renderTable();
     }
 
@@ -657,8 +656,6 @@ class ilBadgeManagementGUI
         } else {
             $this->tpl->setOnScreenMessage('failure', $lng->txt('badge_select_one'), true);
         }
-
-
 
         $ilCtrl->redirect($this, 'listBadges');
     }

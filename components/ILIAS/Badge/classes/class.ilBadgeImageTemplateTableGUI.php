@@ -13,7 +13,6 @@
  * us at:
  * https://www.ilias.de
  * https://github.com/ILIAS-eLearning
- *
  *********************************************************************/
 
 declare(strict_types=1);
@@ -35,7 +34,6 @@ use ILIAS\UI\Component\Table\DataRowBuilder;
 use Generator;
 use ILIAS\UI\Component\Table\DataRetrieval;
 use ILIAS\UI\URLBuilderToken;
-use ILIAS\DI\Container;
 use ILIAS\Filesystem\Stream\Streams;
 
 class ilBadgeImageTemplateTableGUI
@@ -48,7 +46,7 @@ class ilBadgeImageTemplateTableGUI
     private readonly ilLanguage $lng;
     private readonly ilGlobalTemplateInterface $tpl;
 
-    public function __construct()
+    public function __construct(protected bool $has_write = false)
     {
         global $DIC;
         $this->lng = $DIC->language();
@@ -191,19 +189,24 @@ class ilBadgeImageTemplateTableGUI
         URLBuilderToken $row_id_token
     ): array {
         $f = $this->factory;
-        return [
-            'badge_image_template_edit' => $f->table()->action()->single(
-                $this->lng->txt('edit'),
-                $url_builder->withParameter($action_parameter_token, 'badge_image_template_editImageTemplate'),
-                $row_id_token
-            ),
-            'badge_image_template_delete' =>
-                $f->table()->action()->standard(
-                    $this->lng->txt('delete'),
-                    $url_builder->withParameter($action_parameter_token, 'badge_image_template_delete'),
+        if ($this->has_write) {
+            return [
+                'badge_image_template_edit' => $f->table()->action()->single(
+                    $this->lng->txt('edit'),
+                    $url_builder->withParameter($action_parameter_token, 'badge_image_template_editImageTemplate'),
                     $row_id_token
-                )
-        ];
+                ),
+                'badge_image_template_delete' =>
+                    $f->table()->action()->standard(
+                        $this->lng->txt('delete'),
+                        $url_builder->withParameter($action_parameter_token, 'badge_image_template_delete'),
+                        $row_id_token
+                    )
+            ];
+        } else {
+            return [];
+        }
+
     }
 
     public function renderTable(): void

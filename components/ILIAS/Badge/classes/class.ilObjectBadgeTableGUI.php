@@ -57,8 +57,10 @@ class ilObjectBadgeTableGUI
     private readonly ilObjBadgeAdministrationGUI $parent_obj;
     private readonly ilAccessHandler $access;
 
-    public function __construct(ilObjBadgeAdministrationGUI $parentObj)
-    {
+    public function __construct(
+        ilObjBadgeAdministrationGUI $parentObj,
+        protected bool $has_write = false
+    ) {
         global $DIC;
 
         $this->lng = $DIC->language();
@@ -287,31 +289,34 @@ class ilObjectBadgeTableGUI
         URLBuilderToken $row_id_token
     ): array {
         $f = $this->factory;
-        $actions = [
-            'obj_badge_activate' => $f->table()->action()->multi(
-                $this->lng->txt('activate'),
-                $url_builder->withParameter($action_parameter_token, 'obj_badge_activate'),
-                $row_id_token
-            ),
-            'obj_badge_deactivate' =>
-                $f->table()->action()->multi(
-                    $this->lng->txt('deactivate'),
-                    $url_builder->withParameter($action_parameter_token, 'obj_badge_deactivate'),
+        $actions = [];
+        if ($this->has_write) {
+            $actions = [
+                'obj_badge_activate' => $f->table()->action()->multi(
+                    $this->lng->txt('activate'),
+                    $url_builder->withParameter($action_parameter_token, 'obj_badge_activate'),
                     $row_id_token
                 ),
-            'obj_badge_delete' =>
-                $f->table()->action()->multi(
-                    $this->lng->txt('delete'),
-                    $url_builder->withParameter($action_parameter_token, 'obj_badge_delete'),
-                    $row_id_token
-                ),
-            'obj_badge_show_users' =>
-                $f->table()->action()->single(
-                    $this->lng->txt('user'),
-                    $url_builder->withParameter($action_parameter_token, 'obj_badge_show_users'),
-                    $row_id_token
-                )
-        ];
+                'obj_badge_deactivate' =>
+                    $f->table()->action()->multi(
+                        $this->lng->txt('deactivate'),
+                        $url_builder->withParameter($action_parameter_token, 'obj_badge_deactivate'),
+                        $row_id_token
+                    ),
+                'obj_badge_delete' =>
+                    $f->table()->action()->multi(
+                        $this->lng->txt('delete'),
+                        $url_builder->withParameter($action_parameter_token, 'obj_badge_delete'),
+                        $row_id_token
+                    ),
+                'obj_badge_show_users' =>
+                    $f->table()->action()->single(
+                        $this->lng->txt('user'),
+                        $url_builder->withParameter($action_parameter_token, 'obj_badge_show_users'),
+                        $row_id_token
+                    )
+            ];
+        }
 
         return $actions;
     }
@@ -368,10 +373,22 @@ class ilObjectBadgeTableGUI
             if ($action === 'obj_badge_delete') {
                 $items = [];
                 if (\is_array($ids) && \count($ids) > 0) {
+                    if ($ids === ['ALL_OBJECTS']) {
+                        $filter = [
+                            'type' => '',
+                            'title' => '',
+                            'object' => ''
+                        ];
+                        $ids = [];
+                        foreach (ilBadge::getObjectInstances($filter) as $badge_item) {
+                            $ids[] = $badge_item['id'];
+                        }
+                    }
+
                     foreach ($ids as $id) {
                         $badge = new ilBadge((int) $id);
                         $items[] = $f->modal()->interruptiveItem()->keyValue(
-                            $id,
+                            (string) $id,
                             (string) $badge->getId(),
                             $badge->getTitle()
                         );
