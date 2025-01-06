@@ -1330,7 +1330,7 @@ class ilObjectGUI implements ImplementsCreationCallback
 
         if ($new_id === null
             || $new_id === 0) {
-            $this->tpl->setOnScreenMessage('failure', $this->lng->txt('import_file_not_valid'));
+            $this->tpl->setOnScreenMessage('failure', $this->lng->txt('import_file_not_valid_here'));
             $this->deleteUploadedImportFile($path_to_uploaded_file_in_temp_dir);
             return;
         }
