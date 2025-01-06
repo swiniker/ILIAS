@@ -158,6 +158,8 @@ class ilObjectGUI implements ImplementsCreationCallback
         $this->call_by_reference = $call_by_reference;
         $this->prepare_output = $prepare_output;
 
+        $this->lng->loadLanguageModule('obj');
+
         $params = ["ref_id"];
         if (!$call_by_reference) {
             $params = ["ref_id","obj_id"];
@@ -1319,7 +1321,6 @@ class ilObjectGUI implements ImplementsCreationCallback
             );
         } catch (ilException $e) {
             $this->tmp_import_dir = $imp->getTemporaryImportDir();
-            $this->lng->loadLanguageModule('obj');
             $this->tpl->setOnScreenMessage(
                 'failure',
                 $this->lng->txt('obj_import_file_error') . ' <br />' . $e->getMessage()
