@@ -14187,9 +14187,11 @@ rbac#:#frm_add_reply#:#Benutzer können auf Forenbeiträge antworten
 rbac#:#frm_add_thread#:#Forenthema anlegen
 rbac#:#frm_copy#:#Forum kopieren
 rbac#:#frm_delete#:#Forum löschen oder verschieben
+rbac#:#frm_edit_learning_progress#:#Benutzer kann Lernfortschrittseinstellungen bearbeiten
 rbac#:#frm_edit_permission#:#Rechteeinstellungen ändern
 rbac#:#frm_moderate_frm#:#Forenbeiträge löschen und zensieren
 rbac#:#frm_read#:#Forum und Beiträge lesen
+rbac#:#frm_read_learning_progress#:#Benutzer kann Lernfortschritt anderer Benutzer einsehen
 rbac#:#frm_visible#:#Forum ist sichtbar
 rbac#:#frm_write#:#Einstellungen des Forums bearbeiten und Moderation verwalten###Modified as part of gender mainstreaming activities for ILIAS 8
 rbac#:#frma_edit_permission#:#Rechteeinstellungen für Administration ändern

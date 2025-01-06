@@ -14187,9 +14187,11 @@ rbac#:#frm_add_reply#:#Users can reply to a post
 rbac#:#frm_add_thread#:#User can add a new thread
 rbac#:#frm_copy#:#User can copy forum
 rbac#:#frm_delete#:#User can move or delete forum
+rbac#:#frm_edit_learning_progress#:#User can edit learning progress settings
 rbac#:#frm_edit_permission#:#User can change permission settings
 rbac#:#frm_moderate_frm#:#User can edit, censor and delete posts
 rbac#:#frm_read#:#User can read forum content
+rbac#:#frm_read_learning_progress#:#User can view learning progress of other users
 rbac#:#frm_visible#:#Forum is visible
 rbac#:#frm_write#:#User can edit forum settings and moderators
 rbac#:#frma_edit_permission#:#User can change permission settings of Forum administration
