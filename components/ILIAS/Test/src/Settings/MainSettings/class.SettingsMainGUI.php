@@ -791,6 +791,7 @@ class SettingsMainGUI extends TestSettingsGUI
                 $this->lng->txt('obj_orgunit_positions_info')
             )->withValue(
                 (new \ilOrgUnitObjectPositionSetting($this->test_object->getId()))->isActive()
+                    ?? $position_settings->getActivationDefault() === \ilOrgUnitObjectTypePositionSetting::DEFAULT_ON
             );
         if (!$position_settings->isChangeableForObject()) {
             return $enable_organisational_units_access->withDisabled(true);
