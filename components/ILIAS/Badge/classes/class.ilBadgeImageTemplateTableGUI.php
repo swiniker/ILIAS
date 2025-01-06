@@ -203,10 +203,9 @@ class ilBadgeImageTemplateTableGUI
                         $row_id_token
                     )
             ];
-        } else {
-            return [];
         }
 
+        return [];
     }
 
     public function renderTable(): void
