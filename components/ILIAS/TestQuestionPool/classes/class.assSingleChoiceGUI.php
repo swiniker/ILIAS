@@ -62,8 +62,7 @@ class assSingleChoiceGUI extends assQuestionGUI implements ilGuiQuestionScoringA
      */
     protected function writePostData(bool $always = false): int
     {
-        $hasErrors = (!$always) ? $this->editQuestion(true) : false;
-        if (!$hasErrors) {
+        if ($always || !$this->editQuestion(true)) {
             $this->writeQuestionGenericPostData();
             $this->writeQuestionSpecificPostData(new ilPropertyFormGUI());
             $this->writeAnswerSpecificPostData(new ilPropertyFormGUI());
@@ -132,35 +131,21 @@ class assSingleChoiceGUI extends assQuestionGUI implements ilGuiQuestionScoringA
         if ($save) {
             foreach ($this->request_data_collector->getParsedBody() as $key => $value) {
                 $item = $form->getItemByPostVar($key);
-                if ($item !== null) {
-                    switch (get_class($item)) {
-                        case 'ilDurationInputGUI':
-                            $item->setHours($value['hh']);
-                            $item->setMinutes($value['mm']);
-                            $item->setSeconds($value['ss']);
-                            break;
-                        default:
-                            $item->setValue($value);
-                    }
+                if ($item === null) {
+                    continue;
+                }
+                switch (get_class($item)) {
+                    case 'ilDurationInputGUI':
+                        $item->setHours($value['hh']);
+                        $item->setMinutes($value['mm']);
+                        $item->setSeconds($value['ss']);
+                        break;
+                    default:
+                        $item->setValue($value);
                 }
             }
 
             $errors = !$form->checkInput();
-            foreach ($this->request_data_collector->getParsedBody() as $key => $value) {
-                $item = $form->getItemByPostVar($key);
-                if ($item !== null) {
-                    switch (get_class($item)) {
-                        case 'ilDurationInputGUI':
-                            $item->setHours($value['hh']);
-                            $item->setMinutes($value['mm']);
-                            $item->setSeconds($value['ss']);
-                            break;
-                        default:
-                            $item->setValue($value);
-                    }
-                }
-            } // again, because checkInput now performs the whole stripSlashes handling and we need this if we don't want to have duplication of backslashes
-
             if ($errors) {
                 $checkonly = false;
             }
