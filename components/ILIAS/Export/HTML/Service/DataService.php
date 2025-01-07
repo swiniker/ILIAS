@@ -18,28 +18,29 @@
 
 declare(strict_types=1);
 
-namespace ILIAS\Export;
+namespace ILIAS\Export\HTML;
 
-/**
- * @author Alexander Killing <killing@leifos.de>
- */
-class Service
+use ILIAS\components\Export\HTML\ExportException;
+
+class DataService
 {
-    protected static array $instance = [];
     public function __construct()
     {
     }
 
-    public function internal(): InternalService
-    {
-        return self::$instance["internal"] ??= new InternalService();
+    public function exportFile(
+        int $object_id,
+        string $rid,
+        string $timestamp,
+        string $type
+    ): ExportFile {
+        return new ExportFile($object_id, $rid, $timestamp, $type);
     }
 
-    public function domain(): ExternalDomainService
+    public function exportException(
+        string $message
+    ) : ExportException
     {
-        return self::$instance["domain"] ??= new ExternalDomainService(
-            $this->internal()->domain()
-        );
+        return new ExportException($message);
     }
-
 }

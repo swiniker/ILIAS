@@ -18,28 +18,35 @@
 
 declare(strict_types=1);
 
-namespace ILIAS\Export;
+namespace ILIAS\Export\HTML;
 
-/**
- * @author Alexander Killing <killing@leifos.de>
- */
-class Service
+class ExportFile
 {
-    protected static array $instance = [];
-    public function __construct()
-    {
+    public function __construct(
+        protected int $object_id,
+        protected string $rid,
+        protected string $timestamp,
+        protected string $type
+    ) {
     }
 
-    public function internal(): InternalService
+    public function getObjectId(): int
     {
-        return self::$instance["internal"] ??= new InternalService();
+        return $this->object_id;
     }
 
-    public function domain(): ExternalDomainService
+    public function getRid(): string
     {
-        return self::$instance["domain"] ??= new ExternalDomainService(
-            $this->internal()->domain()
-        );
+        return $this->rid;
     }
 
+    public function getTimestamp(): string
+    {
+        return $this->timestamp;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
 }

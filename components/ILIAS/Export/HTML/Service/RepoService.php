@@ -18,28 +18,29 @@
 
 declare(strict_types=1);
 
-namespace ILIAS\Export;
+namespace ILIAS\Export\HTML;
 
-/**
- * @author Alexander Killing <killing@leifos.de>
- */
-class Service
+use ILIAS\Repository\IRSS\IRSSWrapper;
+
+class RepoService
 {
     protected static array $instance = [];
-    public function __construct()
+
+    public function __construct(
+        protected DataService $data,
+        protected \ilDBInterface $db,
+        protected IRSSWrapper $irss
+    )
     {
     }
 
-    public function internal(): InternalService
+    public function exportFile() : ExportFileDBRepository
     {
-        return self::$instance["internal"] ??= new InternalService();
-    }
-
-    public function domain(): ExternalDomainService
-    {
-        return self::$instance["domain"] ??= new ExternalDomainService(
-            $this->internal()->domain()
+        return self::$instance['export_file'] ??= new ExportFileDBRepository(
+            $this->db,
+            $this->irss,
+            $this->data,
+            new \ilExportHTMLStakeholder()
         );
     }
-
 }
