@@ -35,6 +35,7 @@ use ILIAS\Filesystem\Stream\Streams;
 use ILIAS\HTTP\Response\ResponseHeader;
 use ILIAS\LegalDocuments\Provide\ProvideDocument;
 use ILIAS\LegalDocuments\HTMLPurifier;
+use ILIAS\Refinery\ConstraintViolationException;
 
 class ilLegalDocumentsAdministrationGUI
 {
@@ -242,8 +243,14 @@ class ilLegalDocumentsAdministrationGUI
     public function saveOrder(): void
     {
         $this->admin->requireEditable();
-        $this->admin->withDocumentsAndOrder($this->admin->saveDocumentOrder(...));
-        $this->returnWithMessage('saved_successfully', 'documents');
+        try {
+            $this->admin->withDocumentsAndOrder($this->admin->saveDocumentOrder(...));
+            $this->returnWithMessage('saved_successfully', 'documents');
+        } catch (ConstraintViolationException) {
+            $this->ui->mainTemplate()->setOnScreenMessage('failure', $this->ui->txt('ldoc_order_invalid'), true);
+            $this->ctrlTo('redirectByClass', 'documents');
+        }
+
     }
 
     /**
