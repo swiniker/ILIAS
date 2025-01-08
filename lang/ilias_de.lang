@@ -13128,7 +13128,7 @@ orgu#:#msg_confirm_deletion#:#Wollen Sie die folgende Position wirklich löschen
 orgu#:#msg_confirm_remove_user#:#Möchten Sie den folgenden Benutzer wirklich aus der Position %s entfernen?
 orgu#:#msg_deleted#:#Gelöscht
 orgu#:#msg_position_created#:#Position wurde erstellt.
-orgu#:#msg_position_udpated#:#Position updated
+orgu#:#msg_position_delete_fail#:#Position wurde nicht gefunden.
 orgu#:#msg_position_updated#:#Position wurde aktualisiert.
 orgu#:#msg_success_permission_saved#:#Rechte wurden gespeichert.
 orgu#:#no_assignment#:#Bitte prüfen Sie Ihre XML-Datei. Es konnte keine Benutzerzuweisung gefunden werden.

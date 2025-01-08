@@ -13128,7 +13128,7 @@ orgu#:#msg_confirm_deletion#:#Would you really like to delete the following Posi
 orgu#:#msg_confirm_remove_user#:#Would you really like to remove the following User from the Position %s?
 orgu#:#msg_deleted#:#Deleted
 orgu#:#msg_position_created#:#Position created.
-orgu#:#msg_position_udpated#:#Position aktualisiert
+orgu#:#msg_position_delete_fail#:#Position wurde nicht gefunden.
 orgu#:#msg_position_updated#:#Position updated.
 orgu#:#msg_success_permission_saved#:#Permissions saved.
 orgu#:#no_assignment#:#Please check your XML-File. There is no User Assignment.
