@@ -327,9 +327,6 @@ class assFormulaQuestionGUI extends assQuestionGUI
             });
 
             foreach ($results as $result) {
-                /**
-                 * @var $result assFormulaQuestionResult
-                 */
                 $result_header = new ilFormSectionHeaderGUI();
                 $result_header->setTitle(sprintf($this->lng->txt('result_x'), $result->getResult()));
 
@@ -906,11 +903,11 @@ class assFormulaQuestionGUI extends assQuestionGUI
     ): string {
         $user_solution = [];
         if (is_object($this->getPreviewSession())) {
-            $solutions = (array) $this->getPreviewSession()->getParticipantsSolution();
-
+            $solutions = $this->getPreviewSession()->getParticipantsSolution() ?? [];
             foreach ($solutions as $val1 => $val2) {
                 if (preg_match('/^(\$v\d+)$/', $val1, $matches)) {
                     $user_solution[$matches[1]] = $val2;
+                } elseif (preg_match('/^(\$r\d+)$/', $val1, $matches)) {
                     if (!array_key_exists($matches[1], $user_solution)) {
                         $user_solution[$matches[1]] = [];
                     }
@@ -919,7 +916,7 @@ class assFormulaQuestionGUI extends assQuestionGUI
                     if (!array_key_exists($matches[1], $user_solution)) {
                         $user_solution[$matches[1]] = [];
                     }
-                    $user_solution[$matches[1]][['unit']] = $val2;
+                    $user_solution[$matches[1]]['unit'] = $val2;
                 }
 
                 if (preg_match('/^(\$r\d+)/', $val1, $matches) && !isset($user_solution[$matches[1]]['result_type'])) {

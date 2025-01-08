@@ -219,8 +219,7 @@ class assFormulaQuestion extends assQuestion implements iQuestionCondition, Ques
     }
 
     /**
-     * @param string $questionText
-     * @return assFormulaQuestionVariable[] $varObjects
+     * @return list<assFormulaQuestionVariable>
      */
     public function fetchAllVariables(string $question_text): array
     {
