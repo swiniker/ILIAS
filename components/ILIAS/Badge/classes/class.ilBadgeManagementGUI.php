@@ -576,10 +576,10 @@ class ilBadgeManagementGUI
                 $this->badge_image_service->processImageUpload($badge);
             }
 
-            $badge->update();
             if ($custom) {
                 $badge->setConfiguration($custom->getConfigFromForm($form));
             }
+            $badge->update();
 
             $tmpl_id = $form->getInput('tmpl');
             if ($tmpl_id !== '') {
@@ -649,7 +649,7 @@ class ilBadgeManagementGUI
 
         if (count($badge_ids) > 0) {
             foreach ($badge_ids as $badge_id) {
-                $badge = new ilBadge($badge_id);
+                $badge = new ilBadge((int) $badge_id);
                 $badge->delete();
             }
             $this->tpl->setOnScreenMessage('success', $lng->txt('settings_saved'), true);
@@ -691,7 +691,7 @@ class ilBadgeManagementGUI
         $clip_ids = array_unique(
             array_merge($clip_ids, $badge_ids)
         );
-        $this->session_repo->setBadgeIds($clip_ids);
+        $this->session_repo->setBadgeIds(array_map(intval(...), $clip_ids));
 
         $ilCtrl->redirect($this, 'listBadges');
     }
@@ -963,7 +963,7 @@ class ilBadgeManagementGUI
         }
 
         foreach ($user_ids as $user_id) {
-            $ass = new ilBadgeAssignment($badge_id, (int) $user_id);
+            $ass = new ilBadgeAssignment((int) $badge_id, (int) $user_id);
             $ass->delete();
         }
 
