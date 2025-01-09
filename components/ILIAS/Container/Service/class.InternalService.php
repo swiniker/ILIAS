@@ -24,38 +24,21 @@ use ILIAS\DI\Container;
 
 class InternalService
 {
-<<<<<<< HEAD:components/ILIAS/Container/Service/class.InternalService.php
-    protected Container $DIC;
-    protected array $instance = [];
-
-    public function __construct(Container $DIC)
-    {
-        $this->DIC = $DIC;
-=======
     protected static array $instance = [];
 
     public function __construct(
-        protected DI\Container $DIC
+        protected Container $DIC
     ) {
->>>>>>> 9afe2259be7 (fixed 42276: no certificate creation in excisting courses (service initialisation)):Services/Container/Service/class.InternalService.php
     }
 
     public function data(): InternalDataService
     {
-<<<<<<< HEAD:components/ILIAS/Container/Service/class.InternalService.php
-        return $this->instance["data"] ??= new InternalDataService();
-=======
         return self::$instance["data"] ??= new InternalDataService();
->>>>>>> 9afe2259be7 (fixed 42276: no certificate creation in excisting courses (service initialisation)):Services/Container/Service/class.InternalService.php
     }
 
     public function repo(): InternalRepoService
     {
-<<<<<<< HEAD:components/ILIAS/Container/Service/class.InternalService.php
-        return $this->instance["repo"] ??= new InternalRepoService(
-=======
         return self::$instance["repo"] ??= new InternalRepoService(
->>>>>>> 9afe2259be7 (fixed 42276: no certificate creation in excisting courses (service initialisation)):Services/Container/Service/class.InternalService.php
             $this->data(),
             $this->DIC->database()
         );
@@ -63,27 +46,16 @@ class InternalService
 
     public function domain(): InternalDomainService
     {
-<<<<<<< HEAD:components/ILIAS/Container/Service/class.InternalService.php
-        return $this->instance["domain"] ??= new InternalDomainService(
-            $this->DIC,
-            $this->repo(),
-            $this->data()
-=======
         return self::$instance["domain"] ??= new InternalDomainService(
             $this->DIC,
             $this->repo(),
             $this->data(),
->>>>>>> 9afe2259be7 (fixed 42276: no certificate creation in excisting courses (service initialisation)):Services/Container/Service/class.InternalService.php
         );
     }
 
     public function gui(): InternalGUIService
     {
-<<<<<<< HEAD:components/ILIAS/Container/Service/class.InternalService.php
-        return $this->instance["gui"] ??= new InternalGUIService(
-=======
         return self::$instance["gui"] ??= new InternalGUIService(
->>>>>>> 9afe2259be7 (fixed 42276: no certificate creation in excisting courses (service initialisation)):Services/Container/Service/class.InternalService.php
             $this->DIC,
             $this->data(),
             $this->domain()
