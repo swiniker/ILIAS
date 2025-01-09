@@ -226,9 +226,9 @@ class RequestDataCollector
     /**
      * @return array<int|array>
      */
-    public function intArray(string $key, int $depth = 1): array
+    public function intArray(string $key): array
     {
-        return $this->retrieveArray($key, $depth, $this->refinery->kindlyTo()->int());
+        return $this->retrieveArray($key, 1, $this->refinery->kindlyTo()->int());
     }
 
     /**
