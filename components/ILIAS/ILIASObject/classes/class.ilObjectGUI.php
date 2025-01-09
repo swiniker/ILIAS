@@ -1732,16 +1732,20 @@ class ilObjectGUI implements ImplementsCreationCallback
     protected function checkPermission(string $perm, string $cmd = "", string $type = "", ?int $ref_id = null): void
     {
         if (!$this->checkPermissionBool($perm, $cmd, $type, $ref_id)) {
-            if (!is_int(strpos($_SERVER["PHP_SELF"], "goto.php"))) {
-                if ($perm != "create" && !is_object($this->object)) {
+            if (!is_int(strpos($_SERVER['PHP_SELF'], 'goto.php'))) {
+                if ($perm != 'create' && !is_object($this->object)) {
                     return;
                 }
 
-                ilSession::clear("il_rep_ref_id");
+                ilSession::clear('il_rep_ref_id');
 
                 $this->tpl->setOnScreenMessage('failure', $this->lng->txt('msg_no_perm_read'), true);
-                $parent_ref_id = (int) $this->tree->getParentNodeData($this->object->getRefId())['ref_id'];
-                $this->ctrl->redirectToURL(ilLink::_getLink($parent_ref_id));
+                $parent_ref_id = $this->tree->getParentId($this->object->getRefId());
+                if ($parent_ref_id > 0) {
+                    $this->ctrl->redirectToURL(ilLink::_getLink($parent_ref_id));
+                } else {
+                    $this->ctrl->redirectToURL('login.php?cmd=force_login');
+                }
             }
 
             $this->tpl->setOnScreenMessage('failure', $this->lng->txt('msg_no_perm_read'), true);
