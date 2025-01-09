@@ -228,12 +228,12 @@ JS;
             $ass_cloze_gab_combination = new assClozeGapCombination();
             $ass_cloze_gab_combination::clearGapCombinationsFromDb($this->object->getId());
 
-            $gap_combination = $this->request_data_collector->floatArray('gap_combination', 4);
+            $gap_combination = $this->request_data_collector->rawArray('gap_combination', 4);
             if ($gap_combination !== []) {
                 $ass_cloze_gab_combination->saveGapCombinationToDb(
                     $this->object->getId(),
                     $gap_combination,
-                    $this->request_data_collector->strArray('gap_combination_values', 4)
+                    $this->request_data_collector->rawArray('gap_combination_values')
                 );
             }
         }
