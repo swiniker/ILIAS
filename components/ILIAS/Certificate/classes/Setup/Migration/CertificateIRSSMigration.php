@@ -38,7 +38,6 @@ class CertificateIRSSMigration implements Migration
     public const NUMBER_OF_PATHS_PER_STEP = 10;
     private ilResourceStorageMigrationHelper $helper;
     private ilDBInterface $db;
-    private Filesystems $filesystem;
     private ilCertificateTemplateStakeholder $stakeholder;
 
     public function getLabel(): string
@@ -70,9 +69,10 @@ class CertificateIRSSMigration implements Migration
      */
     public function step(Environment $environment): void
     {
+        $this->migrateGlobalCertificateBackgroundImage(true);
         $remaining_paths = $this->stepUserCertificates(self::NUMBER_OF_PATHS_PER_STEP);
         if ($remaining_paths > 0) {
-            $remaining_paths = $this->stepTemplateCertificates($remaining_paths);
+            $this->stepTemplateCertificates($remaining_paths);
         }
     }
 
@@ -83,8 +83,10 @@ class CertificateIRSSMigration implements Migration
             SELECT path
             FROM (
                      SELECT id, background_image_path AS path FROM il_cert_user_cert
+                            WHERE background_image_ident IS NULL OR background_image_ident = \'\'
                      UNION ALL
                      SELECT id, thumbnail_image_path AS path FROM il_cert_user_cert
+                            WHERE thumbnail_image_ident IS NULL OR thumbnail_image_ident = \'\'
                  ) AS t
             GROUP BY path
             HAVING path IS NOT NULL AND path != \'\'
@@ -100,6 +102,46 @@ class CertificateIRSSMigration implements Migration
         return $remaining_paths;
     }
 
+    public function migrateGlobalCertificateBackgroundImage(bool $hotrun = false): int
+    {
+        $result = $this->db->queryF(
+            'SELECT value FROM settings WHERE module = %s AND keyword = %s',
+            [ilDBConstants::T_TEXT, ilDBConstants::T_TEXT],
+            ['certificate', 'cert_bg_image']
+        );
+        $row = $this->db->fetchAssoc($result);
+        if (isset($row['value']) && $row['value'] !== '' && is_file(
+            ILIAS_ABSOLUTE_PATH . '/' . ILIAS_WEB_DIR . '/' . CLIENT_ID . '/certificates/default/' . $row['value']
+        )) {
+            if ($hotrun) {
+                $resource_id = $this->helper->movePathToStorage(
+                    ILIAS_ABSOLUTE_PATH . '/' . ILIAS_WEB_DIR . '/' . CLIENT_ID . '/certificates/default/' . $row['value'],
+                    $this->stakeholder->getOwnerOfNewResources(),
+                    null,
+                    null,
+                    true
+                );
+                $image_ident = '-';
+                if ($resource_id instanceof ResourceIdentification) {
+                    $image_ident = $resource_id->serialize();
+                }
+                $query = '
+                        UPDATE settings
+                        SET value = %s
+                        WHERE module = %s AND keyword = %s';
+                $this->db->manipulateF(
+                    $query,
+                    [ilDBConstants::T_TEXT, ilDBConstants::T_TEXT, ilDBConstants::T_TEXT],
+                    [$image_ident, 'certificate', 'cert_bg_image']
+                );
+
+                return 0;
+            }
+            return 1;
+        }
+        return 0;
+    }
+
     public function stepTemplateCertificates(int $remaining_paths): int
     {
         $this->db->setLimit($remaining_paths);
@@ -107,8 +149,10 @@ class CertificateIRSSMigration implements Migration
             SELECT path
             FROM (
                      SELECT id, background_image_path AS path FROM il_cert_template
+                            WHERE background_image_ident IS NULL OR background_image_ident = \'\' 
                      UNION ALL
                      SELECT id, thumbnail_image_path AS path FROM il_cert_template
+                            WHERE thumbnail_image_ident IS NULL OR thumbnail_image_ident = \'\'
                  ) AS t
             GROUP BY path
             HAVING path IS NOT NULL AND path != \'\'
@@ -181,6 +225,8 @@ class CertificateIRSSMigration implements Migration
 
     public function getRemainingAmountOfSteps(): int
     {
+        $paths = $this->migrateGlobalCertificateBackgroundImage(false);
+
         $result = $this->db->query(
             '
                     SELECT COUNT(*) AS count FROM (
@@ -198,7 +244,7 @@ class CertificateIRSSMigration implements Migration
         );
         $row = $this->db->fetchAssoc($result);
 
-        $paths = (int) ($row['count'] ?? 0);
+        $paths += (int) ($row['count'] ?? 0);
 
         $result = $this->db->query(
             '
