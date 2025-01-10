@@ -155,7 +155,8 @@ function changeHandler(droppedElement, target, draggedElement) {
 function onStartPrepareHandler(draggedElement) {
   updatePlaceholders();
   const sourceArea = parentElement.querySelector(`#${sourceAreaId}`);
-  if (!sourceArea.firstElementChild.classList.contains(placeholderClass)) {
+  if (sourceArea.firstElementChild === null
+    || !sourceArea.firstElementChild.classList.contains(placeholderClass)) {
     sourceArea.prepend(placeholderElement.cloneNode());
   }
 
