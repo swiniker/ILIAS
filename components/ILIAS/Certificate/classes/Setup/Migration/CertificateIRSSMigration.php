@@ -20,17 +20,16 @@ declare(strict_types=1);
 
 namespace ILIAS\Certificate\Setup\Migration;
 
+use ilDBConstants;
 use ilDBInterface;
 use ReflectionClass;
 use ilDatabaseException;
 use ILIAS\Setup\Migration;
 use ILIAS\Setup\Environment;
 use ilDatabaseUpdatedObjective;
-use ILIAS\Filesystem\Filesystems;
 use ilResourceStorageMigrationHelper;
 use ILIAS\Certificate\File\ilCertificateTemplateStakeholder;
 use ILIAS\ResourceStorage\Identification\ResourceIdentification;
-use ilDBConstants;
 
 class CertificateIRSSMigration implements Migration
 {
@@ -99,6 +98,7 @@ class CertificateIRSSMigration implements Migration
             }
             $remaining_paths -= self::NUMBER_OF_PATHS_PER_STEP - $paths;
         }
+
         return $remaining_paths;
     }
 
@@ -125,6 +125,12 @@ class CertificateIRSSMigration implements Migration
                 if ($resource_id instanceof ResourceIdentification) {
                     $image_ident = $resource_id->serialize();
                 }
+
+                $this->updateDefaultBackgroundImagePaths(
+                    '/certificates/default/' . $row['value'],
+                    $image_ident
+                );
+
                 $query = '
                         UPDATE settings
                         SET value = %s
@@ -137,8 +143,10 @@ class CertificateIRSSMigration implements Migration
 
                 return 0;
             }
+
             return 1;
         }
+
         return 0;
     }
 
@@ -165,6 +173,7 @@ class CertificateIRSSMigration implements Migration
             }
             $remaining_paths -= self::NUMBER_OF_PATHS_PER_STEP - $paths;
         }
+
         return $remaining_paths;
     }
 
@@ -266,5 +275,40 @@ class CertificateIRSSMigration implements Migration
         $paths += (int) ($row['count'] ?? 0);
 
         return (int) ceil($paths / self::NUMBER_OF_STEPS);
+    }
+
+    public function updateDefaultBackgroundImagePaths(string $old_relative_path, string $new_rid): void
+    {
+        $this->db->manipulateF(
+            '
+                    UPDATE il_cert_template SET background_image_ident = %s 
+                        WHERE currently_active = 1 AND (background_image_path = %s OR background_image_path = %s )',
+            [
+                ilDBConstants::T_TEXT,
+                ilDBConstants::T_TEXT,
+                ilDBConstants::T_TEXT
+            ],
+            [
+                $new_rid,
+                $old_relative_path,
+                '/certificates/default/background.jpg'
+            ]
+        );
+
+        $this->db->manipulateF(
+            '
+                    UPDATE il_cert_user_cert SET background_image_ident = %s 
+                         WHERE currently_active = 1 AND (background_image_path = %s OR background_image_path = %s )',
+            [
+                ilDBConstants::T_TEXT,
+                ilDBConstants::T_TEXT,
+                ilDBConstants::T_TEXT
+            ],
+            [
+                $new_rid,
+                $old_relative_path,
+                '/certificates/default/background.jpg'
+            ]
+        );
     }
 }
