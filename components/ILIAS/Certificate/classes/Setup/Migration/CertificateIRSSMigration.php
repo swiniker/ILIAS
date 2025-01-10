@@ -282,7 +282,8 @@ class CertificateIRSSMigration implements Migration
         $this->db->manipulateF(
             '
                     UPDATE il_cert_template SET background_image_ident = %s 
-                        WHERE currently_active = 1 AND (background_image_path = %s OR background_image_path = %s )',
+                        WHERE currently_active = 1 AND (background_image_path = %s OR background_image_path = %s )
+                        AND background_image_ident IS NULL OR background_image_ident = \'\'',
             [
                 ilDBConstants::T_TEXT,
                 ilDBConstants::T_TEXT,
@@ -298,7 +299,8 @@ class CertificateIRSSMigration implements Migration
         $this->db->manipulateF(
             '
                     UPDATE il_cert_user_cert SET background_image_ident = %s 
-                         WHERE currently_active = 1 AND (background_image_path = %s OR background_image_path = %s )',
+                         WHERE currently_active = 1 AND (background_image_path = %s OR background_image_path = %s )
+                         AND background_image_ident IS NULL OR background_image_ident = \'\'',
             [
                 ilDBConstants::T_TEXT,
                 ilDBConstants::T_TEXT,
