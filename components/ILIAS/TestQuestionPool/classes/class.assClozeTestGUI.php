@@ -886,7 +886,7 @@ JS;
                         foreach ($gaps_used_in_combination as $key => $value) {
                             $a = 0;
                             if ($value == $combination_id) {
-                                foreach ($user_solution as $solution_key => $solution_value) {
+                                foreach ($user_solutions as $solution_key => $solution_value) {
                                     if ($solution_value['value1'] == $key) {
                                         $result_row = [];
                                         $result_row['gap_id'] = $solution_value['value1'];
@@ -1004,7 +1004,7 @@ JS;
             }
 
             $feedback = $this->getSpecificFeedbackOutput(
-                $this->object->fetchIndexedValuesFromValuePairs($user_solution)
+                $this->object->fetchIndexedValuesFromValuePairs($user_solutions)
             );
         }
         if ($feedback !== '') {
