@@ -105,19 +105,33 @@ class ilBadgeManagementGUI
         $badge_id = null;
 
         if ($splittable_user_ids !== []) {
-            foreach ($splittable_user_ids as $row) {
-                if (str_contains($row, '_')) {
-                    $split = explode('_', $row);
+            if ($splittable_user_ids === ['ALL_OBJECTS']) {
+                $parent_obj_id = $this->parent_obj_id;
+                if (!$parent_obj_id && $this->parent_ref_id) {
+                    $parent_obj_id = ilObject::_lookupObjId($this->parent_ref_id);
+                }
 
-                    if ($badge_id === null && $split[0] !== '') {
-                        $badge_id = (int) $split[0];
-                    }
+                if ($this->parent_ref_id) {
+                    $user_ids = ilBadgeHandler::getInstance()->getUserIds($this->parent_ref_id, $parent_obj_id);
+                }
 
-                    if ($split[1] !== '') {
-                        $user_ids[] = (int) $split[1];
+                $badge_id = $this->http->wrapper()->query()->retrieve('bid', $this->refinery->kindlyTo()->int());
+                return [$user_ids, $badge_id];
+            } else {
+                foreach ($splittable_user_ids as $row) {
+                    if (str_contains($row, '_')) {
+                        $split = explode('_', $row);
+
+                        if ($badge_id === null && $split[0] !== '') {
+                            $badge_id = (int) $split[0];
+                        }
+
+                        if ($split[1] !== '') {
+                            $user_ids[] = (int) $split[1];
+                        }
+                    } else {
+                        return [$user_ids, 0];
                     }
-                } else {
-                    return [$user_ids, 0];
                 }
             }
         }
