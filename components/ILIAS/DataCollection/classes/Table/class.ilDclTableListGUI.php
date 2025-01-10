@@ -213,7 +213,7 @@ class ilDclTableListGUI
 
         $actions[] = $this->ui_factory->button()->shy(
             $this->lng->txt('dcl_tableviews'),
-            $this->ctrl->getLinkTargetByClass(ilDclFieldListGUI::class, 'show')
+            $this->ctrl->getLinkTargetByClass(ilDclTableViewGUI::class, 'show')
         );
 
         $actions[] = $this->ui_factory->button()->shy(
