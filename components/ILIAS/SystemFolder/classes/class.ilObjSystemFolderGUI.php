@@ -807,7 +807,7 @@ class ilObjSystemFolderGUI extends ilObjectGUI
     ): void {
         $tpl = $this->tpl;
         $this->setGeneralSettingsSubTabs("header_title");
-        $table = new ilObjectTranslationTableGUI($this, "showHeaderTitle", false);
+        $table = new ilInstallationHeadingTableGUI($this, "showHeaderTitle", false);
         $post = $this->gui->http()->request()->getParsedBody();
         if ($a_get_post_values) {
             $vals = array();

@@ -25,7 +25,7 @@ use ILIAS\MetaData\Services\ServicesInterface as LOMServices;
  *
  * @author Alex Killing <alex.killing@gmx.de>
  */
-class ilObjectTranslationTableGUI extends ilTable2GUI
+class ilInstallationHeadingTableGUI extends ilTable2GUI
 {
     protected ilAccessHandler $access;
     protected LOMServices $lom_services;
@@ -61,7 +61,7 @@ class ilObjectTranslationTableGUI extends ilTable2GUI
 
         $this->setEnableHeader(true);
         $this->setFormAction($this->ctrl->getFormAction($parent_obj));
-        $this->setRowTemplate("tpl.obj_translation_row.html", "components/ILIAS/ILIASObject");
+        $this->setRowTemplate("tpl.installation_heading_table_row.html", "components/ILIAS/SystemFolder");
         $this->disable("footer");
         $this->setEnableTitle(true);
 
