@@ -73,6 +73,7 @@ class Factory
                 return new CertificateExport(
                     $this->lng,
                     $this->db,
+                    $this->logger,
                     $this->tpl,
                     $this->file_delivery,
                     $test_obj
