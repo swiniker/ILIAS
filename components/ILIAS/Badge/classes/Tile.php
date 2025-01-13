@@ -137,7 +137,7 @@ class Tile
             ->ui()
             ->factory()
             ->image()
-            ->responsive($image_src, $image_src)
+            ->responsive($image_src, $badge->getTitle())
             ->withAction($modal->getShowSignal());
     }
 
