@@ -255,6 +255,7 @@ class ilTestParticipantsGUI
             $this->lng->txt('exp_all_test_runs'),
             $this->ctrl->getLinkTargetByClass(self::class, 'exportResults')
         );
+        $options = $this->addPluginExportsToOptions($options);
         return $this->addCertificateExportToOptions($options);
     }
 

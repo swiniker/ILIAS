@@ -47,7 +47,6 @@ class CertificateExport implements Exporter
             null,
             true
         );
-        $this->file_delivery->deliver();
     }
 
     public function write(): ?string

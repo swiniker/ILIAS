@@ -21,9 +21,7 @@ declare(strict_types=1);
 namespace ILIAS\Test\ExportImport;
 
 use ILIAS\Test\Logging\TestLogger;
-
 use ILIAS\TestQuestionPool\Questions\GeneralQuestionPropertiesRepository;
-
 use ILIAS\Language\Language;
 use ILIAS\FileDelivery\Services as FileDeliveryServices;
 
@@ -194,7 +192,6 @@ abstract class Export implements Exporter
             null,
             true
         );
-        $this->file_delivery->deliver();
     }
 
     protected function getQtiXml()
