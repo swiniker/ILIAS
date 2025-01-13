@@ -104,6 +104,7 @@ class ilTestEvaluationDataTest extends ilTestBaseTestCase
             "title" => "",
             "login" => "root"
         ];
+        $records[] = ['first_access' => '2024-12-11 17:54:26'];
         $records[] = null;
 
         $test_obj = $this->createMock(ilObjTest::class);
@@ -130,7 +131,7 @@ class ilTestEvaluationDataTest extends ilTestBaseTestCase
 
         $db = $this->createMock(ilDBInterface::class);
         $db
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(3))
             ->method('fetchAssoc')
             ->willReturnCallback(
                 function ($res) use (&$records) {

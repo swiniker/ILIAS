@@ -147,6 +147,10 @@ class ilTestEvaluationFactory
 
                 $attempt->setNrOfAnsweredQuestions($row['answeredquestions']);
                 $attempt->setWorkingTime($row['workingtime']);
+                $start_time = $this->getFirstVisitForActiveIdAndAttempt($row['active_fi'], $row['pass']);
+                if ($start_time !== null) {
+                    $attempt->setStartTime($start_time);
+                }
                 $attempt->setExamId((string) $row['exam_id']);
                 $attempt->setRequestedHintsCount($row['hint_count']);
                 $attempt->setDeductedHintPoints($row['hint_points']);
@@ -355,5 +359,19 @@ class ilTestEvaluationFactory
         }
 
         return $passes;
+    }
+
+    public function getFirstVisitForActiveIdAndAttempt(int $active_id, int $attempt): ?string
+    {
+        $times = $this->db->fetchAssoc(
+            $this->db->queryF(
+                'SELECT MIN(started) AS first_access '
+                    . 'FROM tst_times WHERE active_fi = %s AND pass = %s',
+                ['integer', 'integer'],
+                [$active_id, $attempt]
+            )
+        );
+
+        return $times['first_access'];
     }
 }

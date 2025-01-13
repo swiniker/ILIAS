@@ -52,7 +52,7 @@ class Factory
                     $this->lng,
                     $this->current_user,
                     $test_obj,
-                    "{$test_obj->getTitle()}_{$this->lng->txt('scored_pass')}_results",
+                    "{$test_obj->getTitle()}_{$this->lng->txt('scored_pass')}_{$this->lng->txt('results')}",
                     true
                 ))->withAggregatedResultsPage()
                     ->withResultsPage()
@@ -63,7 +63,7 @@ class Factory
                     $this->lng,
                     $this->current_user,
                     $test_obj,
-                    "{$test_obj->getTitle()}_{$this->lng->txt('all')}_results",
+                    "{$test_obj->getTitle()}_{$this->lng->txt('all')}_{$this->lng->txt('results')}",
                     false
                 ))->withAggregatedResultsPage()
                     ->withResultsPage()
