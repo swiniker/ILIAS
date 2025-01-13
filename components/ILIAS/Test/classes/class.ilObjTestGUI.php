@@ -587,10 +587,8 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
                     $this->redirectAfterMissingRead();
                 }
 
-                $this->addHeaderAction();
                 $gui = new SettingsMainGUI(
                     $this->tpl,
-                    $this->tabs_gui,
                     $this->toolbar,
                     $this->ctrl,
                     $this->access,
@@ -610,6 +608,10 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
                     $this->questionrepository
                 );
                 $this->ctrl->forwardCommand($gui);
+                $this->prepareOutput();
+                $this->tabs_manager->activateTab(TabsManager::TAB_ID_SETTINGS);
+                $this->tabs_manager->activateSubTab(TabsManager::SUBTAB_ID_GENERAL_SETTINGS);
+                $this->addHeaderAction();
                 break;
 
             case strtolower(SettingsScoringGUI::class):
