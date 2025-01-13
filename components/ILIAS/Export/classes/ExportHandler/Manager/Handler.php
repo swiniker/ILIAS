@@ -133,7 +133,7 @@ class Handler implements ilExportHandlerManagerInterface
                  */
                 $stream = $zip_reader->getItem($path_inside_zip, $zip_structure)[0];
                 # Contents of the stream $stream are lost later (possible incompatible stream object), therefore a new
-                # stream of with the content of $stream is created and passed on.
+                # stream with the content of $stream is created and passed on.
                 $main_element->getIRSS()->write(
                     Streams::ofString($stream->getContents()),
                     "set_" . $export_info->getSetNumber() . DIRECTORY_SEPARATOR . $path_inside_zip
