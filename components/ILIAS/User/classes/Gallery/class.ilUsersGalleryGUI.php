@@ -70,6 +70,7 @@ class ilUsersGalleryGUI
             $DIC['ilDB'],
             $this->user->getId()
         );
+        $this->user_action_gui->init();
     }
 
     public function executeCommand(): void
@@ -144,7 +145,7 @@ class ilUsersGalleryGUI
         $onload_js = <<<JS
     let stateChangedListener = (event) => {
       const {buddyId, newState, oldState} = event.detail;
-  
+
         if (newState === 'ilBuddySystemUnlinkedRelationState') {
             document.querySelector('.il-deck [data-buddy-id="' + buddyId + '"]').closest('.il-card').parentElement.remove();
             if (document.querySelectorAll('.il-card.thumbnail').length === 0) {
