@@ -32,10 +32,7 @@ class ilPluginLanguage
 
     protected function getLanguageDirectory(): string
     {
-        $parts = explode('/', $this->plugin_info->getPath());
-        array_shift($parts); //remove "public/"
-        $parts[] = 'lang';
-        return implode('/', $parts);
+        return $this->plugin_info->getPath() . "/lang";
     }
 
     /**
