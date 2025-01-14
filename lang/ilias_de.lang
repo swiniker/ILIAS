@@ -943,6 +943,7 @@ assessment#:#new_unit#:#Neue Einheit
 assessment#:#next_question#:#Weiter
 assessment#:#next_question_rows#:#Fragen %d - %d von %d →
 assessment#:#no_manual_feedback_export_info#:#Manuelle Rückmeldungen werden nicht exportiert.
+assessment#:#no_passed_after_failed#:#Alle als bestanden markierten Notenschritte müssen höhere Mindestprozentsätze haben als die als nicht bestanden markierten.
 assessment#:#no_passed_mark#:#Sie müssen wenigstens einen Notenschritt als BESTANDEN markieren!
 assessment#:#no_question_selected_for_move#:#Bitte wählen Sie mindestens eine Frage aus, um sie zu verschieben!
 assessment#:#no_questions_available#:#Es sind keine Fragen verfügbar!

@@ -450,6 +450,9 @@ class MarkSchemaGUI
         if ($new_schema->checkForMissingZeroPercentage()) {
             $messages[] = $this->lng->txt('min_percentage_ne_0');
         }
+        if ($new_schema->checkForFailedAfterPassed()) {
+            $messages[] = $this->lng->txt('no_passed_after_failed');
+        }
 
         if (isset($messages[1])) {
             $messages[0] .= '<br>' . $messages[1];

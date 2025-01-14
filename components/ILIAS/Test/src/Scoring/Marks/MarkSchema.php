@@ -112,7 +112,7 @@ class MarkSchema
         return true;
     }
 
-    public function checkForMissingPassed(): bool|string
+    public function checkForMissingPassed(): bool
     {
         foreach ($this->mark_steps as $step) {
             if ($step->getPassed() === true) {
@@ -120,6 +120,20 @@ class MarkSchema
             }
         }
         return true;
+    }
+
+    public function checkForFailedAfterPassed(): bool
+    {
+        $has_to_be_passed = false;
+        foreach ($this->mark_steps as $step) {
+            if ($has_to_be_passed && !$step->getPassed()) {
+                return true;
+            }
+            if ($step->getPassed() === true) {
+                $has_to_be_passed = true;
+            }
+        }
+        return false;
     }
 
     /**
