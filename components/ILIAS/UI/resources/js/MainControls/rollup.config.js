@@ -24,6 +24,7 @@ export default [
     output: {
       file: './dist/mainbar.js',
       format: 'es',
+      banner: copyright,
     },
   },
 
