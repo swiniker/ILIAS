@@ -478,7 +478,7 @@ class ilObjBadgeAdministrationGUI extends ilObjectGUI
     ): void {
         $a_form->getItemByPostVar('title')->setValue($a_tmpl->getTitle());
         if ($a_tmpl->getImageRid() !== null) {
-            $img = $a_tmpl->getImageFromResourceId($a_tmpl->getImageRid());
+            $img = $a_tmpl->getImageFromResourceId();
             $a_form->getItemByPostVar('img')->setImage($img);
             $a_form->getItemByPostVar('img')->setValue($a_tmpl->getImageRid());
         } else {

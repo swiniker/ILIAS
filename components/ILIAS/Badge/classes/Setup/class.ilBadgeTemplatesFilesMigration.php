@@ -66,28 +66,18 @@ class ilBadgeTemplatesFilesMigration implements Migration
         $image = $row->image;
 
         if ($image !== '' && $image !== null) {
-            $save_collection_id = '-';
-            $image = $this->getImagePath($id, $image);
-            $base_path = dirname($image);
-            $pattern = '/(.+)/m';
-
-            if (is_dir($base_path) && file_exists($image) && count(scandir($base_path)) > 2) {
-                $collection_id = $this->helper->moveFilesOfPatternToCollection(
-                    $base_path,
-                    $pattern,
-                    ResourceCollection::NO_SPECIFIC_OWNER,
-                    ResourceCollection::NO_SPECIFIC_OWNER,
-                    null,
-                    $this->getRevisionNameCallback()
-                );
-
-                $save_collection_id = $collection_id === null ? '-' : $collection_id->serialize();
+            $image_path = $this->getImagePath($id, $image);
+            $identification = $this->helper->movePathToStorage($image_path, ResourceCollection::NO_SPECIFIC_OWNER);
+            if ($identification === null) {
+                $identification = '-';
+            } else {
+                $identification = $identification->serialize();
             }
 
             $this->helper->getDatabase()->update(
                 self::TABLE_NAME,
                 [
-                    'image_rid' => [ilDBConstants::T_TEXT, $save_collection_id],
+                    'image_rid' => [ilDBConstants::T_TEXT, $identification],
                     'image' => [ilDBConstants::T_TEXT, null]
                 ],
                 ['id' => [ilDBConstants::T_INTEGER, $id]]
@@ -100,7 +90,7 @@ class ilBadgeTemplatesFilesMigration implements Migration
         $exp = explode('.', $image);
         $suffix = strtolower(array_pop($exp));
 
-        return $this->getFilePath($id) . 'img' . $id . '.' . $suffix;
+        return $this->getFilePath($id) . '/img' . $id . '.' . $suffix;
     }
 
     private function getFilePath(int $a_id): string
@@ -138,15 +128,5 @@ class ilBadgeTemplatesFilesMigration implements Migration
         $row = $this->helper->getDatabase()->fetchObject($res);
 
         return (int) ($row->amount ?? 0);
-    }
-
-    /**
-     * @return Closure(string): string
-     */
-    public function getRevisionNameCallback(): Closure
-    {
-        return static function (string $file_name): string {
-            return md5($file_name);
-        };
     }
 }

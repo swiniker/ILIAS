@@ -79,7 +79,7 @@ class ilBadgeImageTemplateTableGUI
                     $image = '';
                     $title = $template->getTitle();
 
-                    $image_src = $template->getImageFromResourceId($template->getImageRid());
+                    $image_src = $template->getImageFromResourceId();
                     if ($image_src !== '') {
                         $image_component = $this->ui_factory->image()->responsive(
                             $image_src,
@@ -88,8 +88,6 @@ class ilBadgeImageTemplateTableGUI
                         $image_html = $this->ui_renderer->render($image_component);
 
                         $image_src_large = $template->getImageFromResourceId(
-                            $template->getImageRid(),
-                            null,
                             ilBadgeImage::IMAGE_SIZE_XL
                         );
                         $large_image_component = $this->ui_factory->image()->responsive(
