@@ -211,8 +211,12 @@ class TileTest extends TestCase
     public static function provideAsVariants(): array
     {
         return [
-            'Test asImage.' => ['asImage', [ModalComponent::class, ImageComponent::class]],
-            'Test asTitle' => ['asTitle', [ModalComponent::class, ImageComponent::class, ButtonComponent::class]],
+            'Test asImage' => ['asImage', [ModalComponent::class, ImageComponent::class]],
+            'Test asTitle' => ['asTitle', [ModalComponent::class, ButtonComponent::class]],
+            'Test asTitleWithLeadingImage' => [
+                'asTitleWithLeadingImage',
+                [ModalComponent::class, ImageComponent::class, ButtonComponent::class]
+            ],
         ];
     }
 }
