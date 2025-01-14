@@ -32,12 +32,7 @@ use ILIAS\Data\URI;
 use ILIAS\UI\Implementation\Component\Link\Standard;
 use ILIAS\Badge\ilBadgeImage;
 use ILIAS\Badge\PresentationHeader;
-use ILIAS\UI\Implementation\Component\Image\Image;
-use ILIAS\Badge\ModalBuilder;
-
-/*
- * @ilCtrl_IsCalledBy ilObjBadgeAdministration: ilObjectBadgeTable
- */
+use ILIAS\Badge\Tile;
 
 class ilBadgePersonalTableGUI
 {
@@ -72,7 +67,7 @@ class ilBadgePersonalTableGUI
         ilAccessHandler $access
     ): DataRetrieval {
         return new class ($f, $r, $user, $access) implements DataRetrieval {
-            private readonly ilBadgeImage $badge_image_service;
+            private readonly Tile $tile;
 
             public function __construct(
                 private readonly Factory $ui_factory,
@@ -81,11 +76,8 @@ class ilBadgePersonalTableGUI
                 private readonly ilAccess $access
             ) {
                 global $DIC;
-                $this->badge_image_service = new ilBadgeImage(
-                    $DIC->resourceStorage(),
-                    $DIC->upload(),
-                    $DIC->ui()->mainTemplate()
-                );
+
+                $this->tile = new Tile($DIC);
             }
 
             public function getRows(
@@ -115,7 +107,6 @@ class ilBadgePersonalTableGUI
              *     id: int,
              *     active: bool,
              *     image: string,
-             *     image_sortable: string,
              *     awarded_by: string,
              *     awarded_by_sortable: string,
              *     badge_issued_on: DateTimeImmutable,
@@ -139,34 +130,6 @@ class ilBadgePersonalTableGUI
                         }
                     }
 
-                    $modal_container = new ModalBuilder($ass);
-
-                    $images = [
-                        'rendered' => null,
-                        'large' => null,
-                    ];
-
-                    $image_src = $this->badge_image_service->getImageFromBadge($badge);
-                    if ($image_src !== '') {
-                        $images['rendered'] = $this->ui_renderer->render(
-                            $this->ui_factory->image()->responsive(
-                                $image_src,
-                                $badge->getTitle()
-                            )
-                        );
-
-                        $image_src_large = $this->badge_image_service->getImageFromBadge(
-                            $badge,
-                            ilBadgeImage::IMAGE_SIZE_XL
-                        );
-                        if ($image_src_large !== '') {
-                            $images['large'] = $this->ui_factory->image()->responsive(
-                                $image_src_large,
-                                $badge->getTitle()
-                            );
-                        }
-                    }
-
                     $awarded_by = '';
                     $awarded_by_sortable = '';
                     if ($parent !== null) {
@@ -176,34 +139,36 @@ class ilBadgePersonalTableGUI
                         $awarded_by = $parent['title'];
                         $awarded_by_sortable = $parent['title'];
                         if ($ref_id && $this->access->checkAccess('read', '', $ref_id)) {
-                            $awarded_by = $this->ui_renderer->render(new Standard(
-                                $parent['title'],
-                                (string) new URI(ilLink::_getLink($ref_id))
-                            ));
-                            $awarded_by_sortable = $parent['title'];
+                            $awarded_by = $this->ui_renderer->render(
+                                new Standard(
+                                    $awarded_by,
+                                    (string) new URI(ilLink::_getLink($ref_id))
+                                )
+                            );
                         }
-                    }
 
-                    $modal = $modal_container->constructModal(
-                        $images['large'],
-                        $badge->getTitle(),
-                        [
-                            'awarded_by' => $awarded_by
-                        ]
-                    );
+                        $awarded_by = implode(' ', [
+                            $this->ui_renderer->render($this->ui_factory->symbol()->icon()->standard(
+                                $parent['type'],
+                                $parent['title']
+                            )),
+                            $awarded_by
+                        ]);
+                    }
 
                     $rows[] = [
                         'id' => $badge->getId(),
-                        'image' => $images['rendered'] ? ($modal_container->renderShyButton(
-                            $images['rendered'],
-                            $modal
-                        ) . ' ') : '',
-                        // Just an boolean-like indicator for sorting
-                        'image_sortable' => $images['rendered'] ? 'A' . $badge->getId() : 'Z' . $badge->getId(),
-                        'title' => implode('', [
-                            $modal_container->renderShyButton($badge->getTitle(), $modal),
-                            $modal_container->renderModal($modal)
-                        ]),
+                        'image' => $this->ui_renderer->render(
+                            $this->tile->asImage(
+                                $this->tile->modalContentWithAssignment($badge, $ass),
+                                ilBadgeImage::IMAGE_SIZE_XS
+                            )
+                        ),
+                        'title' => $this->ui_renderer->render(
+                            $this->tile->asTitle(
+                                $this->tile->modalContentWithAssignment($badge, $ass)
+                            )
+                        ),
                         'title_sortable' => $badge->getTitle(),
                         'badge_issued_on' => (new DateTimeImmutable())
                             ->setTimestamp($ass->getTimestamp())
@@ -222,8 +187,8 @@ class ilBadgePersonalTableGUI
                     usort(
                         $rows,
                         static function (array $left, array $right) use ($order_field): int {
-                            if (in_array($order_field, ['title', 'image', 'awarded_by'], true)) {
-                                if (in_array($order_field, ['title', 'image', 'awarded_by'], true)) {
+                            if (in_array($order_field, ['title', 'awarded_by'], true)) {
+                                if (in_array($order_field, ['title', 'awarded_by'], true)) {
                                     $order_field .= '_sortable';
                                 }
 
@@ -285,7 +250,7 @@ class ilBadgePersonalTableGUI
         }
 
         $columns = [
-            'image' => $f->table()->column()->text($this->lng->txt('image')),
+            'image' => $f->table()->column()->text($this->lng->txt('image'))->withIsSortable(false),
             'title' => $f->table()->column()->text($this->lng->txt('title')),
             'awarded_by' => $f->table()->column()->text($this->lng->txt('awarded_by')),
             'badge_issued_on' => $f->table()->column()->date($this->lng->txt('badge_issued_on'), $date_format),
@@ -323,5 +288,4 @@ class ilBadgePersonalTableGUI
         $out = [$table];
         $this->tpl->setContent($r->render($out));
     }
-
 }

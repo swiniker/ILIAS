@@ -127,7 +127,6 @@ class ilObjectBadgeTableGUI
              *     active: bool,
              *     type: string,
              *     image: string,
-             *     image_sortable: string,
              *     title: string,
              *     title_sortable: string,
              *     container: string,
@@ -228,8 +227,6 @@ class ilObjectBadgeTableGUI
                             $images['rendered'],
                             $modal
                         ) . ' ') : '',
-                        // Just an boolean-like indicator for sorting
-                        'image_sortable' => $images['rendered'] ? 'A' . $badge_item['id'] : 'Z' . $badge_item['id'],
                         'title' => implode('', [
                             $modal_container->renderShyButton($badge_item['title'], $modal),
                             $modal_container->renderModal($modal)
@@ -248,8 +245,8 @@ class ilObjectBadgeTableGUI
                     usort(
                         $rows,
                         static function (array $left, array $right) use ($order_field): int {
-                            if (\in_array($order_field, ['image', 'container', 'title', 'type'], true)) {
-                                if (\in_array($order_field, ['image', 'container', 'title'], true)) {
+                            if (\in_array($order_field, ['container', 'title', 'type'], true)) {
+                                if (\in_array($order_field, ['container', 'title'], true)) {
                                     $order_field .= '_sortable';
                                 }
 
@@ -330,7 +327,7 @@ class ilObjectBadgeTableGUI
         $df = new \ILIAS\Data\Factory();
 
         $columns = [
-            'image' => $f->table()->column()->text($this->lng->txt('image')),
+            'image' => $f->table()->column()->text($this->lng->txt('image'))->withIsSortable(false),
             'title' => $f->table()->column()->text($this->lng->txt('title')),
             'type' => $f->table()->column()->text($this->lng->txt('type')),
             'container' => $f->table()->column()->text($this->lng->txt('container')),

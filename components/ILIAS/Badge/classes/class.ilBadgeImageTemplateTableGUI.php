@@ -68,7 +68,7 @@ class ilBadgeImageTemplateTableGUI
             }
 
             /**
-             * @return list<array{id: int, image: string, title: string, title_sortable: string, image_sortable: string}>
+             * @return list<array{id: int, image: string, title: string, title_sortable: string}>
              */
             private function getBadgeImageTemplates(): array
             {
@@ -109,10 +109,8 @@ class ilBadgeImageTemplateTableGUI
                     $rows[] = [
                         'id' => $template->getId(),
                         'image' => $image,
-                        // Just an boolean-like indicator for sorting
-                        'image_sortable' => $image ? 'A' . $template->getId() : 'Z' . $template->getId(),
                         'title' => $title,
-                        'title_sortable' => $template->getTitle(),
+                        'title_sortable' => $template->getTitle()
                     ];
                 }
 
@@ -142,7 +140,7 @@ class ilBadgeImageTemplateTableGUI
             }
 
             /**
-             * @return list<array{id: int, image: string, title: string, title_sortable: string, image_sortable: string}>
+             * @return list<array{id: int, image: string, title: string, title_sortable: string}>
              */
             private function getRecords(Range $range = null, Order $order = null): array
             {
@@ -156,7 +154,7 @@ class ilBadgeImageTemplateTableGUI
                     usort(
                         $rows,
                         static function (array $left, array $right) use ($order_field): int {
-                            if (\in_array($order_field, ['image', 'title'], true)) {
+                            if ($order_field === 'title') {
                                 return \ilStr::strCmp(
                                     $left[$order_field . '_sortable'],
                                     $right[$order_field . '_sortable']
@@ -216,7 +214,7 @@ class ilBadgeImageTemplateTableGUI
         $df = new \ILIAS\Data\Factory();
 
         $columns = [
-            'image' => $f->table()->column()->text($this->lng->txt('image')),
+            'image' => $f->table()->column()->text($this->lng->txt('image'))->withIsSortable(false),
             'title' => $f->table()->column()->text($this->lng->txt('title')),
         ];
 

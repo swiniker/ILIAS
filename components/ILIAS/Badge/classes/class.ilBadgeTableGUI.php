@@ -75,7 +75,7 @@ class ilBadgeTableGUI
         $lng = $this->lng;
 
         return [
-            'image' => $column->text($lng->txt('image')),
+            'image' => $column->text($lng->txt('image'))->withIsSortable(false),
             'title' => $column->text($lng->txt('title')),
             'type' => $column->text($lng->txt('type')),
             'active' => $column->boolean($lng->txt('active'), $lng->txt('yes'), $lng->txt('no')),
@@ -109,7 +109,6 @@ class ilBadgeTableGUI
              *     type: string,
              *     manual: bool,
              *     image: string,
-             *     image_sortable: string,
              *     title: string,
              *     title_sortable: string
              * }>
@@ -166,8 +165,6 @@ class ilBadgeTableGUI
                             $images['rendered'],
                             $modal
                         ) . ' ') : '',
-                        // Just an boolean-like indicator for sorting
-                        'image_sortable' => $images['rendered'] ? 'A' . $badge->getId() : 'Z' . $badge->getId(),
                         'title' => implode('', [
                             $modal_container->renderShyButton($badge->getTitle(), $modal),
                             $modal_container->renderModal($modal)
@@ -213,7 +210,6 @@ class ilBadgeTableGUI
              *     type: string,
              *     manual: bool,
              *     image: string,
-             *     image_sortable: string,
              *     title: string,
              *     title_sortable: string}>
              */
@@ -229,8 +225,8 @@ class ilBadgeTableGUI
                     usort(
                         $rows,
                         static function (array $left, array $right) use ($order_field): int {
-                            if (\in_array($order_field, ['title', 'type', 'image'], true)) {
-                                if (\in_array($order_field, ['title', 'image'], true)) {
+                            if (\in_array($order_field, ['title', 'type'], true)) {
+                                if ($order_field === 'title') {
                                     $order_field .= '_sortable';
                                 }
 

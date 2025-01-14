@@ -249,7 +249,6 @@ class ilBadgeManagementGUI
         $ilToolbar = $this->toolbar;
         $lng = $this->lng;
         $ilCtrl = $this->ctrl;
-        $tpl = $this->tpl;
 
         $this->setTabs('badges');
 
