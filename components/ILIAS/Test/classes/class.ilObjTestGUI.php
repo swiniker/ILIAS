@@ -564,7 +564,6 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
                     $this->ctrl,
                     $this->tpl,
                     $this->toolbar,
-                    $this->tabs_gui,
                     $this->getObject()->getTestLogger(),
                     $this->post_wrapper,
                     $this->request_wrapper,
@@ -578,7 +577,8 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
 
                 $this->prepareOutput();
                 $this->addHeaderAction();
-                $this->tabs_gui->activateSubTab(TabsManager::SETTINGS_SUBTAB_ID_MARK_SCHEMA);
+                $this->tabs_manager->activateTab(TabsManager::TAB_ID_SETTINGS);
+                $this->tabs_manager->activateSubTab(TabsManager::SETTINGS_SUBTAB_ID_MARK_SCHEMA);
 
                 break;
 

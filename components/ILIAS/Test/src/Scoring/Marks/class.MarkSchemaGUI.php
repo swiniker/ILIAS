@@ -54,7 +54,6 @@ class MarkSchemaGUI
         private \ilCtrlInterface $ctrl,
         private \ilGlobalTemplateInterface $tpl,
         private \ilToolbarGUI $toolbar,
-        private \ilTabsGUI $tabs,
         private TestLogger $logger,
         private RequestWrapper $post_wrapper,
         private RequestWrapper $request_wrapper,
