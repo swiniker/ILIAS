@@ -382,7 +382,7 @@ class ilBadgeImageTemplate
             $identification = $this->resource_storage->manage()->find($this->getImageRid());
             if ($identification !== null) {
                 $flavour = $this->resource_storage->flavours()->get($identification, new ilBadgePictureDefinition());
-                $urls = $this->resource_storage->consume()->flavourUrls($flavour)->getURLsAsArray(false);
+                $urls = $this->resource_storage->consume()->flavourUrls($flavour)->getURLsAsArray();
                 if (count($urls) === ilBadgeImage::IMAGE_URL_COUNT && isset($urls[$size])) {
                     $image_src = $urls[$size];
                 }

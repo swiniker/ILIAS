@@ -236,7 +236,7 @@ class ilBadge
     // setter/getter
     //
 
-    protected function setId(int $a_id): void
+    public function setId(int $a_id): void
     {
         $this->id = $a_id;
     }
@@ -329,7 +329,7 @@ class ilBadge
         return $this->config;
     }
 
-    protected function setImage(?string $a_value): void
+    public function setImage(?string $a_value): void
     {
         if ($a_value !== null) {
             $this->image = trim($a_value);

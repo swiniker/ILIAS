@@ -150,14 +150,16 @@ class ilObjectBadgeTableGUI
                 foreach (ilBadge::getObjectInstances($filter) as $badge_item) {
                     $type_caption = ilBadge::getExtendedTypeCaption($types[$badge_item['type_id']]);
 
+                    $badge = new ilBadge(0);
+                    $badge->setId($badge_item['id']);
+                    $badge->setImageRid($badge_item['image_rid']);
+                    $badge->setImage($badge_item['image']);
+
                     $images = [
                         'rendered' => null,
                         'large' => null,
                     ];
-                    $image_src = $this->badge_image_service->getImageFromResourceId(
-                        $badge_item,
-                        $badge_item['image_rid']
-                    );
+                    $image_src = $this->badge_image_service->getImageFromResourceId($badge);
                     if ($image_src !== '') {
                         $images['rendered'] = $this->ui_renderer->render(
                             $this->ui_factory->image()->responsive(
@@ -167,8 +169,7 @@ class ilObjectBadgeTableGUI
                         );
 
                         $image_src_large = $this->badge_image_service->getImageFromResourceId(
-                            $badge_item,
-                            $badge_item['image_rid'],
+                            $badge,
                             ilBadgeImage::IMAGE_SIZE_XL
                         );
                         if ($image_src_large !== '') {
