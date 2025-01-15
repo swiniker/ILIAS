@@ -341,11 +341,11 @@ class ilTestEvaluationUserData
     public function getAvailablePoints(int $pass = 0): float
     {
         $available = 0;
-        if (!is_object($this->passes[$pass])) {
+        if (!isset($this->passes[$pass]) || !is_object($this->passes[$pass])) {
             $pass = 0;
         }
-        if (!is_object($this->passes[$pass])) {
-            return 0;
+        if (!isset($this->passes[$pass]) || !is_object($this->passes[$pass])) {
+            return 0.0;
         }
         $available = $this->passes[$pass]->getMaxPoints();
         $available = round($available, 2);

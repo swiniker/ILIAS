@@ -77,6 +77,7 @@ class ilTestEvaluationDataTest extends ilTestBaseTestCase
     {
         $records = [];
         $records[] = [
+            "active_id" => 7 ,
             "question_fi" => 9,
             "result_points" => 1.2,
             "answered" => true,
@@ -86,7 +87,6 @@ class ilTestEvaluationDataTest extends ilTestBaseTestCase
             "qpl_maxpoints" => 2.4,
             "submitted" => true,
             "last_finished_pass" => 1,
-            "active_fi" => 7 ,
             "pass" => 1,
             "points" => 10.3,
             "maxpoints" => 32,
