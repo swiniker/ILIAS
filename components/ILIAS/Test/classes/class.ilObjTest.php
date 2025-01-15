@@ -3715,7 +3715,7 @@ class ilObjTest extends ilObject
         $a_xml_writer->xmlElement("fieldentry", null, (int) $main_settings->getTestBehaviourSettings()->getProcessingTimeEnabled());
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
-        foreach ($this->getMarkSchema()->mark_steps as $index => $mark) {
+        foreach ($this->getMarkSchema()->getMarkSteps() as $index => $mark) {
             $a_xml_writer->xmlStartTag("qtimetadatafield");
             $a_xml_writer->xmlElement("fieldlabel", null, "mark_step_$index");
             $a_xml_writer->xmlElement("fieldentry", null, sprintf(

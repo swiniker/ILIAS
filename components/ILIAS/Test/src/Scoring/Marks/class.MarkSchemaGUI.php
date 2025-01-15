@@ -110,7 +110,7 @@ class MarkSchemaGUI
             $this->ui_factory
         );
 
-        $confirmation_modal = $this->buildConfirmationModal();
+        $confirmation_modal = $this->buildResetConfirmationModal();
 
         $this->populateToolbar($confirmation_modal, $add_mark_modal);
 
@@ -229,7 +229,7 @@ class MarkSchemaGUI
         $this->showMarkSchema();
     }
 
-    private function buildConfirmationModal(): InterruptiveModal
+    private function buildResetConfirmationModal(): InterruptiveModal
     {
         return $this->ui_factory->modal()->interruptive(
             $this->lng->txt('tst_mark_reset_to_simple_mark_schema'),
@@ -330,7 +330,7 @@ class MarkSchemaGUI
 
         $confirm_delete_modal = $this->ui_factory->modal()->interruptive(
             $this->lng->txt('confirm'),
-            $this->lng->txt('tst_mark_reset_to_simple_mark_schema_confirmation'),
+            $this->lng->txt('delete_mark_confirmation'),
             $this->ctrl->getFormActionByClass(MarkSchemaGUI::class, 'deleteMarkSteps')
         )->withActionButtonLabel($this->lng->txt('delete'))
         ->withAffectedItems($this->buildInteruptiveItems($marks_to_delete));

@@ -609,6 +609,7 @@ assessment#:#deleteSuggestedSolution#:#Remove this content for recapitulation
 assessment#:#delete_all_user_data_confirmation#:#Are you sure you want to delete the test results of all of the participants of this test?
 assessment#:#delete_image_header#:#Remove image
 assessment#:#delete_image_question#:#Do you really want to remove the image?
+assessment#:#delete_mark_confirmation#:#Are you sure you want to delete the following mark?
 assessment#:#delete_participants_no_valid_participants_selected#:#Test results already exist for the selected participants, so they cannot be removed.
 assessment#:#delete_result_no_valid_participants_selected#:#There are no test results for the selected participants, so they cannot be removed.
 assessment#:#delete_selected_user_data_confirmation#:#Are you sure you want to remove the test data of the selected users?
