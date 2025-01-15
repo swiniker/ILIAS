@@ -2553,19 +2553,23 @@ class ilObjTest extends ilObject
     * @return string The output name of the user
     * @access public
     */
-    public function buildName($user_id, $firstname, $lastname, $title): string
-    {
+    public function buildName(
+        int $user_id,
+        string $firstname,
+        string $lastname,
+        string $title
+    ): string {
         $name = "";
-        if (strlen($firstname . $lastname . $title) == 0) {
+        if ($firstname . $lastname . $title !== '') {
             $name = $this->lng->txt('deleted_user');
         } else {
             if ($user_id == ANONYMOUS_USER_ID) {
                 $name = $lastname;
             } else {
-                $name = trim($lastname . ", " . $firstname . " " . $title);
+                $name = trim($lastname . ', ' . $firstname . ' ' . $title);
             }
             if ($this->getAnonymity()) {
-                $name = $this->lng->txt("anonymous");
+                $name = $this->lng->txt('anonymous');
             }
         }
         return $name;

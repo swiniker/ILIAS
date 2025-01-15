@@ -14164,6 +14164,7 @@ rbac#:#file_edit_learning_progress#:#User can edit learning progress settings
 rbac#:#file_edit_permission#:#User can change permission settings
 rbac#:#file_read#:#User can download file
 rbac#:#file_read_learning_progress#:#User can view learning progress of other users
+rbac#:#file_view_content#:#File content presented in browser (if WOPI is active)
 rbac#:#file_visible#:#File is visible
 rbac#:#file_write#:#User can edit file settings and upload new version of file
 rbac#:#files_visible#:#Files Visible
@@ -14372,6 +14373,7 @@ rbac#:#moderate_frm#:#Moderate
 rbac#:#msg_anonymous_cannot_be_assigned#:#Anonymous cannot be assigned to a role.
 rbac#:#msg_no_roles_of_type#:#No Roles available with selected filter setting
 rbac#:#news_add_news#:#Add News
+rbac#:#no_corresponding_roles#:#No corresponding roles could be found.
 rbac#:#nots_edit_permissions#:#User can change permission settings of Notes administration.
 rbac#:#nots_read#:#User has read access to Notes administration.
 rbac#:#nots_visible#:#Administration of Notes is visible.
@@ -14615,6 +14617,7 @@ rbac#:#rbac_ud_local#:#User-defined local role
 rbac#:#rbac_ud_rolt#:#User-defined role template
 rbac#:#rbac_unprotected_delete_local_policies_info#:#If activated, all local policies will be deleted. Permissions in courses and groups will be newly initialized.
 rbac#:#rbac_unprotected_keep_local_policies_info#:#Choose this mode to keep all local policies.
+rbac#:#rbac_view_content#:#View Content
 rbac#:#rcat_delete#:#User can move or delete ECS Category
 rbac#:#rcat_edit_permission#:#User can change permission settings
 rbac#:#rcat_read#:#User can use ECS Category
