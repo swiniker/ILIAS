@@ -1653,14 +1653,16 @@ class ilObjTest extends ilObject
     * @return array An array containing the id's as keys and the database row objects as values
     * @access public
     */
-    public function &getAllQuestions($pass = null): array
+    public function getAllQuestions($pass = null): array
     {
-        $result_array = [];
         if ($this->isRandomTest()) {
             $active_id = $this->getActiveIdOfUser($this->user->getId());
+            if ($active_id === null) {
+                return [];
+            }
             $this->loadQuestions($active_id, $pass);
-            if (count($this->questions) == 0) {
-                return $result_array;
+            if (count($this->questions) === 0) {
+                return [];
             }
             if (is_null($pass)) {
                 $pass = self::_getPass($active_id);
@@ -1671,11 +1673,12 @@ class ilObjTest extends ilObject
                 [$active_id, $pass]
             );
         } else {
-            if (count($this->questions) == 0) {
-                return $result_array;
+            if (count($this->questions) === 0) {
+                return [];
             }
             $result = $this->db->query("SELECT qpl_questions.* FROM qpl_questions, tst_test_question WHERE tst_test_question.question_fi = qpl_questions.question_id AND " . $this->db->in('qpl_questions.question_id', $this->questions, false, 'integer'));
         }
+        $result_array = [];
         while ($row = $this->db->fetchAssoc($result)) {
             $result_array[$row["question_id"]] = $row;
         }

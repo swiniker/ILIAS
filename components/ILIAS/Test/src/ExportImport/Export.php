@@ -178,6 +178,10 @@ abstract class Export implements Exporter
         $exp_log->write(date('[y-m-d H:i:s] ') . 'Finished Export');
         $this->bench->stop('TestExport', 'write');
 
+        if (!$this->isResultExportingEnabled()) {
+            unlink($this->export_dir . '/' . $this->subdir . '.zip');
+        }
+
         return $this->export_dir . '/' . $this->subdir . '.zip';
     }
 

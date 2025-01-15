@@ -168,10 +168,6 @@ class ilExportGUI
 
     final protected function enableStandardXMLExport(): void
     {
-        # Exception for Test, TestQuestionPool
-        if (in_array($this->obj->getType(), ["tst", "qpl"])) {
-            return;
-        }
         $this->export_options = $this->export_options->withElement(new ilExportExportOptionXML());
     }
 
