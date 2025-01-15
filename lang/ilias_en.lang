@@ -14164,6 +14164,7 @@ rbac#:#file_edit_learning_progress#:#User can edit learning progress settings
 rbac#:#file_edit_permission#:#User can change permission settings
 rbac#:#file_read#:#User can download file
 rbac#:#file_read_learning_progress#:#User can view learning progress of other users
+rbac#:#file_view_content:#File content presented in browser (if WOPI is active)
 rbac#:#file_visible#:#File is visible
 rbac#:#file_write#:#User can edit file settings and upload new version of file
 rbac#:#files_visible#:#Files Visible

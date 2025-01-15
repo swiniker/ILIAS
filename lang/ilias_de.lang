@@ -14064,10 +14064,10 @@ rbac#:#condition_result_range_percentage#:#Ergebnisbereich
 rbac#:#contribute#:#Beiträge erstellen
 rbac#:#copa_copy#:#Inhaltsseite kopieren
 rbac#:#copa_delete#:#Inhaltsseite löschen
-rbac#:#copa_edit_learning_progress#:#Benutzer kann Lernfortschrittseinstellungen bearbeiten
+rbac#:#copa_edit_learning_progress#:#Lernfortschrittseinstellungen können bearbeitet werden
 rbac#:#copa_edit_permission#:#Rechteeinstellungen ändern
 rbac#:#copa_read#:#Inhaltsseite lesen
-rbac#:#copa_read_learning_progress#:#Benutzer kann Lernfortschritt anderer Benutzer einsehen
+rbac#:#copa_read_learning_progress#:#Lernfortschritt von anderen einsehen
 rbac#:#copa_visible#:#Inhaltsseite ist sichtbar
 rbac#:#copa_write#:#Inhaltsseite bearbeiten
 rbac#:#cpad_edit_permissions#:#Rechteeinstellungen der Administration für Inhaltsseiten ändern
@@ -14077,7 +14077,7 @@ rbac#:#cpad_write#:#Einstellungen in Administration für Inhaltsseiten ändern
 rbac#:#crs_copy#:#Kurs kopieren
 rbac#:#crs_delete#:#Kurs löschen oder verschieben
 rbac#:#crs_edit_event#:#Kalendertermine bearbeiten
-rbac#:#crs_edit_learning_progress#:#Benutzer kann Lernfortschrittseinstellungen bearbeiten
+rbac#:#crs_edit_learning_progress#:#Lernfortschrittseinstellungen können bearbeitet werden
 rbac#:#crs_edit_permission#:#Rechteeinstellungen ändern
 rbac#:#crs_grade#:#Kursmitglieder bewerten
 rbac#:#crs_join#:#Kurs beitreten
@@ -14085,14 +14085,14 @@ rbac#:#crs_leave#:#Kursmitgliedschaft beenden
 rbac#:#crs_manage_members#:#Mitglieder eines Kurses verwalten
 rbac#:#crs_news_add_news#:#Neuigkeiten erstellen und eigene Neuigkeiten bearbeiten
 rbac#:#crs_read#:#Kurs lesen
-rbac#:#crs_read_learning_progress#:#Benutzer kann Lernfortschritt anderer Benutzer einsehen
+rbac#:#crs_read_learning_progress#:#Lernfortschritt von anderen einsehen
 rbac#:#crs_visible#:#Kurs ist sichtbar
 rbac#:#crs_write#:#Kurs bearbeiten
 rbac#:#crsr_copy#:#Kurslinks kopieren
 rbac#:#crsr_delete#:#Kurslinks verschieben oder löschen
-rbac#:#crsr_edit_learning_progress#:#Benutzer kann Lernfortschrittseinstellungen bearbeiten
+rbac#:#crsr_edit_learning_progress#:#Lernfortschrittseinstellungen können bearbeitet werden
 rbac#:#crsr_edit_permission#:#Rechteeinstellungen ändern
-rbac#:#crsr_read_learning_progress#:#Benutzer kann Lernfortschritt anderer Benutzer einsehen
+rbac#:#crsr_read_learning_progress#:#Lernfortschritt von anderen einsehen
 rbac#:#crsr_visible#:#Kurslinks sind sichtbar und können genutzt werden
 rbac#:#crsr_write#:#Einstellungen der Kurslinks bearbeiten
 rbac#:#crss_edit_permission#:#Rechteeinstellungen für die Kurs-Administration ändern
@@ -14131,11 +14131,11 @@ rbac#:#edit_userassignment#:#Benutzerzuweisung ändern
 rbac#:#edit_wiki_navigation#:#Navigation bearbeiten
 rbac#:#exc_copy#:#Übung kopieren
 rbac#:#exc_delete#:#Übung löschen oder verschieben
-rbac#:#exc_edit_learning_progress#:#Benutzer kann Lernfortschrittseinstellungen bearbeiten
+rbac#:#exc_edit_learning_progress#:#Lernfortschrittseinstellungen können bearbeitet werden
 rbac#:#exc_edit_permission#:#Rechteeinstellungen ändern
 rbac#:#exc_edit_submissions_grades#:#Benutzer kann Abgaben und Noten bearbeiten
 rbac#:#exc_read#:#An Übung teilnehmen
-rbac#:#exc_read_learning_progress#:#Benutzer kann Lernfortschritt anderer Benutzer einsehen
+rbac#:#exc_read_learning_progress#:#Lernfortschritt von anderen einsehen
 rbac#:#exc_visible#:#Übung ist sichtbar
 rbac#:#exc_write#:#Einstellungen und Aufgaben der Übung bearbeiten
 rbac#:#excs_edit_permission#:#Rechteeinstellungen für die Übungs-Administration ändern
@@ -14160,11 +14160,12 @@ rbac#:#feed_write#:#Einstellungen des Webfeeds bearbeiten
 rbac#:#file_copy#:#Datei kopieren
 rbac#:#file_delete#:#Datei verschieben oder löschen
 rbac#:#file_edit_file#:#Bearbeitung in einem externen Editor erlauben, sofern vorhanden
-rbac#:#file_edit_learning_progress#:#Benutzer kann Lernfortschrittseinstellungen bearbeiten
+rbac#:#file_edit_learning_progress#:#Lernfortschrittseinstellungen können bearbeitet werden.
 rbac#:#file_edit_permission#:#Rechteeinstellungen ändern
 rbac#:#file_read#:#Datei herunterladen
-rbac#:#file_read_learning_progress#:#Benutzer kann Lernfortschritt anderer Benutzer einsehen
-rbac#:#file_visible#:#Datei ist sichtbar
+rbac#:#file_read_learning_progress#:#Lernfortschritt von anderen einsehen
+rbac#:#file_view_content:#Inhalt der Datei wird im Browser angezeigt (wenn WOPI aktiv ist).
+rbac#:#file_visible#:#Datei ist sichtbar.
 rbac#:#file_write#:#Einstellungen der Datei bearbeiten und neue Version hochladen
 rbac#:#files_visible#:#Dateien sichtbar
 rbac#:#fils_edit_permissions#:#Rechteeinstellungen der Administration für Datei-Services ändern
@@ -14179,10 +14180,10 @@ rbac#:#filter_roles_local_policy#:#Zeige nur Rollen mit lokaler Zugriffsregelung
 rbac#:#fld_create_poll#:#Abstimmung anlegen
 rbac#:#fold_copy#:#Ordner kopieren
 rbac#:#fold_delete#:#Ordner löschen oder verschieben
-rbac#:#fold_edit_learning_progress#:#Benutzer kann Lernfortschrittseinstellungen bearbeiten
+rbac#:#fold_edit_learning_progress#:#Lernfortschrittseinstellungen können bearbeitet werden
 rbac#:#fold_edit_permission#:#Rechteeinstellungen ändern
 rbac#:#fold_read#:#Lesezugriff auf Ordner
-rbac#:#fold_read_learning_progress#:#Benutzer kann Lernfortschritt anderer Benutzer einsehen
+rbac#:#fold_read_learning_progress#:#Lernfortschritt von anderen einsehen
 rbac#:#fold_visible#:#Ordner ist sichtbar
 rbac#:#fold_write#:#Ordner bearbeiten
 rbac#:#folders_create#:#Ordner erstellen
@@ -14191,11 +14192,11 @@ rbac#:#frm_add_reply#:#Benutzer können auf Forenbeiträge antworten
 rbac#:#frm_add_thread#:#Forenthema anlegen
 rbac#:#frm_copy#:#Forum kopieren
 rbac#:#frm_delete#:#Forum löschen oder verschieben
-rbac#:#frm_edit_learning_progress#:#Benutzer kann Lernfortschrittseinstellungen bearbeiten
+rbac#:#frm_edit_learning_progress#:#Lernfortschrittseinstellungen können bearbeitet werden
 rbac#:#frm_edit_permission#:#Rechteeinstellungen ändern
 rbac#:#frm_moderate_frm#:#Forenbeiträge löschen und zensieren
 rbac#:#frm_read#:#Forum und Beiträge lesen
-rbac#:#frm_read_learning_progress#:#Benutzer kann Lernfortschritt anderer Benutzer einsehen
+rbac#:#frm_read_learning_progress#:#Lernfortschritt von anderen einsehen
 rbac#:#frm_visible#:#Forum ist sichtbar
 rbac#:#frm_write#:#Einstellungen des Forums bearbeiten und Moderation verwalten###Modified as part of gender mainstreaming activities for ILIAS 8
 rbac#:#frma_edit_permission#:#Rechteeinstellungen für Administration ändern
@@ -14212,7 +14213,7 @@ rbac#:#glo_write#:#Inhalt und Einstellungen des Glossars bearbeiten
 rbac#:#grp_copy#:#Gruppe kopieren
 rbac#:#grp_delete#:#Gruppe löschen oder verschieben
 rbac#:#grp_edit_event#:#Kalendertermine bearbeiten
-rbac#:#grp_edit_learning_progress#:#Benutzer kann Lernfortschrittseinstellungen bearbeiten
+rbac#:#grp_edit_learning_progress#:#Lernfortschrittseinstellungen können bearbeitet werden
 rbac#:#grp_edit_permission#:#Rechteeinstellungen ändern
 rbac#:#grp_grade#:#Gruppenmitglieder bewerten
 rbac#:#grp_join#:#Benutzer kann Gruppe beitreten
@@ -14220,7 +14221,7 @@ rbac#:#grp_leave#:#Benutzer kann Gruppenmitgliedschaft beenden
 rbac#:#grp_manage_members#:#Mitglieder einer Gruppe verwalten
 rbac#:#grp_news_add_news#:#Neuigkeiten erstellen und eigene Neuigkeiten bearbeiten
 rbac#:#grp_read#:#Lesezugriff auf Gruppe
-rbac#:#grp_read_learning_progress#:#Benutzer kann Lernfortschritt anderer Benutzer einsehen
+rbac#:#grp_read_learning_progress#:#Lernfortschritt von anderen einsehen
 rbac#:#grp_visible#:#Gruppe ist sichtbar
 rbac#:#grp_write#:#Einstellungen der Gruppe und Inhalt bearbeiten
 rbac#:#grpr_copy#:#Gruppenlinks kopieren
@@ -14238,10 +14239,10 @@ rbac#:#hlps_visible#:#Administration der Online-Hilfe ist sichtbar.
 rbac#:#hlps_write#:#Einstellungen der Online-Hilfe bearbeiten und neue Version hochladen
 rbac#:#htlm_copy#:#HTML-Lernmodul kopieren
 rbac#:#htlm_delete#:#HTML-Lernmodul löschen
-rbac#:#htlm_edit_learning_progress#:#Benutzer kann Lernfortschrittseinstellungen bearbeiten
+rbac#:#htlm_edit_learning_progress#:#Lernfortschrittseinstellungen können bearbeitet werden
 rbac#:#htlm_edit_permission#:#Rechteeinstellungen ändern
 rbac#:#htlm_read#:#HTML-Lernmodul lesen
-rbac#:#htlm_read_learning_progress#:#Benutzer kann Lernfortschritt anderer Benutzer einsehen
+rbac#:#htlm_read_learning_progress#:#Lernfortschritt von anderen einsehen
 rbac#:#htlm_visible#:#HTML-Lernmodul ist sichtbar
 rbac#:#htlm_write#:#HTML-Lernmodul bearbeiten
 rbac#:#iass_amend_grading#:#Finalisierte Bewertung der Individuellen Bewertung ändern
@@ -14274,10 +14275,10 @@ rbac#:#lhts_visible#:#Administration für Lernverlauf ist sichtbar.
 rbac#:#lhts_write#:#Einstellungen in Administration für Lernverlauf ändern
 rbac#:#lm_copy#:#ILIAS-Lernmodul kopieren
 rbac#:#lm_delete#:#ILIAS-Lernmodul löschen
-rbac#:#lm_edit_learning_progress#:#Benutzer kann Lernfortschrittseinstellungen bearbeiten
+rbac#:#lm_edit_learning_progress#:#Lernfortschrittseinstellungen können bearbeitet werden
 rbac#:#lm_edit_permission#:#Rechteeinstellungen ändern
 rbac#:#lm_read#:#ILIAS-Lernmodul lesen
-rbac#:#lm_read_learning_progress#:#Benutzer kann Lernfortschritt anderer Benutzer einsehen
+rbac#:#lm_read_learning_progress#:#Lernfortschritt von anderen einsehen
 rbac#:#lm_visible#:#ILIAS-Lernmodul ist sichtbar
 rbac#:#lm_write#:#ILIAS-Lernmodul bearbeiten
 rbac#:#lngf_edit_permission#:#Rechteeinstellungen der Administration ändern
@@ -14297,11 +14298,11 @@ rbac#:#lso_copy#:#Lernsequenz kopieren
 rbac#:#lso_delete#:#Lernsequenz löschen
 rbac#:#lso_edit_learning_progress#:#Lernfortschrittseinstellungen bearbeiten
 rbac#:#lso_edit_permission#:#Rechteeinstellungen ändern
-rbac#:#lso_lp_other_users#:#Benutzer kann Lernfortschritt anderer Benutzer einsehen
+rbac#:#lso_lp_other_users#:#Lernfortschritt von anderen einsehen
 rbac#:#lso_manage_members#:#Mitglieder bearbeiten
 rbac#:#lso_participate#:#An der Lernsequenz anmelden
 rbac#:#lso_read#:#Lesezugriff auf die Lernsequenz
-rbac#:#lso_read_learning_progress#:#Benutzer kann Lernfortschritt anderer Benutzer einsehen
+rbac#:#lso_read_learning_progress#:#Lernfortschritt von anderen einsehen
 rbac#:#lso_unparticipate#:#Von der Lernsequenz abmelden
 rbac#:#lso_visible#:#Lernsequenz sichtbar
 rbac#:#lso_write#:#Lernsequenz bearbeiten
@@ -14342,7 +14343,7 @@ rbac#:#mcst_delete#:#Mediacast löschen oder verschieben
 rbac#:#mcst_edit_learning_progress#:#Lernfortschrittseinstellungen bearbeiten
 rbac#:#mcst_edit_permission#:#Rechteeinstellung ändern
 rbac#:#mcst_read#:#Mediacast lesen
-rbac#:#mcst_read_learning_progress#:#Benutzer kann Lernfortschritt anderer Benutzer einsehen
+rbac#:#mcst_read_learning_progress#:#Lernfortschritt von anderen einsehen
 rbac#:#mcst_visible#:#Mediacast ist sichtbar
 rbac#:#mcst_write#:#Inhalt und Einstellungen des Mediacasts bearbeiten
 rbac#:#mcts_edit_permission#:#Rechteeinstellung in Mediacast-Administration ändern
@@ -14685,10 +14686,10 @@ rbac#:#rwik_visible#:#ECS-Wiki ist sichtbar
 rbac#:#rwik_write#:#ECS-Wiki bearbeiten
 rbac#:#sahs_copy#:#Benutzer kann SCORM-Lernmodul kopieren
 rbac#:#sahs_delete#:#SCORM-Lernmodul löschen oder verschieben
-rbac#:#sahs_edit_learning_progress#:#Benutzer kann Lernfortschrittseinstellungen bearbeiten
+rbac#:#sahs_edit_learning_progress#:#Lernfortschrittseinstellungen können bearbeitet werden
 rbac#:#sahs_edit_permission#:#Rechteeinstellungen ändern
 rbac#:#sahs_read#:#SCORM-Lernmodul lesen
-rbac#:#sahs_read_learning_progress#:#Benutzer kann Lernfortschritt anderer Benutzer einsehen
+rbac#:#sahs_read_learning_progress#:#Lernfortschritt von anderen einsehen
 rbac#:#sahs_visible#:#SCORM-Lernmodul ist sichtbar
 rbac#:#sahs_write#:#Inhalt und Einstellungen des SCORM-Lernmoduls bearbeiten
 rbac#:#seas_edit_permission#:#Rechteeinstellungen der Suche-Administration ändern
@@ -14699,13 +14700,13 @@ rbac#:#seas_write#:#Einstellungen in Administration der Suche bearbeiten
 rbac#:#sess_copy#:#Sitzung kopieren
 rbac#:#sess_delete#:#Sitzung löschen
 rbac#:#sess_edit_event#:#Kalendertermine bearbeiten
-rbac#:#sess_edit_learning_progress#:#Benutzer kann Lernfortschrittseinstellungen bearbeiten
+rbac#:#sess_edit_learning_progress#:#Lernfortschrittseinstellungen können bearbeitet werden
 rbac#:#sess_edit_metadata#:#Metadaten bearbeiten
 rbac#:#sess_edit_permission#:#Rechteeinstellungen ändern
 rbac#:#sess_manage_materials#:#Materialzuordnungen verwalten
 rbac#:#sess_manage_members#:#Teilnahme an Sitzungen verwalten
 rbac#:#sess_read#:#Lesezugriff auf Sitzungen
-rbac#:#sess_read_learning_progress#:#Benutzer kann Lernfortschritt anderer Benutzer einsehen
+rbac#:#sess_read_learning_progress#:#Lernfortschritt von anderen einsehen
 rbac#:#sess_visible#:#Sitzungen sind sichtbar
 rbac#:#sess_write#:#Sitzungen bearbeiten
 rbac#:#skee_copy#:#Kompetenzbaum kopieren (derzeit nicht verfügbar)
@@ -14743,11 +14744,11 @@ rbac#:#stys_sty_write_system#:#System-Styles bearbeiten
 rbac#:#stys_visible#:#Layout-Administration ist sichtbar
 rbac#:#svy_copy#:#Umfrage kopieren
 rbac#:#svy_delete#:#Umfrage löschen oder verschieben
-rbac#:#svy_edit_learning_progress#:#Benutzer kann Lernfortschrittseinstellungen bearbeiten
+rbac#:#svy_edit_learning_progress#:#Lernfortschrittseinstellungen können bearbeitet werden
 rbac#:#svy_edit_permission#:#Rechteeinstellungen ändern
 rbac#:#svy_invite#:#Andere zu einer Umfrage einladen
 rbac#:#svy_read#:#An Umfrage teilnehmen
-rbac#:#svy_read_learning_progress#:#Benutzer kann Lernfortschritt anderer Benutzer einsehen
+rbac#:#svy_read_learning_progress#:#Lernfortschritt von anderen einsehen
 rbac#:#svy_read_results#:#Benutzer hat Zugriff auf alle Umfrageergebnisse
 rbac#:#svy_visible#:#Umfrage ist sichtbar
 rbac#:#svy_write#:#Umfrage zusammenstellen und Einstellungen bearbeiten
@@ -14783,10 +14784,10 @@ rbac#:#trac_visible#:#Zugriffsstatistiken und Lernfortschrittsverwaltung ist sic
 rbac#:#trac_write#:#Einstellungen für Zugriffsstatistiken und Lernfortschrittsverwaltung bearbeiten
 rbac#:#tst_copy#:#Test kopieren
 rbac#:#tst_delete#:#Test löschen oder verschieben
-rbac#:#tst_edit_learning_progress#:#Benutzer kann Lernfortschrittseinstellungen bearbeiten
+rbac#:#tst_edit_learning_progress#:#Lernfortschrittseinstellungen können bearbeitet werden
 rbac#:#tst_edit_permission#:#Rechteeinstellungen bearbeiten
 rbac#:#tst_read#:#Test durchführen
-rbac#:#tst_read_learning_progress#:#Benutzer kann Lernfortschritt anderer Benutzer einsehen
+rbac#:#tst_read_learning_progress#:#Lernfortschritt von anderen einsehen
 rbac#:#tst_tst_history_read#:#Verlauf einsehen
 rbac#:#tst_tst_results#:#Zugriff auf Testergebnisse
 rbac#:#tst_visible#:#Test ist sichtbar
