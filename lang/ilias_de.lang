@@ -14164,7 +14164,7 @@ rbac#:#file_edit_learning_progress#:#Lernfortschrittseinstellungen können bearb
 rbac#:#file_edit_permission#:#Rechteeinstellungen ändern
 rbac#:#file_read#:#Datei herunterladen
 rbac#:#file_read_learning_progress#:#Lernfortschritt von anderen einsehen
-rbac#:#file_view_content:#Inhalt der Datei wird im Browser angezeigt (wenn WOPI aktiv ist).
+rbac#:#file_view_content#:#Inhalt der Datei wird im Browser angezeigt (wenn WOPI aktiv ist).
 rbac#:#file_visible#:#Datei ist sichtbar.
 rbac#:#file_write#:#Einstellungen der Datei bearbeiten und neue Version hochladen
 rbac#:#files_visible#:#Dateien sichtbar
@@ -14616,6 +14616,7 @@ rbac#:#rbac_ud_local#:#Selbst erstelle lokale Rolle
 rbac#:#rbac_ud_rolt#:#Selbst erstellte Rollenvorlage
 rbac#:#rbac_unprotected_delete_local_policies_info#:#Wenn aktiviert, werden alle lokalen Zugriffsregelungen überschrieben und die Rechte in Kursen und Gruppen neu initialisiert.
 rbac#:#rbac_unprotected_keep_local_policies_info#:#Wählen Sie diese Einstellung, um alle vorhandenen lokalen Zugriffsregelungen beizubehalten.
+rbac#:#rbac_view_content#:#Inhalt anzeigen
 rbac#:#rcat_delete#:#ECS-Kategorie löschen
 rbac#:#rcat_edit_permission#:#Rechteeinstellungen ändern
 rbac#:#rcat_read#:#Lesezugriff auf ECS-Kategorie
