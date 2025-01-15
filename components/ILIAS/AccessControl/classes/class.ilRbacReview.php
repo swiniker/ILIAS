@@ -867,8 +867,7 @@ class ilRbacReview
         $assign = "y";
         switch ($a_filter) {
             case self::FILTER_ALL:
-                yield from $this->getAssignableRolesGenerator(true, true, $title_filter);
-                return;
+                return yield from $this->getAssignableRolesGenerator(true, true, $title_filter);
 
             case self::FILTER_ALL_GLOBAL:
                 $where = 'WHERE ' . $this->db->in('rbac_fa.rol_id', $this->getGlobalRoles(), false, 'integer') . ' ';
