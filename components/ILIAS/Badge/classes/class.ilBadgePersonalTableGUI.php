@@ -223,13 +223,13 @@ class ilBadgePersonalTableGUI
 
         return [
             'obj_badge_activate' => $f->table()->action()->multi(
-                $this->lng->txt('activate'),
+                $this->lng->txt('badge_add_to_profile'),
                 $url_builder->withParameter($action_parameter_token, 'obj_badge_activate'),
                 $row_id_token
             ),
             'obj_badge_deactivate' =>
                 $f->table()->action()->multi(
-                    $this->lng->txt('deactivate'),
+                    $this->lng->txt('badge_remove_from_profile'),
                     $url_builder->withParameter($action_parameter_token, 'obj_badge_deactivate'),
                     $row_id_token
                 )
