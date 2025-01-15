@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
                 console.log($textNodes);
                 if (1 === $textNodes.length) {
-                    const $checkboxes = $textNodes.first().closest(".form-group").find('input[type="checkbox"]');
+                    const $checkboxes = $textNodes.first().closest("fieldset").find('input[type="checkbox"]');
 
                     if (1 === $checkboxes.length) {
                         $notificationToggle = $checkboxes.first();
