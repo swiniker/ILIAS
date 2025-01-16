@@ -2298,8 +2298,14 @@ badge#:#badge_select_one#:#You have to select at least one badge
 badge#:#badge_service_activate#:#Activate Service
 badge#:#badge_service_activate_info#:#Activate the service to make badges available.
 badge#:#badge_settings#:#Badge Settings
-badge#:#badge_sort_added_to_profile_first#:#Added To Profile First
+badge#:#badge_sort_active_badges_first#:#Active Badges First
+badge#:#badge_sort_active_badges_last#:#Active Badges Last
+badge#:#badge_sort_activity_badges_first#:#Activity Badges First
+badge#:#badge_sort_activity_badges_last#:#Activity Badges Last
+badge#:#badge_sort_added_to_profile_last#:#Added To Profile First
 badge#:#badge_sort_excluded_from_profile_first#:#Excluded From Profile First
+badge#:#badge_sort_manual_awarding_first#:#Badges mit manueller Vergabe zuerst
+badge#:#badge_sort_manual_awarding_last#:#Badges mit manueller Vergabe zuletzt
 badge#:#badge_subtype_auto#:#automatic
 badge#:#badge_subtype_manual#:#manual
 badge#:#badge_template_deletion_confirmation#:#Are you sure you want to delete the following image templates?
