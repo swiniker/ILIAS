@@ -36,6 +36,7 @@ use ILIAS\UI\Component\Table\DataRetrieval;
 use ILIAS\UI\URLBuilderToken;
 use ilBadgeHandler;
 use ilBadgeAuto;
+use ILIAS\UI\Component\Table\Column\Column;
 
 class ilBadgeTypesTableGUI implements DataRetrieval
 {
@@ -153,9 +154,12 @@ class ilBadgeTypesTableGUI implements DataRetrieval
         return $rows;
     }
 
+    /**
+     * @return array<string, Column>
+     */
     private function getColumns(): array
     {
-        $columns = [
+        return [
             'name' => $this->factory->table()->column()->text($this->lng->txt('name')),
             'comp' => $this->factory->table()->column()->text($this->lng->txt('cmps_component')),
             'manual' => $this->factory->table()->column()->boolean(
@@ -181,10 +185,8 @@ class ilBadgeTypesTableGUI implements DataRetrieval
             )->withOrderingLabels(
                 $this->lng->txt('badge_sort_active_badges_first'),
                 $this->lng->txt('badge_sort_active_badges_last')
-            ),
+            )
         ];
-
-        return $columns;
     }
 
     /**
@@ -195,23 +197,19 @@ class ilBadgeTypesTableGUI implements DataRetrieval
         URLBuilderToken $action_parameter_token,
         URLBuilderToken $row_id_token
     ): array {
-        if ($this->a_has_write) {
-            return [
-                'badge_type_activate' => $this->factory->table()->action()->multi(
-                    $this->lng->txt('activate'),
-                    $url_builder->withParameter($action_parameter_token, 'badge_type_activate'),
+        return $this->a_has_write ? [
+            'badge_type_activate' => $this->factory->table()->action()->multi(
+                $this->lng->txt('activate'),
+                $url_builder->withParameter($action_parameter_token, 'badge_type_activate'),
+                $row_id_token
+            ),
+            'badge_type_deactivate' =>
+                $this->factory->table()->action()->multi(
+                    $this->lng->txt('deactivate'),
+                    $url_builder->withParameter($action_parameter_token, 'badge_type_deactivate'),
                     $row_id_token
-                ),
-                'badge_type_deactivate' =>
-                    $this->factory->table()->action()->multi(
-                        $this->lng->txt('deactivate'),
-                        $url_builder->withParameter($action_parameter_token, 'badge_type_deactivate'),
-                        $row_id_token
-                    )
-            ];
-        }
-
-        return [];
+                )
+        ] : [];
     }
 
     public function renderTable(): void
@@ -222,19 +220,19 @@ class ilBadgeTypesTableGUI implements DataRetrieval
         $url_builder = new URLBuilder($table_uri);
         $query_params_namespace = ['tid'];
 
-        [$url_builder, $action_parameter_token, $row_id_token] =
-            $url_builder->acquireParameters(
-                $query_params_namespace,
-                'table_action',
-                'id',
-            );
+        [$url_builder, $action_parameter_token, $row_id_token] = $url_builder->acquireParameters(
+            $query_params_namespace,
+            'table_action',
+            'id',
+        );
 
-        $table = $this->factory->table()
-                   ->data($this->lng->txt('badge_types'), $this->getColumns(), $this)
-                   ->withId(self::class)
-                   ->withOrder(new Order('name', Order::ASC))
-                   ->withActions($this->getActions($url_builder, $action_parameter_token, $row_id_token))
-                   ->withRequest($this->request);
+        $table = $this->factory
+            ->table()
+            ->data($this->lng->txt('badge_types'), $this->getColumns(), $this)
+            ->withId(self::class)
+            ->withOrder(new Order('name', Order::ASC))
+            ->withActions($this->getActions($url_builder, $action_parameter_token, $row_id_token))
+            ->withRequest($this->request);
 
         $out = [$table];
 
