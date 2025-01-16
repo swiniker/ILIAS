@@ -2296,6 +2296,8 @@ badge#:#badge_select_one#:#Sie müssen mindestens einen Badge auswählen
 badge#:#badge_service_activate#:#Service aktivieren
 badge#:#badge_service_activate_info#:#Aktiveren Sie den Service, um Badges verfügbar zu machen
 badge#:#badge_settings#:#Badge Einstellungen
+badge#:#badge_sort_added_to_profile_first#:#Zum Profil hinzugefügte zuerst
+badge#:#badge_sort_excluded_from_profile_first#:#Vom Profil ausgeklammerte zuerst
 badge#:#badge_subtype_auto#:#automatisch
 badge#:#badge_subtype_manual#:#manuell
 badge#:#badge_template_deletion_confirmation#:#Wollen Sie wirklich die folgenden Bildvorlagen löschen?
