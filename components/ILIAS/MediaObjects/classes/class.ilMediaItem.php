@@ -613,8 +613,7 @@ class ilMediaItem
     public function getOriginalSize(): ?array
     {
         if (ilUtil::deducibleSize($this->getFormat())) {
-            $loc = $this->getOriginalSize();
-
+            $loc = $this->getOriginalSource();
             $size = ilMediaImageUtil::getImageSize($loc);
             if ($size[0] > 0 && $size[1] > 0) {
                 return array("width" => $size[0], "height" => $size[1]);
