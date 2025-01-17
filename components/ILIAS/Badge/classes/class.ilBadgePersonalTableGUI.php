@@ -33,12 +33,12 @@ use ILIAS\UI\Implementation\Component\Link\Standard;
 use ILIAS\Badge\ilBadgeImage;
 use ILIAS\Badge\PresentationHeader;
 use ILIAS\Badge\Tile;
+use ILIAS\UI\Component\Table\Column\Column;
 
 class ilBadgePersonalTableGUI implements DataRetrieval
 {
     private readonly Factory $factory;
     private readonly Renderer $renderer;
-    private readonly \ILIAS\Refinery\Factory $refinery;
     private readonly ServerRequestInterface|RequestInterface $request;
     private readonly ilLanguage $lng;
     private readonly ilGlobalTemplateInterface $tpl;
@@ -55,7 +55,6 @@ class ilBadgePersonalTableGUI implements DataRetrieval
         $this->tpl = $DIC->ui()->mainTemplate();
         $this->factory = $DIC->ui()->factory();
         $this->renderer = $DIC->ui()->renderer();
-        $this->refinery = $DIC->refinery();
         $this->request = $DIC->http()->request();
         $this->user = $DIC->user();
         $this->access = $DIC->access();
@@ -130,10 +129,12 @@ class ilBadgePersonalTableGUI implements DataRetrieval
                 }
 
                 $awarded_by = implode(' ', [
-                    $this->renderer->render($this->factory->symbol()->icon()->standard(
-                        $parent['type'],
-                        $parent['title']
-                    )),
+                    $this->renderer->render(
+                        $this->factory->symbol()->icon()->standard(
+                            $parent['type'],
+                            $parent['title']
+                        )
+                    ),
                     $awarded_by
                 ]);
             }
@@ -194,9 +195,12 @@ class ilBadgePersonalTableGUI implements DataRetrieval
         return $rows;
     }
 
+    /**
+     * @return array<string, Column>
+     */
     private function getColumns(\ILIAS\Data\DateFormat\DateFormat $date_format): array
     {
-        $columns = [
+        return [
             'image' => $this->factory->table()->column()->text($this->lng->txt('image'))->withIsSortable(false),
             'title' => $this->factory->table()->column()->text($this->lng->txt('title')),
             'awarded_by' => $this->factory->table()->column()->text($this->lng->txt('awarded_by')),
@@ -213,8 +217,6 @@ class ilBadgePersonalTableGUI implements DataRetrieval
                 $this->lng->txt('badge_sort_excluded_from_profile_first')
             )
         ];
-
-        return $columns;
     }
 
     /**
@@ -253,23 +255,23 @@ class ilBadgePersonalTableGUI implements DataRetrieval
         $url_builder = new URLBuilder($table_uri);
         $query_params_namespace = ['badge'];
 
-        [$url_builder, $action_parameter_token, $row_id_token] =
-            $url_builder->acquireParameters(
-                $query_params_namespace,
-                'table_action',
-                'id'
-            );
+        [$url_builder, $action_parameter_token, $row_id_token] = $url_builder->acquireParameters(
+            $query_params_namespace,
+            'table_action',
+            'id',
+        );
 
-        $table = $this->factory->table()
-                   ->data(
-                       $this->lng->txt('badge_personal_badges'),
-                       $this->getColumns($date_format),
-                       $this
-                   )
-                   ->withId(self::class)
-                   ->withOrder(new Order('title', Order::ASC))
-                   ->withActions($this->getActions($url_builder, $action_parameter_token, $row_id_token))
-                   ->withRequest($this->request);
+        $table = $this->factory
+            ->table()
+            ->data(
+                $this->lng->txt('badge_personal_badges'),
+                $this->getColumns($date_format),
+                $this
+            )
+            ->withId(self::class)
+            ->withOrder(new Order('title', Order::ASC))
+            ->withActions($this->getActions($url_builder, $action_parameter_token, $row_id_token))
+            ->withRequest($this->request);
 
         $pres = new PresentationHeader($this->dic, ilBadgeProfileGUI::class);
         $pres->show($this->lng->txt('table_view'));
