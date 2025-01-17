@@ -102,7 +102,7 @@ class ilCollectFilesJob extends AbstractJob
 
             if ($object_type === "fold" || $object_type === "crs") {
                 $num_recursions = 0;
-                $files_from_folder = self::recurseFolder($object_ref_id, $object_name, $object_temp_dir, $num_recursions, $initiated_by_folder_action);
+                $files_from_folder = $this->recurseFolder($object_ref_id, $object_name, $object_temp_dir, $num_recursions, $initiated_by_folder_action);
                 $files = array_merge($files, $files_from_folder);
             } elseif (($object_type === "file") && (($file_dirs = $this->getFileDirs(
                 $object_ref_id,
@@ -186,7 +186,7 @@ class ilCollectFilesJob extends AbstractJob
      *
      * @return mixed[]
      */
-    private static function recurseFolder($a_ref_id, $a_folder_name, $a_temp_dir, $a_num_recursions, $a_initiated_by_folder_action): array
+    private function recurseFolder($a_ref_id, $a_folder_name, $a_temp_dir, $a_num_recursions, $a_initiated_by_folder_action): array
     {
         global $DIC;
 
@@ -213,7 +213,7 @@ class ilCollectFilesJob extends AbstractJob
                 continue;
             }
             if ($child["type"] == "fold") {
-                $files_from_folder = self::recurseFolder($child["ref_id"], $child['title'], $temp_dir, $num_recursions, $a_initiated_by_folder_action);
+                $files_from_folder = $this->recurseFolder($child["ref_id"], $child['title'], $temp_dir, $num_recursions, $a_initiated_by_folder_action);
                 $files = array_merge($files, $files_from_folder);
             } else {
                 if (($child["type"] === "file") && (($dirs = $this->getFileDirs($child["ref_id"], $child['title'], $temp_dir)) !== false)) {
