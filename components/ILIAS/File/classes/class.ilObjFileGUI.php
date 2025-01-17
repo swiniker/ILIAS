@@ -213,7 +213,7 @@ class ilObjFileGUI extends ilObject2GUI
             case "ilexportgui":
                 $ilTabs->activateTab("export");
                 $exp_gui = new ilExportGUI($this);
-                $exp_gui->addFormat();
+                $exp_gui->addFormat('xml');
                 $this->ctrl->forwardCommand($exp_gui);
                 break;
 
