@@ -1342,7 +1342,9 @@ class ilObjMediaObject extends ilObject
     }
 
     /**
-     * Create new media object and update page in db and return new media object
+     * @deprecated
+     * - for upload cases use $media_object->addMediaItemFrom(Legacy)Upload
+     * - imports must use the dependency mechanism
      */
     public static function _saveTempFileAsMediaObject(
         string $name,
@@ -1371,6 +1373,12 @@ class ilObjMediaObject extends ilObject
                 true
             );
         } else {
+            $media_item = $media_object->addMediaItemFromLocalFile(
+                "Standard",
+                $tmp_name,
+                $name
+            );
+            /*
             $media_item = new ilMediaItem();
             $media_object->addMediaItem($media_item);
             $media_item->setPurpose("Standard");
@@ -1381,7 +1389,7 @@ class ilObjMediaObject extends ilObject
             $media_item->setFormat($format);
             $location = $name;
             $media_item->setLocation($location);
-            $media_item->setLocationType("LocalFile");
+            $media_item->setLocationType("LocalFile");*/
         }
 
         // set real meta and object data
@@ -1468,6 +1476,30 @@ class ilObjMediaObject extends ilObject
         if ($upload_hash !== "") {
             $media_item->setUploadHash($upload_hash);
         }
+        if ($purpose === "Standard") {
+            $this->generatePreviewPic(320, 240);
+        }
+        return $media_item;
+    }
+
+    public function addMediaItemFromLocalFile(
+        string $purpose,
+        string $tmp_name,
+        string $name
+    ): \ilMediaItem {
+        $media_item = new ilMediaItem();
+        $this->addMediaItem($media_item);
+        $media_item->setPurpose($purpose);
+        $location = $name;
+        $this->manager->addFileFromLocal($this->getId(), $tmp_name, $name);
+
+        // get mime type
+        $format = self::getMimeType($location, true);
+
+        // set real meta and object data
+        $media_item->setFormat($format);
+        $media_item->setLocation($location);
+        $media_item->setLocationType("LocalFile");
         if ($purpose === "Standard") {
             $this->generatePreviewPic(320, 240);
         }

@@ -70,6 +70,11 @@ class MediaObjectManager
         $this->repo->addFileFromUpload($mob_id, $result, $path);
     }
 
+    public function addFileFromLocal(int $mob_id, string $tmp_name, string $path): void
+    {
+        $this->repo->addFileFromLocal($mob_id, $tmp_name, $path);
+    }
+
     public function removeLocation(
         int $mob_id,
         string $location
