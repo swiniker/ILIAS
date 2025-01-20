@@ -19,6 +19,8 @@
 use ILIAS\ResourceStorage\Collection\ResourceCollection;
 use ILIAS\ResourceStorage\Resource\StorableContainerResource;
 use ILIAS\ResourceStorage\Identification\ResourceIdentification;
+use ILIAS\ResourceStorage\Resource\StorableResource;
+use ILIAS\Dataset\IRSSContainerExportConfig;
 
 /**
  * A dataset contains in data in a common structure that can be
@@ -311,21 +313,20 @@ abstract class ilDataSet
 
                     $c = $path_in_container;
                     $this->dircnt++;
-
-                    if (($types[$f] ?? "") === "rscontainer") {
-                        /* todo
-                        $tdir = $this->absolute_export_dir . "/dsDir_" . $this->dircnt;
-                        ilFileUtils::makeDirParents($tdir);
-                        $tdir = realpath($tdir);
-                        if ($rid = $this->getContainerRid($rec, $a_entity, $a_schema_version, $f, $c)) {
-                            $stream = $this->irss->consume()->stream($rid);
-                            $name = $tdir . "/rscontainer.zip";
-                            file_put_contents($name, $stream->getStream()->getContents());
-                        }
-                        $c = $this->relative_export_dir . "/dsDir_" . $this->dircnt;
-                        $this->dircnt++;
-                        */
+                }
+                if (isset($this->export) and ($types[$f] ?? "") === "rscontainer") {
+                    $path_in_container = $this->export->getExportDirInContainer() . "/dsDir_" . $this->dircnt;
+                    if ($config = $this->getContainerExportConfig($rec, $a_entity, $a_schema_version, $f, $c)) {
+                        $this->export->getExportWriter()->writeFilesByResourceContainer(
+                            $this->getIRSSContainerExportConfig(
+                                $config->getSourceContainer(),
+                                $config->getSourcePath(),
+                                $path_in_container
+                            )
+                        );
                     }
+                    $c = $path_in_container;
+                    $this->dircnt++;
                 }
                 // this changes schema/dtd
                 //$a_writer->xmlElement($a_prefixes[$a_entity].":".$f,
@@ -350,6 +351,18 @@ abstract class ilDataSet
                 $this->addRecordsXml($a_writer, $a_prefixes, $dp, $a_schema_version, $ids, $par["field"] ?? null);
             }
         }
+    }
+
+    protected function getIRSSContainerExportConfig(
+        StorableResource $source_container,
+        string $source_path,
+        string $target_path = ""
+    ) : IRSSContainerExportConfig {
+        return new IRSSContainerExportConfig(
+            $source_container,
+            $source_path,
+            $target_path
+        );
     }
 
     protected function getDependencies(
@@ -548,13 +561,13 @@ abstract class ilDataSet
         return null;
     }
 
-    public function getContainerRid(
+    public function getContainerExportConfig(
         array $record,
         string $entity,
         string $schema_version,
         string $field,
         string $value
-    ): ?ResourceIdentification {
+    ): ?IRSSContainerExportConfig {
         return null;
     }
 

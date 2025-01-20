@@ -19,6 +19,7 @@
 use ILIAS\Style\Content\Access;
 use ILIAS\Style\Content;
 use ILIAS\ResourceStorage\Identification\ResourceIdentification;
+use ILIAS\Dataset\IRSSContainerExportConfig;
 
 /**
  * Style Data set class
@@ -433,15 +434,23 @@ class ilStyleDataSet extends ilDataSet
         }
     }
 
-    public function getContainerRid(
+    public function getContainerExportConfig(
         array $record,
         string $entity,
         string $schema_version,
         string $field,
         string $value
-    ): ?ResourceIdentification {
+    ): ?IRSSContainerExportConfig {
         if ($entity === "sty" && $field === "StyleContainer") {
-            return $this->style_domain->style((int) $record["Id"])->getResourceIdentification();
+            $rid = $this->style_domain->style((int) $record["Id"])->getResourceIdentification();
+            if ($rid) {
+                $container = $this->irss->manageContainer()->getResource($rid);
+                return
+                    $this->getIRSSContainerExportConfig(
+                        $container,
+                        "images"
+                );
+            }
         }
         return null;
     }
