@@ -270,6 +270,19 @@ abstract class ilDataSet
         return $writer->xmlDumpMem(false);
     }
 
+    protected function getExportDirInContainer(string $exp_dir) : string
+    {
+        // note, the export returns in ILIAS 10 (Jan 2024) something like
+        // 1737382047__0__cat_436/components/ILIAS/Style/set_0/dsDir_1
+        // whereas ILIAS 9 returned
+        // Services/Style/set_1/expDir_1/dsDir_1
+        // thus we skip the 1737382047__0__cat_436/ part since it would be redundant
+        // an make import fail
+        if (str_contains($exp_dir, "components/")) {
+            $exp_dir = substr($exp_dir, strpos($exp_dir, "components/"));
+        }
+        return $exp_dir;
+    }
 
     public function addRecordsXml(
         ilXmlWriter $a_writer,
@@ -298,7 +311,7 @@ abstract class ilDataSet
                         $sdir,
                         $path_in_container
                     );
-                    $c = $path_in_container;
+                    $c = $this->getExportDirInContainer($path_in_container);  // note: this corrects the path, see above
                     $this->dircnt++;
                 }
                 if (isset($this->export) and ($types[$f] ?? "") === "rscollection") {
@@ -311,7 +324,7 @@ abstract class ilDataSet
                         );
                     }
 
-                    $c = $path_in_container;
+                    $c = $this->getExportDirInContainer($path_in_container);  // note: this corrects the path, see above
                     $this->dircnt++;
                 }
                 if (isset($this->export) and ($types[$f] ?? "") === "rscontainer") {
@@ -325,7 +338,7 @@ abstract class ilDataSet
                             )
                         );
                     }
-                    $c = $path_in_container;
+                    $c = $this->getExportDirInContainer($path_in_container);  // note: this corrects the path, see above
                     $this->dircnt++;
                 }
                 // this changes schema/dtd

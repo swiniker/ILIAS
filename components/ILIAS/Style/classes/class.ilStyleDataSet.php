@@ -546,7 +546,7 @@ class ilStyleDataSet extends ilDataSet
 
                 $this->current_obj = $newObj;
                 $a_mapping->addMapping("components/ILIAS/Style", "sty", $a_rec["Id"], $newObj->getId());
-                $a_mapping->addMapping("components/ILIAS/Object", "obj", $a_rec["Id"], $newObj->getId());
+                $a_mapping->addMapping("components/ILIAS/ILIASObject", "obj", $a_rec["Id"], $newObj->getId());
                 $this->log->debug("Added mapping Services/Style sty  " . $a_rec["Id"] . " > " . $newObj->getId());
 
                 // up to 9
@@ -554,13 +554,14 @@ class ilStyleDataSet extends ilDataSet
                 if ($dir != "" && $this->getImportDirectory() != "") {
                     $source_dir = $this->getImportDirectory() . "/" . $dir;
                     $sm = $this->style_domain->style($newObj->getId());
-                    $sm->createContainerFromLocalDir($source_dir);
+                    $sm->createContainerFromLocalDir($source_dir, "images", false);
                 }
 
                 $dir = str_replace("..", "", ($a_rec["StyleContainer"] ?? ""));
                 if ($dir != "" && $this->getImportDirectory() != "") {
+                    $source_dir = $this->getImportDirectory() . "/" . $dir;
                     $sm = $this->style_domain->style($newObj->getId());
-                    $sm->createContainerFromLocalZip($this->getImportDirectory() . "/" . $dir . "/rscontainer.zip");
+                    $sm->createContainerFromLocalDir($source_dir, "images", false);
                 }
                 break;
 
@@ -608,7 +609,7 @@ class ilStyleDataSet extends ilDataSet
                 break;
 
             case "sty_usage":
-                $obj_id = (int) $a_mapping->getMapping("components/ILIAS/Object", "obj", $a_rec["ObjId"]);
+                $obj_id = (int) $a_mapping->getMapping("components/ILIAS/ILIASObject", "obj", $a_rec["ObjId"]);
                 $style_id = (int) $a_mapping->getMapping("components/ILIAS/Style", "sty", $a_rec["StyleId"]);
                 if ($obj_id > 0 && $style_id > 0) {
                     ilObjStyleSheet::writeStyleUsage($obj_id, $style_id);
