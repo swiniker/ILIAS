@@ -27,7 +27,8 @@ use ILIAS\UI\Component\Image\Factory as ImageFactory;
 use ILIAS\ResourceStorage\Services as StorageService;
 use ILIAS\ResourceStorage\Flavour\Flavour;
 use ILIAS\ResourceStorage\Flavour\Definition\FlavourDefinition;
-use ILIAS\Modules\File\Preview\Settings;
+use ILIAS\components\File\Preview\Settings;
+use ILIAS\Modules\File\Preview\SettingsFactory;
 
 class FileObjectPropertyProviders implements ilObjectTypeSpecificPropertyProviders
 {
@@ -39,7 +40,7 @@ class FileObjectPropertyProviders implements ilObjectTypeSpecificPropertyProvide
     {
         $this->crop_definition = new ilObjectTileImageFlavourDefinition();
         $this->extract_definition = new FirstPageToTileImageFlavourDefinition();
-        $this->settings = new Settings();
+        $this->settings = (new SettingsFactory())->getSettings();
     }
 
     public function getObjectTypeSpecificTileImage(
