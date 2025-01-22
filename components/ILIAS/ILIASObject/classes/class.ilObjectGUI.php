@@ -2079,7 +2079,9 @@ class ilObjectGUI implements ImplementsCreationCallback
             $this->ctrl->setParameterByClass($create_target_class, 'new_type', $type);
             $add_new_items_content_array[$subitem['pos']] = new AddNewItemElement(
                 AddNewItemElementTypes::Object,
-                $this->lng->txt('obj_' . $type),
+                empty($subitem['plugin'])
+                    ? $this->lng->txt('obj_' . $type)
+                    : ilObjectPlugin::lookupTxtById($type, "obj_" . $type),
                 $this->ui_factory->symbol()->icon()->standard($type, ''),
                 new URI(
                     ILIAS_HTTP_PATH . '/' . $this->ctrl->getLinkTargetByClass($create_target_class, 'create')
