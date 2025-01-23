@@ -736,6 +736,7 @@ abstract class assQuestionGUI
     {
         $this->setAdditionalContentEditingModeFromPost();
         $result = $this->writePostData();
+        $this->tabs_gui->activateTab('edit_question');
 
         if ($result !== 0) {
             return  false;
@@ -749,7 +750,6 @@ abstract class assQuestionGUI
                 $this->object->createNewQuestion();
             }
             $this->setQuestionTabs();
-            $this->tabs_gui->activateTab('edit_question');
         }
 
         if ($this->needsSyncQuery()) {
