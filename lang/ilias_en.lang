@@ -3537,7 +3537,7 @@ common#:#adve_assessment_settings#:#Test and Assessment Settings
 common#:#adve_frm_post_settings#:#Forum Posts
 common#:#adve_general_settings#:#General Settings
 common#:#adve_survey_settings#:#Survey Settings
-common#:#agree_date#:#Agreed on
+common#:#agree_date#:#ToS agreed to on
 common#:#all#:#All
 common#:#all_global_roles#:#Global Roles
 common#:#all_local_roles#:#Local Roles (all)
@@ -3975,6 +3975,7 @@ common#:#download_selected_items#:#Download
 common#:#downloading_settings#:#Download Settings
 common#:#dpro_accept_usr_agreement#:#Accept Declaration of Data Protection?
 common#:#dpro_accept_usr_agreement_intro#:#There is a new Declaration of Data Protection. You need to accept it before proceeding with the use of ILIAS. Read the following document carefully and give your consent or dissent at the bottom of the page.
+common#:#dpro_agreed_on#:#DoDP agreed to on
 common#:#dpro_force_accept_usr_agreement#:#You must accept the Declaration of Data Protection!
 common#:#dpro_no_agreement_description#:#There is currently no Declaration of Data Protection document available for this installation. Please contact the <a href="%1$s">system administrator</a>.
 common#:#dpro_refuse_acceptance#:#Refuse to Accept the Declaration of Data Protection
