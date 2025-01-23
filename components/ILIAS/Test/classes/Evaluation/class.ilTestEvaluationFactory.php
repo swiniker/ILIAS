@@ -391,6 +391,6 @@ class ilTestEvaluationFactory
             return StatusOfAttempt::FINISHED_BY_UNKNOWN;
         }
 
-        return StatusOfAttempt::tryFrom($row['finalized_by']);
+        return StatusOfAttempt::tryFrom($finalized_by);
     }
 }
