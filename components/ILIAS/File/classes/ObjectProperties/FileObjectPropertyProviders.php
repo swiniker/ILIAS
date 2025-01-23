@@ -20,7 +20,7 @@ declare(strict_types=1);
 
 use ILIAS\Object\Properties\ObjectTypeSpecificProperties\ilObjectTypeSpecificPropertyProviders;
 use ILIAS\Object\Properties\CoreProperties\TileImage\ilObjectTileImageFlavourDefinition;
-use ILIAS\UI\Component\Symbol\Icon\Icon;
+use ILIAS\UI\Component\Symbol\Icon\Custom as CustomIcon;
 use ILIAS\UI\Component\Symbol\Icon\Factory as IconFactory;
 use ILIAS\UI\Component\Image\Image;
 use ILIAS\UI\Component\Image\Factory as ImageFactory;
@@ -98,11 +98,11 @@ class FileObjectPropertyProviders implements ilObjectTypeSpecificPropertyProvide
         )['image'];
     }
 
-    public function getObjectTypeSpecificCustomIcon(
+    public function getObjectTypeSpecificIcon(
         int $obj_id,
         IconFactory $icon_factory,
         StorageService $irss
-    ): ?Icon {
+    ): ?CustomIcon {
         return null;
     }
 }
