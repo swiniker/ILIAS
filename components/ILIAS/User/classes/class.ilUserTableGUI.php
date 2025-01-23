@@ -209,7 +209,7 @@ class ilUserTableGUI extends ilTable2GUI
             "txt" => $lng->txt("approve_date")];
         $cols["agree_date"] = [
             "txt" => $lng->txt("agree_date")];
-        if ($this->getMode() === self::MODE_LOCAL_USER) {
+        if ($this->getMode() === self::MODE_USER_FOLDER) {
             $ufs = $up->getStandardFields();
         } else {
             $ufs = $up->getLocalUserAdministrationFields();
