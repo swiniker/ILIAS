@@ -2563,13 +2563,13 @@ class ilObjTest extends ilObject
         string $title
     ): string {
         $name = "";
-        if ($firstname . $lastname . $title !== '') {
+        if ($firstname . $lastname . $title === '') {
             $name = $this->lng->txt('deleted_user');
         } else {
             if ($user_id == ANONYMOUS_USER_ID) {
                 $name = $lastname;
             } else {
-                $name = trim($lastname . ', ' . $firstname . ' ' . $title);
+                $name = trim($lastname . ', ' . $firstname);
             }
             if ($this->getAnonymity()) {
                 $name = $this->lng->txt('anonymous');
