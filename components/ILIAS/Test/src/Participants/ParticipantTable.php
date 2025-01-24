@@ -229,8 +229,15 @@ class ParticipantTable implements DataRetrieval
             'mark' => static fn(
                 Participant $a,
                 Participant $b
-            ) => $a->getAttemptOverviewInformation()?->getMark() <=> $b->getAttemptOverviewInformation()?->getMark()
-
+            ) => $a->getAttemptOverviewInformation()?->getMark() <=> $b->getAttemptOverviewInformation()?->getMark(),
+            'matriculation' => static fn(
+                Participant $a,
+                Participant $b
+            ) => $a->getMatriculation() <=> $b->getMatriculation(),
+            'id_of_attempt' => static fn(
+                Participant $a,
+                Participant $b
+            ) => $a->getAttemptOverviewInformation()?->getExamId() <=> $b->getAttemptOverviewInformation()?->getExamId()
         ];
     }
 
@@ -337,7 +344,7 @@ class ParticipantTable implements DataRetrieval
         $columns += [
             'matriculation' => $column_factory->text($this->lng->txt('matriculation'))
                 ->withIsOptional(true, false)
-                ->withIsSortable(false),
+                ->withIsSortable(true),
             'ip_range' => $column_factory->text($this->lng->txt('client_ip_range'))
                 ->withIsOptional(true, false)
                 ->withIsSortable(true),
@@ -365,7 +372,7 @@ class ParticipantTable implements DataRetrieval
         if ($this->test_object->getMainSettings()->getTestBehaviourSettings()->getExamIdInTestAttemptEnabled()) {
             $columns['id_of_attempt'] = $column_factory->text($this->lng->txt('exam_id_of_attempt'))
                 ->withIsOptional(true, false)
-                ->withIsSortable(false);
+                ->withIsSortable(true);
         }
 
         if ($this->test_access->checkParticipantsResultsAccess()) {
