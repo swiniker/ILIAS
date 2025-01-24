@@ -46,7 +46,7 @@ class CapabilityTest extends TestCase
 
     private static array $readme_infos = [];
 
-    private static bool $update_readme = true;
+    private static bool $update_readme = false;
 
     protected function setUp(): void
     {
