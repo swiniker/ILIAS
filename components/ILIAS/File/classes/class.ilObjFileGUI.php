@@ -39,6 +39,7 @@ use ILIAS\File\Capabilities\Capabilities;
 use ILIAS\File\Capabilities\CapabilityBuilder;
 use ILIAS\File\Capabilities\CapabilityCollection;
 use ILIAS\File\Capabilities\CoreTypeResolver;
+use ILIAS\File\Capabilities\Context;
 
 /**
  * GUI class for file objects.
@@ -136,7 +137,14 @@ class ilObjFileGUI extends ilObject2GUI
             new CoreTypeResolver(),
             $DIC['static_url.uri_builder']
         );
-        $this->capabilities = $capability_builder->get($a_id);
+
+        $capability_context = new Context(
+            $this->object_id,
+            $this->ref_id,
+            ($a_id_type === self::WORKSPACE_NODE_ID) ? Context::CONTEXT_WORKSPACDE : Context::CONTEXT_REPO
+        );
+
+        $this->capabilities = $capability_builder->get($capability_context);
     }
 
     public function getType(): string
