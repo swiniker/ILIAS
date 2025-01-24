@@ -357,11 +357,11 @@ class ilObjStudyProgrammeAutoCategoriesGUI
             $cat->setValue($current_ref_id);
         }
         $cat->getExplorerGUI()->setRootId(ROOT_FOLDER_ID);
-        $cat->getExplorerGUI()->setAjax(false);
+        $cat->getExplorerGUI()->setAjax(true);
         $form->addItem($cat);
 
         $hi = new ilHiddenInputGUI(self::F_CATEGORY_ORIGINAL_REF);
-        $hi->setValue((string)$current_ref_id ?? "");
+        $hi->setValue((string) $current_ref_id ?? "");
         $form->addItem($hi);
 
         return $form;
@@ -403,7 +403,7 @@ class ilObjStudyProgrammeAutoCategoriesGUI
     protected function getUserRepresentation(int $usr_id): ?Link
     {
         $username = ilObjUser::_lookupName($usr_id);
-        if(array_filter($username) === []) {
+        if (array_filter($username) === []) {
             return null;
         }
 
@@ -431,7 +431,7 @@ class ilObjStudyProgrammeAutoCategoriesGUI
 
         $hops = array_map(
             static function (array $c): string {
-                return ilObject::_lookupTitle((int)$c["obj_id"]);
+                return ilObject::_lookupTitle((int) $c["obj_id"]);
             },
             $this->tree->getPathFull($cat_ref_id)
         );
