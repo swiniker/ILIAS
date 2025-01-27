@@ -2571,25 +2571,24 @@ class ilObjTest extends ilObject
     * @access public
     */
     public function buildName(
-        int $user_id,
-        string $firstname,
-        string $lastname,
-        string $title
+        ?int $user_id,
+        ?string $firstname,
+        ?string $lastname
     ): string {
-        $name = "";
-        if ($firstname . $lastname . $title === '') {
-            $name = $this->lng->txt('deleted_user');
-        } else {
-            if ($user_id == ANONYMOUS_USER_ID) {
-                $name = $lastname;
-            } else {
-                $name = trim($lastname . ', ' . $firstname);
-            }
-            if ($this->getAnonymity()) {
-                $name = $this->lng->txt('anonymous');
-            }
+        if ($user_id === null
+            || $firstname . $lastname === '') {
+            return $this->lng->txt('deleted_user');
         }
-        return $name;
+
+        if ($this->getAnonymity()) {
+            return $this->lng->txt('anonymous');
+        }
+
+        if ($user_id == ANONYMOUS_USER_ID) {
+            return $lastname;
+        }
+
+        return trim($lastname . ', ' . $firstname);
     }
 
     public function evalTotalStartedAverageTime(?array $active_ids_to_filter = null): int

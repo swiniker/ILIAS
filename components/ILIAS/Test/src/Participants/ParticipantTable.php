@@ -102,9 +102,7 @@ class ParticipantTable implements DataRetrieval
             $status_of_attempt = $record->getAttemptOverviewInformation()?->getStatusOfAttempt() ?? StatusOfAttempt::NOT_YET_STARTED;
 
             $row = [
-                'name' => $this->test_object->getAnonymity()
-                    ? $this->lng->txt('anonymous')
-                    : sprintf('%s, %s', $record->getLastname(), $record->getFirstname()),
+                'name' => $this->test_object->buildName($record->getUserId(), $record->getLastname(), $record->getFirstname()),
                 'login' => $record->getLogin(),
                 'matriculation' => $record->getMatriculation(),
                 'status_of_attempt' => $this->lng->txt($status_of_attempt->value),

@@ -111,7 +111,7 @@ class ilTestEvaluationFactory
                 $user_eval_data = new ilTestEvaluationUserData($scoring_settings);
 
                 $user_eval_data->setName(
-                    $this->test_obj->buildName($row['usr_id'], $row['firstname'], $row['lastname'], $row['title'] ?? '')
+                    $this->test_obj->buildName($row['usr_id'], $row['firstname'], $row['lastname'])
                 );
 
                 if ($row['login'] !== null) {
