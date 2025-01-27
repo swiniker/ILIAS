@@ -44,18 +44,19 @@ class QuestionsBrowserTable implements DataRetrieval
     private ?array $records = null;
 
     public function __construct(
-        protected readonly string $table_id,
-        protected UIFactory $ui_factory,
-        protected UIRenderer $ui_renderer,
-        protected \ilLanguage $lng,
-        protected \ilCtrl $ctrl,
-        protected DataFactory $data_factory,
-        protected \ilAssQuestionList $question_list,
-        protected \ilObjTest $test_obj,
-        protected \ilTree $tree,
-        protected RequestDataCollector $testrequest,
-        protected TaxonomyService $taxonomy,
-        protected string $parent_title
+        private readonly string $table_id,
+        private readonly \ilObjUser $current_user,
+        private readonly UIFactory $ui_factory,
+        private readonly UIRenderer $ui_renderer,
+        private readonly \ilLanguage $lng,
+        private readonly \ilCtrl $ctrl,
+        private readonly DataFactory $data_factory,
+        private readonly \ilAssQuestionList $question_list,
+        private readonly \ilObjTest $test_obj,
+        private readonly \ilTree $tree,
+        private readonly RequestDataCollector $testrequest,
+        private readonly TaxonomyService $taxonomy,
+        private readonly string $parent_title
     ) {
     }
 
@@ -65,11 +66,10 @@ class QuestionsBrowserTable implements DataRetrieval
             $this->lng->txt('list_of_questions'),
             $this->getColumns(),
             $this
-        )
-            ->withId($this->table_id)
-            ->withActions($this->getActions())
-            ->withRequest($request)
-            ->withFilter($filter);
+        )->withId($this->table_id)
+        ->withActions($this->getActions())
+        ->withRequest($request)
+        ->withFilter($filter);
     }
 
     public function getColumns(): array
@@ -78,7 +78,6 @@ class QuestionsBrowserTable implements DataRetrieval
         $icon_factory = $this->ui_factory->symbol()->icon();
         $iconYes = $icon_factory->custom('assets/images/standard/icon_checked.svg', 'yes');
         $iconNo = $icon_factory->custom('assets/images/standard/icon_unchecked.svg', 'no');
-        $dateFormat = $this->data_factory->dateFormat()->withTime24($this->data_factory->dateFormat()->germanShort());
 
         $columns = [
             'title' => $column_factory->text(
@@ -117,11 +116,11 @@ class QuestionsBrowserTable implements DataRetrieval
             )->withIsOptional(true, false),
             'created' => $column_factory->date(
                 $this->lng->txt('created'),
-                $dateFormat
+                $this->current_user->getDateTimeFormat()
             )->withIsOptional(true, false),
             'tstamp' => $column_factory->date(
                 $this->lng->txt('updated'),
-                $dateFormat
+                $this->current_user->getDateTimeFormat()
             )->withIsOptional(true, false)
         ];
 
@@ -159,6 +158,7 @@ class QuestionsBrowserTable implements DataRetrieval
         ?array $filter_data,
         ?array $additional_parameters
     ): \Generator {
+        $timezone = new \DateTimeZone($this->current_user->getTimeZone());
         foreach ($this->getViewControlledRecords($filter_data, $range, $order) as $record) {
             $question_id = $record['question_id'];
 
@@ -166,8 +166,8 @@ class QuestionsBrowserTable implements DataRetrieval
             $record['complete'] = (bool) $record['complete'];
             $record['lifecycle'] = \ilAssQuestionLifecycle::getInstance($record['lifecycle'])->getTranslation($this->lng) ?? '';
 
-            $record['created'] = (new \DateTimeImmutable())->setTimestamp($record['created']);
-            $record['tstamp'] = (new \DateTimeImmutable())->setTimestamp($record['tstamp']);
+            $record['created'] = (new \DateTimeImmutable("@{$record['created']}"))->setTimezone($timezone);
+            $record['tstamp'] = (new \DateTimeImmutable("@{$record['tstamp']}"))->setTimezone($timezone);
             $record['taxonomies'] = $this->resolveTaxonomiesRowData($record['obj_fi'], $question_id);
 
             yield $row_builder->buildDataRow((string) $question_id, $record);

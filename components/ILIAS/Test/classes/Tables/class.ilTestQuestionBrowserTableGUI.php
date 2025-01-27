@@ -51,6 +51,7 @@ class ilTestQuestionBrowserTableGUI
         private readonly TestLogger $logger,
         private readonly ilComponentRepository $component_repository,
         private readonly ilObjTest $test_obj,
+        private readonly ilObjUser $current_user,
         private readonly ilAccessHandler $access,
         private readonly GlobalHttpState $http_state,
         private readonly Refinery $refinery,
@@ -127,6 +128,7 @@ class ilTestQuestionBrowserTableGUI
     {
         return new QuestionsBrowserTable(
             (string) $this->test_obj->getId(),
+            $this->current_user,
             $this->ui_factory,
             $this->ui_renderer,
             $this->lng,
