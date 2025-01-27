@@ -48,7 +48,6 @@ class ilFileStaticURLHandler extends BaseHandler implements Handler
             $DIC->ctrl(),
             new ActionDBRepository($DIC->database()),
             $DIC->http(),
-            new CoreTypeResolver(),
             $DIC['static_url.uri_builder']
         );
     }

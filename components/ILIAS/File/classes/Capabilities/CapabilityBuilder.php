@@ -52,9 +52,9 @@ class CapabilityBuilder
         private readonly \ilCtrlInterface $ctrl,
         private readonly ActionRepository $action_repository,
         private readonly Services $http,
-        private readonly TypeResolver $type_resolver,
         private readonly URIBuilder $static_url,
-        private \ilWorkspaceAccessHandler $workspace_access_handler = new \ilWorkspaceAccessHandler()
+        private readonly TypeResolver $type_resolver = new CoreTypeResolver(),
+        private readonly \ilWorkspaceAccessHandler $workspace_access_handler = new \ilWorkspaceAccessHandler()
     ) {
         $this->checks = [
             new ForcedInfo(),

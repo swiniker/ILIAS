@@ -134,7 +134,6 @@ class ilObjFileGUI extends ilObject2GUI
             $this->ctrl,
             $this->action_repo,
             $DIC->http(),
-            new CoreTypeResolver(),
             $DIC['static_url.uri_builder']
         );
 

@@ -73,8 +73,8 @@ class CapabilityTest extends TestCase
             $this->ctrl,
             $this->action_repository,
             $this->http,
-            $this->type_resolver,
             $this->static_url,
+            $this->type_resolver,
             $this->workspace_access_handler
         );
     }
