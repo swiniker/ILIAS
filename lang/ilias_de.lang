@@ -3071,12 +3071,12 @@ chatroom#:#settings_title#:#Einstellungen des Chats
 chatroom#:#start_private_chat#:#Privaten Chat starten
 chatroom#:#unable_to_connect#:#Die Verbindung zum Chat-Server konnte nicht hergestellt werden.
 chatroom#:#unban#:#Entsperren
-chatroom#:#user_banned#:#Der Benutzer #user# wurde aus dem Chatraum gebannt.
+chatroom#:#user_banned#:##user# wurde für den Chatraum gesperrt.
 chatroom#:#user_in_ilias#:#Benutzer in ILIAS suchen und einladen
 chatroom#:#user_in_room#:#Benutzer im aktuellen Chatraum einladen
 chatroom#:#user_invited#:#Der Benutzer wurde eingeladen.
 chatroom#:#user_invited_self#:#Sie wurden von #user# in den Chatraum #room# eingeladen.
-chatroom#:#user_kicked#:#Der Benutzer #user# wurde aus dem Chatraum geworfen.
+chatroom#:#user_kicked#:##user# wurde aus dem Chatraum geworfen.
 chatroom#:#users#:#Benutzer
 chatroom#:#welcome_to_chat#:#Willkommen im Chatraum.
 chatroom#:#write_message#:#Neue Nachricht
