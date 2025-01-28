@@ -29,18 +29,24 @@ use ILIAS\ResourceStorage\Flavour\Flavour;
 use ILIAS\ResourceStorage\Flavour\Definition\FlavourDefinition;
 use ILIAS\components\File\Preview\Settings;
 use ILIAS\Modules\File\Preview\SettingsFactory;
+use ILIAS\File\Icon\IconDatabaseRepository;
+use ILIAS\File\Icon\IconRepositoryInterface;
 
 class FileObjectPropertyProviders implements ilObjectTypeSpecificPropertyProviders
 {
     private FlavourDefinition $crop_definition;
     private FlavourDefinition $extract_definition;
     private Settings $settings;
+    private IconDatabaseRepository $icons;
+    private ilObjFileInfoRepository $info;
 
     public function __construct()
     {
         $this->crop_definition = new ilObjectTileImageFlavourDefinition();
         $this->extract_definition = new FirstPageToTileImageFlavourDefinition();
         $this->settings = (new SettingsFactory())->getSettings();
+        $this->info = new ilObjFileInfoRepository();
+        $this->icons = new IconDatabaseRepository();
     }
 
     public function getObjectTypeSpecificTileImage(
@@ -103,6 +109,11 @@ class FileObjectPropertyProviders implements ilObjectTypeSpecificPropertyProvide
         IconFactory $icon_factory,
         StorageService $irss
     ): ?CustomIcon {
+        $info = $this->info->getByObjectId($obj_id);
+        if (($path = $this->icons->getIconFilePathBySuffix($info->getSuffix()))) {
+            return $icon_factory->custom($path, $info->getSuffix());
+        }
+
         return null;
     }
 }

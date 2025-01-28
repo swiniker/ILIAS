@@ -37,15 +37,14 @@ class IconDatabaseRepository extends IconAbstractRepository
     public const SUFFIX = 'suffix';
     public const SUFFIXES = 'suffixes';
 
-    private \ilDBInterface $db;
-    private Services $irss;
-
-    public function __construct()
-    {
+    public function __construct(
+        private ?\ilDBInterface $db = null,
+        private ?Services $irss = null
+    ) {
         global $DIC;
         parent::__construct();
-        $this->db = $DIC->database();
-        $this->irss = $DIC->resourceStorage();
+        $this->db = $this->db ?? $DIC->database();
+        $this->irss = $this->irss ?? $DIC->resourceStorage();
     }
 
     public function createIcon(string $a_rid, bool $a_active, bool $a_is_default_icon, array $a_suffixes): Icon
