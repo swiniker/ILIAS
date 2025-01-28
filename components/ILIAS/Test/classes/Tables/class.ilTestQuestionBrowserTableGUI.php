@@ -126,6 +126,9 @@ class ilTestQuestionBrowserTableGUI
 
     private function getQuestionsBrowserTable(string $parent_title = ''): QuestionsBrowserTable
     {
+        $question_list = new ilAssQuestionList($this->db, $this->lng, $this->refinery, $this->component_repository);
+        $question_list = $this->addModeParametersToQuestionList($question_list);
+
         return new QuestionsBrowserTable(
             (string) $this->test_obj->getId(),
             $this->current_user,
@@ -134,10 +137,7 @@ class ilTestQuestionBrowserTableGUI
             $this->lng,
             $this->ctrl,
             $this->data_factory,
-            new ilAssQuestionList($this->db, $this->lng, $this->refinery, $this->component_repository),
-            $this->test_obj,
-            $this->tree,
-            $this->testrequest,
+            $question_list,
             $this->taxonomy,
             $parent_title
         );
@@ -162,7 +162,7 @@ class ilTestQuestionBrowserTableGUI
         if (in_array('ALL_OBJECTS', $selected_array, true)) {
             $selected_array = array_keys(
                 $this->getQuestionsBrowserTable()->loadRecords(
-                    $this->ui_service->filter()->getData($this->getQuestionsBrowserFilterComponent())
+                    $this->ui_service->filter()->getData($this->getQuestionsBrowserFilterComponent()) ?? []
                 )
             );
         }
@@ -214,5 +214,43 @@ class ilTestQuestionBrowserTableGUI
             $this->test_obj,
             $this->questionrepository
         ))->getQuestionSetConfig();
+    }
+
+    private function addModeParametersToQuestionList(ilAssQuestionList $question_list): ilAssQuestionList
+    {
+        if ($this->testrequest->raw(self::MODE_PARAMETER) === self::MODE_BROWSE_TESTS) {
+            $question_list->setParentObjectType('tst');
+            $question_list->setQuestionInstanceTypeFilter(\ilAssQuestionList::QUESTION_INSTANCE_TYPE_ALL);
+            $question_list->setExcludeQuestionIdsFilter($this->test_obj->getQuestions());
+            return $question_list;
+        }
+
+        $question_list->setParentObjIdsFilter($this->getQuestionParentObjIds(self::REPOSITORY_ROOT_NODE_ID));
+        $question_list->setQuestionInstanceTypeFilter(\ilAssQuestionList::QUESTION_INSTANCE_TYPE_ORIGINALS);
+        $question_list->setExcludeQuestionIdsFilter($this->test_obj->getExistingQuestions());
+        return $question_list;
+    }
+
+    private function getQuestionParentObjIds(int $repositoryRootNode): array
+    {
+        $parents = $this->tree->getSubTree(
+            $this->tree->getNodeData($repositoryRootNode),
+            true,
+            ['qpl']
+        );
+
+        $parentIds = [];
+
+        foreach ($parents as $nodeData) {
+            if ((int) $nodeData['obj_id'] === $this->test_obj->getId()) {
+                continue;
+            }
+
+            $parentIds[$nodeData['obj_id']] = $nodeData['obj_id'];
+        }
+
+        $parentIds = array_map('intval', array_values($parentIds));
+        $available_pools = array_map('intval', array_keys(\ilObjQuestionPool::_getAvailableQuestionpools(true)));
+        return array_intersect($parentIds, $available_pools);
     }
 }
