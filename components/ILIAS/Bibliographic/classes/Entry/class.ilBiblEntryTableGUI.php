@@ -137,6 +137,7 @@ class ilBiblEntryTableGUI
           ->withTotalEntries(count($records))
           ->withPageSize($this->entries_per_page)
             ->withCurrentPage($this->current_page);
+
         return $this->ui_factory->table()->presentation(
             "",
             $view_controls,
@@ -146,10 +147,15 @@ class ilBiblEntryTableGUI
                 UIFactory $ui_factory
             ): PresentationRow {
                 // Create row with fields and actions
-                $author = $record['author'] ?? '';
-                $title = $record['title'] ?? '';
-                $year = $record['year'] ?? '';
-                unset($record['author'], $record['title']);
+                $record['author'] = empty($record['author']) ? null : $record['author'];
+                $record['title'] = empty($record['title']) ? null : $record['title'];
+                $record['year'] = empty($record['year']) ? null : $record['year'];
+
+                $author = $record['autor'] = $record['author'] ?? $record['AU'] ?? '';
+                $title = $record['title'] = $record['title'] ?? $record['TI'] ?? '';
+                $year = $record['year'] = $record['year'] ?? $record['PY'] ?? '';
+
+                unset($record['author'], $record['title'], $record['AU'], $record['TI']);
                 $translated_record = $this->getRecordWithTranslatedKeys($record);
 
                 return $row
