@@ -49,7 +49,7 @@ class ilObjStudyProgrammeAutoMembershipsGUI
     private const CMD_DELETE = 'delete';
     private const CMD_DELETE_CONFIRMATION = 'deleteConfirmation';
     public const CMD_GET_ASYNC_MODAL_OUTPUT = 'getAsynchModalOutput';
-    private const CMD_NEXT_STEP = 'nextStep';
+    public const CMD_NEXT_STEP = 'nextStep';
     private const CMD_ENABLE = 'enable';
     private const CMD_DISABLE = 'disable';
     private const CMD_PROFILE_NOT_PUBLIC = 'profile_not_public';
