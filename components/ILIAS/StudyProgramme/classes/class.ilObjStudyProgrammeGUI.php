@@ -116,11 +116,14 @@ class ilObjStudyProgrammeGUI extends ilContainerGUI
         $cmd = $this->ctrl->getCmd(self::SUBTAB_VIEW_MANAGE);
         $next_class = $this->ctrl->getNextClass($this);
 
-        $this->addToNavigationHistory();
-
-        parent::prepareOutput();
-
-        $this->addHeaderAction();
+        if (!in_array($cmd, [
+            ilObjStudyProgrammeAutoCategoriesGUI::CMD_GET_ASYNC_MODAL,
+            ilObjStudyProgrammeAutoMembershipsGUI::CMD_GET_ASYNC_MODAL_OUTPUT
+        ])) {
+            $this->addToNavigationHistory();
+            parent::prepareOutput();
+            $this->addHeaderAction();
+        }
 
         switch ($next_class) {
             case "ilinfoscreengui":
