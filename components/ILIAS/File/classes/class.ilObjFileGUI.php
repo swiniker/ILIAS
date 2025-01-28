@@ -146,6 +146,19 @@ class ilObjFileGUI extends ilObject2GUI
         $this->capabilities = $capability_builder->get($capability_context);
     }
 
+    protected function updateLearningProgress(): void
+    {
+        if ($this->object->getLPMode() === ilLPObjSettings::LP_MODE_CONTENT_VISITED) {
+            ilLPStatusWrapper::_updateStatus(
+                $this->object->getId(),
+                $this->user->getId(),
+                null,
+                false,
+                true
+            );
+        }
+    }
+
     public function getType(): string
     {
         return ilObjFile::OBJECT_TYPE;
@@ -287,6 +300,7 @@ class ilObjFileGUI extends ilObject2GUI
                 };
 
                 $this->tabs_gui->activateTab('content');
+                $this->updateLearningProgress();
 
                 $embeded_application = new EmbeddedApplication(
                     $this->storage->manage()->find($this->object->getResourceId()),
@@ -720,15 +734,7 @@ class ilObjFileGUI extends ilObject2GUI
                     $this->object->getId(),
                     $this->user->getId()
                 );
-                if ($this->object->getLPMode() === ilLPObjSettings::LP_MODE_CONTENT_VISITED) {
-                    ilLPStatusWrapper::_updateStatus(
-                        $this->object->getId(),
-                        $this->user->getId(),
-                        null,
-                        false,
-                        true
-                    );
-                }
+                $this->updateLearningProgress();
 
                 $this->object->sendFile($hist_entry_id);
             } else {
