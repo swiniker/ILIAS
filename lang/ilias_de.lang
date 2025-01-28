@@ -9841,7 +9841,7 @@ file#:#input_desc_active#:#Dieses Icon aktivieren.
 file#:#input_desc_icon#:#Bild welches als Icon für Dateien mit den spezifizierten Suffixen verwendet werden soll.
 file#:#input_desc_suffixes#:#Liste Komma-separierter Suffixe (Nur Buchstaben und Zahlen ohne vorangehenden Punkt).
 file#:#input_icon#:#Icon
-file#:#input_suffixes#:#Suffixe
+file#:#input_suffixes#:#Suffix(e)
 file#:#migrated#:#Status
 file#:#mime_type#:#MIME-Type
 file#:#msg_cant_unpublish#:#Aktion konnte nicht ausgeführt werden
@@ -9877,7 +9877,7 @@ file#:#show_amount_of_downloads#:#Anzahl Downloads anzeigen
 file#:#show_amount_of_downloads_info#:#Die Anzahl der Downloads wird im Reiter „Info“ des Dateiobjekts angezeigt.
 file#:#storage_id#:#Storage ID
 file#:#suffix_specific_icons#:#Suffix-spezifische Icons
-file#:#suffixes#:#Suffixe
+file#:#suffixes#:#Suffix(e)
 file#:#upload_files#:#Dateien hochladen
 file#:#upload_files_limit#:#Die maximale Größe einer Datei beträgt %s.
 file#:#upload_files_title#:#Dateien hochladen

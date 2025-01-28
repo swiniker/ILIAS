@@ -9843,7 +9843,7 @@ file#:#input_desc_active#:#Activate this icon.
 file#:#input_desc_icon#:#Image to be used as the icon for files with the specified suffixes.
 file#:#input_desc_suffixes#:#List of comma-separated suffixes (characters and numbers only, without preceding full stop).
 file#:#input_icon#:#Icon
-file#:#input_suffixes#:#Suffixes
+file#:#input_suffixes#:#Suffix(es)
 file#:#migrated#:#Status
 file#:#mime_type#:#MIME Type
 file#:#msg_cant_unpublish#:#File could not be unpublished.
@@ -9879,7 +9879,7 @@ file#:#show_amount_of_downloads#:#Show Number of Downloads
 file#:#show_amount_of_downloads_info#:#Display the number of times a file object has been downloaded on its 'Info' page.
 file#:#storage_id#:#Storage ID
 file#:#suffix_specific_icons#:#Suffix-Specific Icons
-file#:#suffixes#:#Suffixes
+file#:#suffixes#:#Suffix(es)
 file#:#upload_files#:#Upload Files
 file#:#upload_files_limit#:#The maximum file size allowed is %s.
 file#:#upload_files_title#:#Upload Files
