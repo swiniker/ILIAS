@@ -9803,8 +9803,6 @@ export#:#export_resource#:#Ressource
 export#:#export_save_selection#:#Export starten
 export#:#export_select_resources#:#Objekte auswählen
 export#:#no_file#:#Keine Datei
-file#:#action_download#:#Datei herunterladen oder Inhalt anzeigen
-file#:#action_show#:#Zunächst Reiter „Info“ anzeigen
 file#:#add_icon#:#Icon hinzufügen
 file#:#amount_of_downloads#:#Downloads
 file#:#amount_of_downloads_since#:#%d seit %s
@@ -9816,6 +9814,10 @@ file#:#could_not_create_file_objs#:#Beim Erstellen der Datei-Objekte ist ein Feh
 file#:#de_activate_icon#:#(De-)Aktivieren
 file#:#download_ascii_filename#:#Nur ASCII-Zeichen im Download
 file#:#download_ascii_filename_info#:#Die Namen heruntergeladener Dateien enthalten nur ASCII-Zeichen und können so auf allen Systemen problemlos genutzt werden. Andere Zeichen werden durch Unterstriche ersetzt. Auf Installationen, die Dateinamen mit nicht-lateinischen Schriftzeichen nutzen, muss diese Option deaktiviert werden.
+file#:#file_action_download#:#Datei herunterladen oder Inhalt anzeigen
+file#:#file_action_download_info#:#Wenn WOPI aktiviert ist und die Berechtigung „Inhalt anzeigen“ erteilt wurde, wird die Datei auf der Registerkarte „Inhalt“ angezeigt. Wenn nicht, wird die Datei zum direkten Download angeboten.
+file#:#file_action_show#:#Zunächst Reiter „Info“ anzeigen
+file#:#file_action_show_info#:#Der Reiter „Info“ wird angezeigt, wo die Datei in einem zweiten Schritt heruntergeladen werden kann.
 file#:#file_btn_lp_toggle_state_completed#:#Auf „Nicht bearbeitet“ setzen
 file#:#file_btn_lp_toggle_state_not_completed#:#Auf „Bearbeitet“ setzen
 file#:#file_copy#:#Datei kopieren

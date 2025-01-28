@@ -629,10 +629,12 @@ class ilObjFileGUI extends ilObject2GUI
             $this->lng->txt('on_click_action')
         )->withOption(
             (string) ilObjFile::CLICK_MODE_DOWNLOAD,
-            $this->lng->txt('action_download')
+            $this->lng->txt('file_action_download'),
+            $this->lng->txt('file_action_download_info'),
         )->withOption(
             (string) ilObjFile::CLICK_MODE_INFOPAGE,
-            $this->lng->txt('action_show')
+            $this->lng->txt('file_action_show'),
+            $this->lng->txt('file_action_show_info'),
         )->withValue(
             (string) $this->object->getOnClickMode()
         );

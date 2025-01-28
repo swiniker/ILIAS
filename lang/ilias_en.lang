@@ -9805,8 +9805,6 @@ export#:#export_resource#:#Resource
 export#:#export_save_selection#:#Start Export
 export#:#export_select_resources#:#Select Resources
 export#:#no_file#:#No file
-file#:#action_download#:#Download file or view content
-file#:#action_show#:#Redirect user to the file’s ‘Info’ tab
 file#:#add_icon#:#Add Icon
 file#:#amount_of_downloads#:#Downloads
 file#:#amount_of_downloads_since#:#%d times since %s
@@ -9818,6 +9816,10 @@ file#:#could_not_create_file_objs#:#An error occurred while creating your file o
 file#:#de_activate_icon#:#Activate / Deactivate
 file#:#download_ascii_filename#:#Allow Only ASCII Characters in Downloaded Filenames
 file#:#download_ascii_filename_info#:#Downloaded files should only have ASCII-characters in their filename. Deactivate to use all characters.
+file#:#file_action_download#:#Download file or view content
+file#:#file_action_download_info#:#If WOPI is activated and the permission 'View Content' is given, the file is shown in tab 'Content'. If not, the file will be offered for direct download.
+file#:#file_action_show#:#Redirect user to the file’s ‘Info’ tab
+file#:#file_action_show_info#:#The 'Info' tab is shown where the file could be downloaded in a second step.
 file#:#file_btn_lp_toggle_state_completed#:#Set Not Completed
 file#:#file_btn_lp_toggle_state_not_completed#:#Set Completed
 file#:#file_copy#:#Copy File
