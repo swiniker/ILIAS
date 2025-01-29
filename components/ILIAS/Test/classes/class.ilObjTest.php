@@ -3989,7 +3989,7 @@ class ilObjTest extends ilObject
         $total = $this->evalTotalPersons();
         $results_summary_settings = $this->getScoreSettings()->getResultSummarySettings();
         if ($total === 0
-            || !$results_summary_settings->getScoreReporting()->isReportingEnabled() === null) {
+            || $results_summary_settings->getScoreReporting()->isReportingEnabled() === false) {
             return true;
         }
 
