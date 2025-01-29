@@ -1226,7 +1226,7 @@ abstract class assQuestion implements Question
                 "question_id" => ["integer", $next_id],
                 "question_type_fi" => ["integer", $this->getQuestionTypeID()],
                 "obj_fi" => ["integer", $this->getObjId()],
-                "title" => ["text", mb_substr($this->getTitle(), 0, 100)],
+                "title" => ["text", mb_substr($this->getTitle(), 0, 124)],
                 "description" => ["text", mb_substr($this->getComment(), 0, 1000)],
                 "author" => ["text", mb_substr($this->getAuthor(), 0, 512)],
                 "owner" => ["integer", $this->getOwner()],
@@ -1248,7 +1248,7 @@ abstract class assQuestion implements Question
         // Vorhandenen Datensatz aktualisieren
         $this->db->update("qpl_questions", [
             "obj_fi" => ["integer", $this->getObjId()],
-            "title" => ["text", mb_substr($this->getTitle(), 0, 100)],
+            "title" => ["text", mb_substr($this->getTitle(), 0, 124)],
             "description" => ["text", mb_substr($this->getComment(), 0, 1000)],
             "author" => ["text", mb_substr($this->getAuthor(), 0, 512)],
             "question_text" => ["clob", ilRTE::_replaceMediaObjectImageSrc($this->getQuestion(), 0)],
