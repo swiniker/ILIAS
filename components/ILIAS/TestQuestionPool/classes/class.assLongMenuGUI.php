@@ -33,8 +33,6 @@ class assLongMenuGUI extends assQuestionGUI implements ilGuiQuestionScoringAdjus
     private readonly UIFactory $ui_factory;
     private readonly UIRenderer $ui_renderer;
 
-    private ?ilPropertyFormGUI $edit_form = null;
-
     public function __construct($id = -1)
     {
         parent::__construct();
@@ -59,17 +57,17 @@ class assLongMenuGUI extends assQuestionGUI implements ilGuiQuestionScoringAdjus
      */
     protected function writePostData(bool $always = false): int
     {
-        $this->edit_form = $this->buildEditForm();
-        $this->edit_form->setValuesByPost();
-        $check = $this->edit_form->checkInput() && $this->verifyAnswerOptions();
+        $this->editForm = $this->buildEditForm();
+        $this->editForm->setValuesByPost();
+        $check = $this->editForm->checkInput() && $this->verifyAnswerOptions();
 
         if (!$check) {
             $this->editQuestion();
             return 1;
         }
         $this->writeQuestionGenericPostData();
-        $this->writeQuestionSpecificPostData($this->edit_form);
-        $custom_check = $this->object->checkQuestionCustomPart($this->edit_form);
+        $this->writeQuestionSpecificPostData($this->editForm);
+        $custom_check = $this->object->checkQuestionCustomPart($this->editForm);
         if (!$custom_check) {
             $this->tpl->setOnScreenMessage('failure', $this->lng->txt('form_input_not_valid'));
             $this->editQuestion();
@@ -151,11 +149,20 @@ class assLongMenuGUI extends assQuestionGUI implements ilGuiQuestionScoringAdjus
         bool $checkonly = false,
         ?bool $is_save_cmd = null
     ): bool {
-        $form = $this->edit_form;
+        $form = $this->editForm;
         if ($form === null) {
             $form = $this->buildEditForm();
         }
 
+        /*
+         * sk 29.01.2025: This is a god aw-ful hack and one more sign,
+         * that the flow here needs to change, but we need this to set the
+         * question id on question creation (see: https://mantis.ilias.de/view.php?id=43705)
+         */
+        if ($this->object->getId() > 0) {
+            $this->ctrl->setParameterByClass(self::class, 'q_id', $this->object->getId());
+        }
+        $form->setFormAction($this->ctrl->getFormActionByClass(self::class));
         $this->renderEditForm($form);
         return false;
     }
