@@ -218,7 +218,7 @@ class ilLTIViewGUI
                 }
             }
 
-            $referrer = (int) $this->effectiveRefId;
+            $referer = (int) $this->effectiveRefId;
 
             if ($referer > 0) {
                 if (ilSession::has('lti_' . $referer . '_post_data')) {
