@@ -343,14 +343,14 @@ ilias.questions.handleOrderingImages = function(a_id) {
 
 ilias.questions.assOrderingHorizontal = function(a_id) {
 
-	var result = jQuery('#order'+a_id).sortable('toArray');
+	var result = document.querySelectorAll(`#order${a_id} > .answers`);
 
 	answers[a_id].wrong = 0;
 	answers[a_id].passed = true;
 	answers[a_id].choice = [];
 
 	for (var i=0;i<result.length;i++) {
-		if (i+1 != result[i])
+		if (i+1 !== parseInt(result[i].id))
 		{
 			answers[a_id].passed = false;
 			answers[a_id].wrong ++;
@@ -358,9 +358,8 @@ ilias.questions.assOrderingHorizontal = function(a_id) {
 		} else {
 			answers[a_id].answer[i]=true;
 		}
-		answers[a_id].choice.push(result[i]);
+		answers[a_id].choice.push(result[i].id);
 	}
-
 	ilias.questions.showFeedback(a_id);
 };
 
@@ -1141,7 +1140,11 @@ ilias.questions.showCorrectAnswers =function(a_id) {
         (item, i) => {
           item.draggable = false;
           item.id = i + 1;
-          item.firstElementChild.firstElementChild.innerHtml = answers_sorted[i].answertext;
+          let content_item = item.firstElementChild
+          if (content_item.firstElementChild !== null) {
+            content_item = content_item.firstElementChild;
+          }
+          content_item.innerHtml = answers_sorted[i].answertext;
         }
       );
 			ilias.questions.handleOrderingImages(a_id);
