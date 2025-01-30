@@ -4670,12 +4670,12 @@ hr.il-divider-with-label {
 }
 
 @media screen and (max-width: 768px) {
-  .c-form .c-input[data-il-ui-component=switchable-group-field-input],
+  .c-form .c-input[data-il-ui-component=switchable-group-field-input] > .c-input__field > .c-input,
   .c-form .c-input[data-il-ui-component=optional-group-field-input] {
     grid-template-columns: 100%;
     grid-template-areas: "group-head" "error" "group-help" "group";
   }
-  .c-form .c-input[data-il-ui-component=switchable-group-field-input] > label,
+  .c-form .c-input[data-il-ui-component=switchable-group-field-input] > .c-input__field > .c-input > label,
   .c-form .c-input[data-il-ui-component=optional-group-field-input] > label {
     grid-template-columns: 100%;
     grid-template-areas: "group-label" "group-field";
