@@ -118,8 +118,13 @@ function renderILQuestion{VAL_ID}(){
 <!-- BEGIN orderingquestion -->
 <div id="container{VAL_ID}" class="ilc_question_OrderingQuestion">
 <div class="ilc_qtitle_Title question id@id">qtitle</div>
-<ul id="order{VAL_ID}" class="ordering ordering_vrt{VAL_SUBTYPE} ilc_qordul_OrderList">
-	<li class="answers order@id ilc_qordli_OrderListItem"><div class="ilc_qanswer_Answer answertext"></div></li>
+<ul id="order{VAL_ID}" class="ordering ordering_vrt{VAL_SUBTYPE} dd-list ilc_qordul_OrderList">
+    <li class="answers order@id dd-item ilc_qordli_OrderListItem" draggable="true">
+        <div class="il-dd-handle">
+            <div class="ilc_qanswer_Answer answertext"></div>
+        </div>
+    </li>
+    <li class="c-test__dropzone"></li>
 </ul>
 <div id="feedback{VAL_ID}" style="display:none"></div>
 <input type="button" class="ilc_qsubmit_Submit" id="button{VAL_ID}" {VAL_NO_DISPLAY} onclick="ilias.questions.checkAnswers({VAL_ID})" value="TXT_SUBMIT_ANSWERS" />
@@ -129,10 +134,10 @@ function renderILQuestion{VAL_ID}() {
 	ilias.questions.shuffle(questions[{VAL_ID}]);
 	jQuery('div#container{VAL_ID}').autoRender(questions[{VAL_ID}]);
 	{HANDLE_IMAGES}
-	jQuery("#order{VAL_ID}").sortable({axis: 'y', containment: '#container{VAL_ID}'});
 	if (typeof MathJax != "undefined") {
 		MathJax.Hub.Queue(["Typeset", MathJax.Hub, "container{VAL_ID}"]);
 	}
+    il.test.orderinghorizontal.init(document.querySelector('#container{VAL_ID}'));
 }
 </script>
 <!-- END orderingquestion -->
