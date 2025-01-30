@@ -11417,6 +11417,17 @@ lti#:#use_xapi#:#xAPI-Unterstützung verwenden
 lti#:#use_xapi_info#:#Dieser LTI-Provider unterstützt die Abfrage von xAPI-Statements.
 lti#:#user_lng#:#Sprache
 lti#:#user_provider_subtab#:#Lokal definierte Provider bzw. Tools
+lti#:#lti_con_prov_dyn_reg_url#:#Registrierungs-URL des Tools
+lti#:#lti_con_prov_dyn_reg_params#:#Optionale Parameter
+lti#:#lti_con_prov_dyn_reg_params_info#:#Hier können z.B. Verweise auf Zielobjekte im Tool angegeben werden.
+lti#:#lti_con_prov_dyn_reg_url_info#:#Hinweis: Nicht jedes Tool unterstützt die dynamische Registrierung.
+lti#:#lti_dynamic_registration#:#Eigene Tool-Einstellungen mit dynamischer Registrierung anlegen (LTI 1.3)
+lti#:#conf_privacy_ident_il_uuid_sha256#:#Hash@ILIAS-Plattform-ID.ilias
+lti#:#conf_privacy_ident_il_uuid_sha256_info#:#Die E-Mail-Adresse setzt sich zusammen aus einem Hash-Wert und einer eigens generierten Plattform-ID. Ohne Zugriff auf die ILIAS-Datenbank ermöglicht diese Option keine direkten Rückschlüsse auf ein ILIAS-Konto.
+lti#:#conf_privacy_ident_il_uuid_sha256url#:#Hash@ILIAS-Domain
+lti#:#conf_privacy_ident_il_uuid_sha256url_info#:#Die E-Mail-Adresse setzt sich zusammen aus einem Hash-Wert und einer ILIAS-Domain. Diese Option ist mit maximal 80 Zeichen deutlich kürzer als die mit ILIAS-Plattform-ID. Ohne Zugriff auf die ILIAS-Datenbank ermöglicht diese Option sind nur sehr eingeschränkte Rückschlüsse auf ein ILIAS-Konto.
+lti#:#conf_privacy_ident_il_uuid_random#:#Zufalls-ID@ILIAS-Plattform-ID.ilias
+lti#:#conf_privacy_ident_il_uuid_random_info#:#Pro ILIAS-Objekt und ILIAS-Konto wird eine Zufalls-ID erzeugt, die bei jedem Aufruf identisch bleibt. Die E-Mail-Adresse setzt sich zusammen aus der Zufalls-ID und einer eigens
 ltiv#:#ltiv_create#:#Zertifikat für LTI-Konsument-Objekt erstellen
 ltiv#:#ltiv_create_info#:#Wählen Sie ein abgeschlossenes LTI-Konsument-Objekt aus, um ein Zertifikat dafür zu generieren.
 mail#:#back_to_folder#:#Zurück zum Ordner

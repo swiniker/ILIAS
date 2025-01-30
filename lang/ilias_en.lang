@@ -11323,6 +11323,11 @@ lti#:#lti_create_lti_user_role#:#Create recommended global role for LTI users
 lti#:#lti_cron_title#:#LTI Outcome Service
 lti#:#lti_cron_title_desc#:#Synchronizes the learning progress of LTI users with the LTI consumer, if it supports the outcome service. This cron job is only required to transfer status updates after Learning progress settings updates.
 lti#:#lti_custom_new#:#Create Own Provider Settings
+lti#:#lti_dynamic_registration#:#Create Own Settings for Tool with Dynamic Registration (LTI 1.3)
+lti#:#lti_con_prov_dyn_reg_url#:#Registration URL of the Tool
+lti#:#lti_con_prov_dyn_reg_url_info#:#Note: Not every tool supports dynamic registration.
+lti#:#lti_con_prov_dyn_reg_params#:#Optional Parameters
+lti#:#lti_con_prov_dyn_reg_params_info#:#Here, for example, references to target objects in the tool can be specified.
 lti#:#lti_delete_consume_provider#:#Delete Provider
 lti#:#lti_delete_consume_providers#:#Delete Providers
 lti#:#lti_delete_provider#:#Delete Provider
@@ -11417,6 +11422,12 @@ lti#:#use_xapi#:#Use xAPI-Support
 lti#:#use_xapi_info#:#This LTI Provider supports xAPI-Statements.
 lti#:#user_lng#:#User Languague
 lti#:#user_provider_subtab#:#Providers Defined by Users
+lti#:#conf_privacy_ident_il_uuid_sha256#:#Hash combined with a unique ILIAS platform id formatted as an E-Mail address
+lti#:#conf_privacy_ident_il_uuid_sha256_info#:#This is identical to each call, but does not permit any direct conclusions about the ILIAS user.
+lti#:#conf_privacy_ident_il_uuid_sha256url#:#Hash combined with the ILIAS Domain formatted as an E-Mail address.
+lti#:#conf_privacy_ident_il_uuid_sha256url_info#:#This is identical to each call, with with a maximum of 80 characters significantly shorter than the variant with the ILIAS platform ID and allows only very limited conclusions about the ILIAS user.
+lti#:#conf_privacy_ident_il_uuid_random#:#Random ID combined with a unique ILIAS platform ID formatted as an E-Mail address
+lti#:#conf_privacy_ident_il_uuid_random_info#:#For each ILIAS object and ILIAS user a random ID is generated which remains identical for each call. Conclusions about a user are very limited because it is practically impossible to create user profiles across objects.
 ltiv#:#ltiv_create#:#Create Certificate for LTI Consumer Object
 ltiv#:#ltiv_create_info#:#Select a completed LTI consumer object to generate a certificate for it
 mail#:#back_to_folder#:#Back to Folder
