@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of ILIAS, a powerful learning management system
  * published by ILIAS open source e-Learning e.V.
@@ -14,6 +15,8 @@
  * https://github.com/ILIAS-eLearning
  *
  *********************************************************************/
+
+declare(strict_types=1);
 
 /**
  * Exporter class for files
@@ -69,8 +72,8 @@ class ilFileExporter extends ilXmlExporter
     public function getXmlRepresentation(string $a_entity, string $a_schema_version, string $a_id): string
     {
         $xml = '';
-        if (ilObject::_lookupType($a_id) == 'file') {
-            $file = new ilObjFile($a_id, false);
+        if (ilObject::_lookupType((int) $a_id) == 'file') {
+            $file = new ilObjFile((int) $a_id, false);
             $writer = new ilFileXMLWriter();
             $writer->setFile($file);
             $writer->setOmitHeader(true);
