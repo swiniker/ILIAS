@@ -3118,6 +3118,7 @@ cmix#:#cmix_add#:#Add xAPI/cmi5 Object
 cmix#:#cmix_add_cmi5_lm#:#cmi5 Learning Module
 cmix#:#cmix_add_cmi5_lm_info#:#This option should be used when the content is a cmi5 compliant learning module. Related features like suitable reportings are available without further configurations.
 cmix#:#cmix_add_lrs_type#:#LRS Type
+cmix#:#cmix_add_lrs_type_info#:#These Types of Learning Record Stores have been made available in the ILIAS Administration.
 cmix#:#cmix_add_source#:#Source
 cmix#:#cmix_add_source_external_app#:#Resource not launched by ILIAS
 cmix#:#cmix_add_source_external_app_info#:#Use this option for separately launched resources as e.g. apps or simulations. Users must agree to the fetching of data.
