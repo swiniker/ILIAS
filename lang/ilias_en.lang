@@ -11428,6 +11428,7 @@ lti#:#conf_privacy_ident_il_uuid_sha256url#:#Hash combined with the ILIAS Domain
 lti#:#conf_privacy_ident_il_uuid_sha256url_info#:#This is identical to each call, with with a maximum of 80 characters significantly shorter than the variant with the ILIAS platform ID and allows only very limited conclusions about the ILIAS user.
 lti#:#conf_privacy_ident_il_uuid_random#:#Random ID combined with a unique ILIAS platform ID formatted as an E-Mail address
 lti#:#conf_privacy_ident_il_uuid_random_info#:#For each ILIAS object and ILIAS user a random ID is generated which remains identical for each call. Conclusions about a user are very limited because it is practically impossible to create user profiles across objects.
+lti#:#lti_dyn_reg_add_tool#:#Add
 ltiv#:#ltiv_create#:#Create Certificate for LTI Consumer Object
 ltiv#:#ltiv_create_info#:#Select a completed LTI consumer object to generate a certificate for it
 mail#:#back_to_folder#:#Back to Folder
