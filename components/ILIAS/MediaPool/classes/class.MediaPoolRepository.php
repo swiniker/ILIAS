@@ -93,12 +93,7 @@ class MediaPoolRepository
 
         // Keyword filter
         if ($keyword_filter) {
-<<<<<<< HEAD:components/ILIAS/MediaPool/classes/class.MediaPoolRepository.php
             $res = $this->filterSubIDsByLOMKeywords($keyword_filter, 0, 'mob', ...$obj_ids);
-=======
-            $res = \ilMDKeyword::_searchKeywords($keyword_filter, 'mob', 0);
-
->>>>>>> 76c414e24af (Bugfix define $filtered variable (#8907)):Modules/MediaPool/classes/class.MediaPoolRepository.php
             $filtered = [];
             foreach ($objs as $obj) {
                 if (in_array($obj['foreign_id'], $res)) {
@@ -156,12 +151,7 @@ class MediaPoolRepository
 
         // Keyword filter
         if ($keyword_filter) {
-<<<<<<< HEAD:components/ILIAS/MediaPool/classes/class.MediaPoolRepository.php
             $res = $this->filterSubIDsByLOMKeywords($keyword_filter, $pool_id, 'mpg', ...$obj_ids);
-=======
-            include_once './Services/MetaData/classes/class.ilMDKeyword.php';
-            $res = \ilMDKeyword::_searchKeywords($keyword_filter, 'mpg', $pool_id);
->>>>>>> 76c414e24af (Bugfix define $filtered variable (#8907)):Modules/MediaPool/classes/class.MediaPoolRepository.php
             $filtered = [];
             foreach ($objs as $obj) {
                 if (in_array($obj['obj_id'], $res)) {
