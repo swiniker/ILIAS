@@ -11431,6 +11431,9 @@ lti#:#conf_privacy_ident_il_uuid_random_info#:#Pro ILIAS-Objekt und ILIAS-Konto 
 lti#:#lti_dyn_reg_add_tool#:#Anlegen
 lti#:#lti_con_grade_synchronization#:#Erweiterte Benotungsdienste
 lti#:#lti_con_grade_synchronization_info#:#Das LTI-Tool muss 'Assignment and Grade Services' anbieten.
+lti#:#lti_13_keyset_url#:#URL für den öffentlichen Schlüsselsatz
+lti#:#lti_13_token_url#:#URL für den Zugriffstoken
+lti#:#lti_13_authentication_url#:#URL für die Authentifizierungsanfrage
 ltiv#:#ltiv_create#:#Zertifikat für LTI-Konsument-Objekt erstellen
 ltiv#:#ltiv_create_info#:#Wählen Sie ein abgeschlossenes LTI-Konsument-Objekt aus, um ein Zertifikat dafür zu generieren.
 mail#:#back_to_folder#:#Zurück zum Ordner
