@@ -115,7 +115,7 @@ class ilLTIConsumerGradeServiceScores extends ilLTIConsumerResourceBase
                 $score->scoreGiven = null;
             }
         }
-        $result = (float)$score->scoreGiven / (float)$score->scoreMaximum;
+        $result = (float) $score->scoreGiven / (float) $score->scoreMaximum;
         ilObjLTIConsumer::getLogger()->debug("result: " . $result);
 
         $ltiObjRes = new ilLTIConsumerResultService();
