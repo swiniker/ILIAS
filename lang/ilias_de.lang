@@ -4776,32 +4776,32 @@ common#:#msg_link_clipboard_s#:#Wählen Sie nun den gewünschten Ort, in den das
 common#:#msg_linked#:#Objekt(e) verknüpft
 common#:#msg_may_not_contain#:#Dieses Objekt darf keine Objekte des folgenden Typs beinhalten:
 common#:#msg_min_one_role#:#Jedes ILIAS-Konto muss mindestens einer globalen Rolle zugewiesen sein!
-common#:#msg_multi_language_selected#:#Es ist nicht möglich, für mehrere Übersetzungen die gleiche Sprache auszuwählen
+common#:#msg_multi_language_selected#:#Es ist nicht möglich, für mehrere Übersetzungen die gleiche Sprache auszuwählen.
 common#:#msg_no_default_language#:#Keine Standardübersetzung bestimmt! Sie müssen eine Sprache als Standardübersetzung definieren.
 common#:#msg_no_delete_yourself#:#Sie können nicht Ihr eigenes Anmeldekonto löschen.
 common#:#msg_no_file#:#Sie haben keine Datei ausgewählt oder die ausgewählte Datei war zu groß.
 common#:#msg_no_files_selected#:#Keine Dateien ausgewählt
-common#:#msg_no_language_selected#:#Angabe einer Übersetzungsprache fehlt! Sie müssen für alle Übersetzungen eine Sprache bestimmen
-common#:#msg_no_perm_assign_role_to_user#:#Sie haben keine Berechtigung die Rollenzuweisung des Benutzers zu ändern
-common#:#msg_no_perm_assign_user_to_role#:#Sie habe keine Berechtigung, um die Benutzerzuweisung zu ändern
+common#:#msg_no_language_selected#:#Angabe einer Übersetzungsprache fehlt! Sie müssen für alle Übersetzungen eine Sprache bestimmen.
+common#:#msg_no_perm_assign_role_to_user#:#Sie haben keine Berechtigung die Rollenzuweisung des Benutzers zu ändern.
+common#:#msg_no_perm_assign_user_to_role#:#Sie habe keine Berechtigung, um die Benutzerzuweisung zu ändern.
 common#:#msg_no_perm_copy#:#Sie besitzen keine ausreichende Berechtigung, die folgenden Objekte zu kopieren:
 common#:#msg_no_perm_create_rolt#:#Sie besitzen keine ausreichende Berechtigung um neue Rollenvorlagen anzulegen!
 common#:#msg_no_perm_cut#:#Sie besitzen keine ausreichende Berechtigung die folgenden Objekte auszuschneiden:
 common#:#msg_no_perm_delete#:#Sie besitzen keine ausreichende Berechtigung die folgenden Objekte zu löschen:
 common#:#msg_no_perm_link#:#Sie besitzen keine ausreichende Berechtigung eine Verknüpfung für die folgenden Objekte zu erstellen:
-common#:#msg_no_perm_modify_rolt#:#Sie besitzen keine ausreichende Berechtigung um Rollenvorlagen zu ändern!
-common#:#msg_no_perm_modify_user#:#Sie besitzen keine ausreichende Berechtigung um Benutzerdaten zu ändern!
+common#:#msg_no_perm_modify_rolt#:#Sie besitzen keine ausreichende Berechtigung um Rollenvorlagen zu ändern.
+common#:#msg_no_perm_modify_user#:#Sie besitzen keine ausreichende Berechtigung um Benutzerdaten zu ändern.
 common#:#msg_no_perm_paste#:#Sie besitzen keine ausreichende Berechtigung, um die folgenden Objekte einzufügen:
 common#:#msg_no_perm_paste_object_in_folder#:#Sie besitzen keine ausreichende Berechtigung, um das Objekt %s in den Ordner %s einzufügen.
-common#:#msg_no_perm_perm#:#Sie besitzen keine ausreichende Berechtigung, um auf die Rechteeinstellungen zuzugreifen!
+common#:#msg_no_perm_perm#:#Sie besitzen keine ausreichende Berechtigung, um auf die Rechteeinstellungen zuzugreifen.
 common#:#msg_no_perm_read#:#Sie besitzen keine ausreichende Berechtigung, um auf dieses Objekt zuzugreifen.
 common#:#msg_no_perm_read_item#:#Sie haben keine Berechtigung, auf das Objekt „%s“ zuzugreifen.
-common#:#msg_no_perm_read_lm#:#Sie besitzen keine ausreichende Berechtigung um diese Lernmodul anzuzeigen.
-common#:#msg_no_perm_write#:#Sie besitzen keine Schreibberechtigung!
+common#:#msg_no_perm_read_lm#:#Sie besitzen keine ausreichende Berechtigung, um diese Lernmodul anzuzeigen.
+common#:#msg_no_perm_write#:#Sie besitzen keine Rechte, um Einstellungen zu ändern!
 common#:#msg_no_search_result#:#Keine Einträge gefunden
-common#:#msg_no_search_string#:#Bitte geben Sie einen Suchbegriff ein
-common#:#msg_no_title#:#Bitte geben Sie einen Titel ein
-common#:#msg_not_available_for_anon#:#Die von Ihnen gewählte Seite steht nur angemeldeten Benutzern zur Verfügung
+common#:#msg_no_search_string#:#Bitte geben Sie einen Suchbegriff ein.
+common#:#msg_no_title#:#Bitte geben Sie einen Titel ein.
+common#:#msg_not_available_for_anon#:#Die von Ihnen gewählte Seite steht nur angemeldeten Benutzern zur Verfügung.
 common#:#msg_not_in_itself#:#Es ist nicht möglich die folgenden Objekte in sich selbst einzufügen:
 common#:#msg_obj_already_deleted#:#Das Objekt wurde bereits gelöscht.
 common#:#msg_obj_created#:#Objekt angelegt
@@ -4816,10 +4816,10 @@ common#:#msg_paste_object_not_in_itself#:#Es ist nicht möglich, das Objekt „%
 common#:#msg_perm_adopted_from1#:#Rechteeinstellungen übernommen von
 common#:#msg_perm_adopted_from2#:#(Die Einstellungen wurden gespeichert!)
 common#:#msg_perm_adopted_from_itself#:#Es ist nicht möglich, die Rechteeinstellungen von der aktuellen Rolle bzw. Rollenvorlage selbst zu übernehmen.
-common#:#msg_removed#:#Objekt(e) aus dem System entfernt
+common#:#msg_removed#:#Objekt(e) aus dem System entfernt.
 common#:#msg_role_reserved_prefix#:#Das Präfix 'il_' ist reserviert für automatisch generierte Rollen. Bitte wählen Sie einen anderen Namen!
 common#:#msg_roleassignment_changed#:#Rollenzuweisung geändert
-common#:#msg_sysrole_not_deletable#:#Die Systemrolle kann nicht gelöscht werden
+common#:#msg_sysrole_not_deletable#:#Die Systemrolle kann nicht gelöscht werden.
 common#:#msg_sysrole_not_editable#:#Die Rechteeinstellungen der Systemrolle können nicht geändert werden. Die Systemrolle erlaubt den zugeordneten Benutzern uneingeschränkten Zugriff auf alle Objekte und Funktionen.
 common#:#msg_to_many_files#:#Zu viele Dateien ausgewählt, erlaubte Anzahl Dateien:
 common#:#msg_trash_empty#:#In diesem Ordner existieren keine gelöschten Objekte!

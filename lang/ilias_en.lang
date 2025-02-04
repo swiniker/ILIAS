@@ -4783,31 +4783,31 @@ common#:#msg_no_default_language#:#No default language specified! You must defin
 common#:#msg_no_delete_yourself#:#You cannot delete your own user account.
 common#:#msg_no_file#:#You didn't choose a file or the selected file was too big.
 common#:#msg_no_files_selected#:#No files selected
-common#:#msg_no_language_selected#:#No translation language specified! You must define a language for each translation
+common#:#msg_no_language_selected#:#No translation language specified! You must define a language for each translation.
 common#:#msg_no_perm_assign_role_to_user#:#You have no permission to change user's role assignment
-common#:#msg_no_perm_assign_user_to_role#:#You have no permission to change the user assignment
+common#:#msg_no_perm_assign_user_to_role#:#You have no permission to change the user assignment.
 common#:#msg_no_perm_copy#:#You have no permission to create a copy of the following object(s):
-common#:#msg_no_perm_create_rolt#:#You have no permission to add role templates
+common#:#msg_no_perm_create_rolt#:#You have no permission to add role templates.
 common#:#msg_no_perm_cut#:#You have no permission to cut the following object(s):
 common#:#msg_no_perm_delete#:#You have no permission to delete the following object(s):
 common#:#msg_no_perm_link#:#You have no permission to create a link from the following object(s):
-common#:#msg_no_perm_modify_rolt#:#You have no permission to modify role templates
-common#:#msg_no_perm_modify_user#:#You have no permission to modify user data
+common#:#msg_no_perm_modify_rolt#:#You have no permission to modify role templates.
+common#:#msg_no_perm_modify_user#:#You have no permission to modify user data.
 common#:#msg_no_perm_paste#:#You have no permission to paste the following object(s):
 common#:#msg_no_perm_paste_object_in_folder#:#You have no permission to paste the object %s in the folder %s.
-common#:#msg_no_perm_perm#:#You have no permission to edit permission settings
+common#:#msg_no_perm_perm#:#You have no permission to change permission settings.
 common#:#msg_no_perm_read#:#You have no permission to access this item.
 common#:#msg_no_perm_read_item#:#You have no permission to access item '%s’.
 common#:#msg_no_perm_read_lm#:#You have no permission to read this learning module.
-common#:#msg_no_perm_write#:#You have no permission to write
+common#:#msg_no_perm_write#:#You have no permission to edit settings.
 common#:#msg_no_search_result#:#No entries found
-common#:#msg_no_search_string#:#Please enter your query
+common#:#msg_no_search_string#:#Please enter your query.
 common#:#msg_no_title#:#Please enter a title.
-common#:#msg_not_available_for_anon#:#The page you have chosen is only accessible for registered users
-common#:#msg_not_in_itself#:#It’s not possible to paste the object in itself
+common#:#msg_not_available_for_anon#:#The page you have chosen is only accessible for registered users.
+common#:#msg_not_in_itself#:#It’s not possible to paste the object in itself.
 common#:#msg_obj_already_deleted#:#The object has already been deleted.
 common#:#msg_obj_created#:#Object created.
-common#:#msg_obj_exists#:#This object already exists in this folder
+common#:#msg_obj_exists#:#This object already exists in this folder.
 common#:#msg_obj_exists_in_folder#:#The object %s already exists in the folder %s.
 common#:#msg_obj_may_not_contain_objects_of_type#:#The object %s may not contain objects of type: %s.
 common#:#msg_obj_modified#:#Modifications saved.
