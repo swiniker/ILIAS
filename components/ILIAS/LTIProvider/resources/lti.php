@@ -1,12 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * LTI launch target script
  *
  * @author  Stefan Meyer <smeyer.ilias@gmx.de>
  */
+
+declare(strict_types=1);
 
 require_once("../vendor/composer/vendor/autoload.php");
 
