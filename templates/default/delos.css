@@ -7652,6 +7652,7 @@ button .minimize, button .close {
 .c-drilldown {
   container-type: inline-size;
   container-name: drilldown;
+  overflow: hidden;
 }
 .c-drilldown ul, .c-drilldown li {
   padding: 0;
