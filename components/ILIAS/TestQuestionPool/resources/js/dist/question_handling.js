@@ -403,81 +403,63 @@ ilias.questions.assImagemapQuestion = function(a_id) {
 	ilias.questions.showFeedback(a_id);
 };
 
-ilias.questions.assMatchingQuestion = function(a_id) { (function($){
+ilias.questions.assMatchingQuestion = (a_id) => {
+  const answerData = answers[a_id];
+  answerData.wrong = 0;
+  answerData.passed = true;
+  answerData.choice = [];
 
-    var answerData = answers[a_id];
+  const questionData = questions[a_id];
+  let selected = 0, foundCorrect = 0, foundWrong = 0;
 
-    answerData.wrong = 0;
-    answerData.passed = true;
-    answerData.choice = [];
+  questionData.definitions.forEach((definition, i) => {
+    const selectedTerms = JSON.parse(document.querySelector(`#definition_${definition.id} input[type=hidden]`).value);
 
-    var questionData = questions[a_id];
+    selected += selectedTerms.length;
 
-    var selected = 0, foundCorrect = 0, foundWrong = 0;
+    selectedTerms.forEach((term) => {
+      answerData.choice.push(definition.id + '-' + term);
 
-    for( var i = 0; i < questionData.definitions.length; i++ )
-    {
-        var definition = questionData.definitions[i];
-        var dropArea = $('#definition_'+definition.id);
-
-        var selectedTerms = dropArea.find('input[type=hidden]');
-
-        selected += selectedTerms.length;
-
-        selectedTerms.each( function(key, term)
-        {
-            answerData.choice.push(definition.id+'-'+$(term).val());
-
-            var found = false;
-
-            for( var j = 0; j < questionData.matchingPairs.length; j++ )
-            {
-                var matching = questionData.matchingPairs[j];
-
-                if( definition.id != matching.def_id )
-                {
-                    continue;
-                }
-
-                if( $(term).val() == matching.term_id )
-                {
-                    found = true;
-                    break;
-                }
-            }
-
-            if(found)
-            {
-                foundCorrect++;
-            }
-            else
-            {
-                foundWrong++;
-            }
-        });
-
-    }
-
-	if( foundCorrect < questionData.matchingPairs.length || foundWrong )
-    {
-        answerData.passed = false;
-
-        answerData.wrong = questionData.matchingPairs.length - foundCorrect;
-
-        if(questionData.matching_mode.toLowerCase() == 'n:n')
-        {
-            answerData.wrong += foundWrong;
+      let found = false;
+      for (let j = 0; j < questionData.matchingPairs.length; j++) {
+        var matching = questionData.matchingPairs[j];
+        if (definition.id != matching.def_id) {
+          continue;
         }
+
+        if (term == matching.term_id) {
+          found = true;
+          break;
+        }
+      }
+
+      if (found) {
+        foundCorrect++;
+      } else {
+        foundWrong++;
+      }
+    });
+  });
+
+	if (foundCorrect < questionData.matchingPairs.length || foundWrong ) {
+    answerData.passed = false;
+    answerData.wrong = questionData.matchingPairs.length - foundCorrect;
+
+    if (questionData.matching_mode.toLowerCase() == 'n:n') {
+        answerData.wrong += foundWrong;
+    }
 	}
 
-    if( answerData.passed || questionData.nr_of_tries && answerData.tries >= questionData.nr_of_tries )
-    {
-        questionData.engineInstance.disable();
-    }
+  if (answerData.passed || questionData.nr_of_tries && answerData.tries >= questionData.nr_of_tries) {
+    questionData.terms.forEach((term_definition) => {
+      const term = document.querySelector(`#term_${term_definition.id}`);
+      term.draggable = false;
+      term.classList.remove('draggable');
+    });
+  }
 
 	ilias.questions.showFeedback(a_id);
-
-})(jQuery);};
+};
 
 ilias.questions.assTextSubset = function(a_id) {
 

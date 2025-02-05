@@ -26,7 +26,7 @@ const matchingTypeManyToMany = 'n:n';
 /**
  * @type {String}
  */
-const sourceAreaId = 'sourceArea';
+const sourceAreaClass = 'source_area';
 
 /**
  * @type {String}
@@ -104,7 +104,7 @@ function updateAnswerElementsManyToMany(droppedElement, target, draggedElement) 
   if (draggedElement.parentNode.classList.contains(targetAreasClass)) {
     draggedElement.remove();
   }
-  if (target.parentNode.id === sourceAreaId) {
+  if (target.parentNode.classList.contains(sourceAreaClass)) {
     droppedElement.remove();
   }
 }
@@ -129,7 +129,7 @@ function updatePlaceholders() {
 
 function updateValues(droppedElement, target, source) {
   const dropData = droppedElement.dataset;
-  if (source.id !== sourceAreaId) {
+  if (!source.classList.contains(sourceAreaClass)) {
     const parentDefinitionInput = source.closest(`.${definitionElementClass}`).querySelector('input');
     const value = JSON.parse(parentDefinitionInput.value);
     const index = value.indexOf(dropData.id);
@@ -152,7 +152,7 @@ function changeHandler(droppedElement, target, draggedElement, source) {
 
 function onStartPrepareHandler(draggedElement) {
   updatePlaceholders();
-  const sourceArea = parentElement.querySelector(`#${sourceAreaId}`);
+  const sourceArea = parentElement.querySelector(`.${sourceAreaClass}`);
   if (sourceArea.firstElementChild === null
     || !sourceArea.firstElementChild.classList.contains(placeholderClass)) {
     sourceArea.prepend(placeholderElement.cloneNode());

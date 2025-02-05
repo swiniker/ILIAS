@@ -219,27 +219,25 @@ function renderILQuestion{VAL_ID}() {
 <div class="ilc_question_MatchingQuestion">
 	<div class="ilc_qtitle_Title" id="qtitle{VAL_ID}">qtitle</div>
 	<div id="ilMatchingQuestionContainer_{VAL_ID}" data-type="ilMatchingQuestion" data-id="{VAL_ID}">
-
-		<div style="text-align: right; margin: 0 0 1em 0;">
-			<input id="ilMatchingResetButton_{VAL_ID}" type="button" class="submit" name="reset" value="{BTN_LABEL_RESET}">
-		</div>
-
 		<div class="row">
-			<div id="targetArea_{VAL_ID}" class="col-md-8">
+			<div id="targetArea_{VAL_ID}" class="target_area col-md-8">
 				<!-- pure tpl for definitions begin -->
-				<div class="row droparea" id="definition_{ID_DROPAREA}" data-id="{ID_DROPAREA}" data-type="definition">
+				<div class="row droparea c-test__definition" id="definition_{ID_DROPAREA}" data-id="{ID_DROPAREA}" data-type="definition">
 					<div class="ilMatchingQuestionDefinition col-md-6">
 						<div class="ilc_qanswer_Answer">Definition</div>
 					</div>
 					<div class="ilMatchingQuestionTerm col-md-6"></div>
+                    <input name="matching[{VAL_ID}]" type="hidden" value='[]' >
 				</div>
 				<!-- pure tpl for definitions end -->
 			</div>
-			<div id="sourceArea_{VAL_ID}" class="col-md-4">
+			<div id="sourceArea_{VAL_ID}" class="source_area col-md-4">
+                <div class="c-test__dropzone"></div>
 				<!-- pure tpl for terms begin -->
-				<div class="draggable row" id="term_{ID_DRAGGABLE}" data-id="{ID_DRAGGABLE}" data-type="term">
+				<div class="draggable c-test__term row" id="term_{ID_DRAGGABLE}" data-id="{ID_DRAGGABLE}" data-type="term" draggable="true">
 					<div class="ilc_qanswer_Answer">Term</div>
 				</div>
+                <div class="c-test__dropzone"></div>
 				<!-- pure tpl for terms end -->
 			</div>
 		</div>
@@ -288,30 +286,12 @@ function renderILQuestion{VAL_ID}()
 		});
 
 		$(document).ready(
-				function () {
-					var question = $.fn.ilMatchingQuestionEngine(questionData.id, {
-						/* matchingContainer: '#ilMatchingQuestionContainer_{QUESTION_ID}', */
-						matchingContainer: $('#ilMatchingQuestionContainer_{VAL_ID}'), //body',
-						matchingMode: questionData.matching_mode,
-						resetButtonId: '#ilMatchingResetButton_' + questionData.id
-					});
-
-					$(questionData.definitions).each(function (pos, definition) {
-						question.addDefinition(definition.id);
-					});
-
-					$(questionData.terms).each(function (pos, term) {
-						question.addTerm(term.id);
-					});
-
-					question.init();
-
-					questionData.engineInstance = question;
-
-					if (typeof MathJax != "undefined" && typeof MathJax.Hub != "undefined") {
-						MathJax.Hub.Queue(["Typeset", MathJax.Hub, "container{VAL_ID}"]);
-					}
-				}
+            function () {
+                if (typeof MathJax != "undefined" && typeof MathJax.Hub != "undefined") {
+                    MathJax.Hub.Queue(["Typeset", MathJax.Hub, "container{VAL_ID}"]);
+                }
+                il.test.matching.init(document.querySelector('#ilMatchingQuestionContainer_{VAL_ID}'), questionData.matching_mode);
+            }
 		);
 
 	})(questions[{VAL_ID}]);
