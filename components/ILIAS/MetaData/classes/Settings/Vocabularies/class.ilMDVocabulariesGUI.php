@@ -131,17 +131,17 @@ class ilMDVocabulariesGUI
 
     public function showVocabularies(): void
     {
-        $import_modal = $this->getImportModal();
-        $this->toolbar->addComponent($this->getImportButton($import_modal->getShowSignal()));
+        $content = [];
 
-        $table = $this->getTable();
+        if ($this->access_service->hasCurrentUserWriteAccess()) {
+            $import_modal = $this->getImportModal();
+            $this->toolbar->addComponent($this->getImportButton($import_modal->getShowSignal()));
+            $content[] = $import_modal;
+        }
 
-        $this->tpl->setContent(
-            $this->ui_renderer->render([
-                $import_modal,
-                $table
-            ])
-        );
+        $content[] = $this->getTable();
+
+        $this->tpl->setContent($this->ui_renderer->render($content));
     }
 
     public function tableAction(): void
