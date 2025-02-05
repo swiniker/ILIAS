@@ -137,12 +137,13 @@ function updateValues(droppedElement, target, source) {
       value.splice(index, 1);
     }
     parentDefinitionInput.value = JSON.stringify(value);
-    return;
   }
-  const parentDefinition = target.closest(`.${definitionElementClass}`);
-  const value = JSON.parse(parentDefinition.querySelector('input').value);
-  value.push(dropData.id);
-  parentDefinition.querySelector('input').value = JSON.stringify(value);
+  if (target.parentNode.classList.contains(targetAreasClass)) {
+    const parentDefinition = target.closest(`.${definitionElementClass}`);
+    const value = JSON.parse(parentDefinition.querySelector('input').value);
+    value.push(dropData.id);
+    parentDefinition.querySelector('input').value = JSON.stringify(value);
+  }
 }
 
 function changeHandler(droppedElement, target, draggedElement, source) {
