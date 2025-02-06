@@ -1,0 +1,180 @@
+/**
+ * This file is part of ILIAS, a powerful learning management system
+ * published by ILIAS open source e-Learning e.V.
+ *
+ * ILIAS is licensed with the GPL-3.0,
+ * see https://www.gnu.org/licenses/gpl-3.0.en.html
+ * You should have received a copy of said license along with the
+ * source code, too.
+ *
+ * If this is not the case or you just want to try ILIAS, you'll find
+ * us at:
+ * https://www.ilias.de
+ * https://github.com/ILIAS-eLearning
+ */
+
+const moreValue = 'more';
+
+/**
+ *
+ * @type {AbortController}
+ */
+let controller;
+
+function buildItems(values) {
+  if (typeof values.items === 'undefined') {
+    return values;
+  }
+
+  const valueArray = [];
+  Object.entries(values.items).forEach(
+    ([key, value]) => {
+      valueArray[key] = value;
+    },
+  );
+  return valueArray;
+}
+
+function buildListElement(label, value, id) {
+  const listElement = document.createElement('li');
+  listElement.tabIndex = 0;
+  listElement.textContent = label;
+  listElement.dataset.value = value;
+  if (typeof id !== 'undefined') {
+    listElement.dataset.id = id;
+  }
+  return listElement;
+}
+
+async function fetchListItemsAndBuildSelector(fullUrl, inputField, config) {
+  try {
+    const { signal } = controller;
+    const response = await fetch(fullUrl, { signal });
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+
+    const responseJson = await response.json();
+    const items = buildItems(responseJson);
+
+    if (items.length === 0) {
+      return;
+    }
+
+    const list = document.createElement('ul');
+    list.style.left = `${inputField.offsetLeft}px`;
+    list.style.minWidth = `${inputField.offsetWidth}px`;
+    list.classList.add('c-form__autocomplete');
+    items.forEach((elem) => {
+      if (inputField.value !== elem.value && inputField.value.includes(elem.value)) {
+        return;
+      }
+      list.appendChild(buildListElement(elem.label, elem.value, elem.id));
+    });
+    if (responseJson.hasMoreResults) {
+      list.appendChild(buildListElement(config.moreText, moreValue));
+    }
+    if (list.length === 0) {
+      return;
+    }
+    list.addEventListener('keydown', (e) => { keyHandler(e, config); });
+    list.addEventListener('click', (e) => { onSelectHandler(e, config); });
+    const activeElementValue = document.activeElement.dataset.value;
+    if (inputField.nextElementSibling?.nodeName === 'UL') {
+      inputField.nextElementSibling.remove();
+    }
+    inputField.parentNode.appendChild(list);
+    if (typeof activeElementValue !== 'undefined') {
+      inputField.parentNode.querySelector(`[data-value="${activeElementValue}"]`).focus();
+    }
+  } catch (e) {
+  }
+}
+
+function keyHandler(e, config) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    onSelectHandler(e, config);
+  }
+
+  if (e.key === 'ArrowDown') {
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    if (e.target.nextElementSibling?.nodeName === 'UL') {
+      e.target.nextElementSibling.firstElementChild.focus();
+    }
+
+    if (e.target.nodeName === 'LI' && e.target.nextElementSibling !== null) {
+      e.target.nextElementSibling.focus();
+    }
+  }
+
+  if (e.key === 'ArrowUp' && e.target.nodeName === 'LI') {
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    if (e.target.previousElementSibling === null) {
+      e.target.parentElement.previousElementSibling.focus();
+    } else {
+      e.target.previousElementSibling.focus();
+    }
+  }
+}
+
+function onChangeHandler(e, config) {
+  if (typeof e.key === 'undefined' || e.key === 'Tab'
+    || e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    return;
+  }
+
+  if (e.target.value.length < config.autocompleteLength) {
+    e.target.nextElementSibling?.remove();
+    return;
+  }
+
+  let term = e.target.value.trim();
+  if (config.delimiter !== null) {
+    term = term.split(config.delimiter).at(-1).trim();
+  }
+
+  fetchListItemsAndBuildSelector(
+    `${config.dataSource}&term=${encodeURIComponent(term)}`,
+    e.target,
+    config,
+  );
+}
+
+function onSelectHandler(e, config) {
+  controller.abort();
+  let { value } = e.target.dataset;
+  if (value === moreValue) {
+    fetchListItemsAndBuildSelector(
+      `${config.dataSource}&fetchall=1`,
+      e.target.parentNode.previousElementSibling,
+      config,
+    );
+    return;
+  }
+  if (config.delimiter !== null) {
+    const currentValueArray = e.target.parentNode.previousElementSibling.value
+      .split(config.delimiter);
+    let currentValue = '';
+    if (currentValueArray.length > 1) {
+      currentValue = currentValueArray.slice(0, -1).join(',') + config.delimiter;
+    }
+    value = currentValue + value + config.delimiter;
+  }
+  e.target.parentNode.previousElementSibling.value = value;
+  e.target.parentNode.previousElementSibling.focus();
+  e.target.parentNode.remove();
+  controller = new AbortController();
+
+  if (config.submitOnSelection && 'id' in e.target.dataset) {
+    window.location.href = `${config.submitUrl}&selected_id=${encodeURIComponent(e.target.dataset.id)}`;
+  }
+}
+
+export default function autocompleteHandler(autocompleteInput, config) {
+  controller = new AbortController();
+  autocompleteInput.addEventListener('keydown', (e) => { keyHandler(e, config); });
+  autocompleteInput.addEventListener('keyup', (e) => { onChangeHandler(e, config); });
+}
