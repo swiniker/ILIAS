@@ -30,7 +30,7 @@ use ilXmlExporter;
 
 class Handler implements ilExportHandlerExportComponentInfoInterface
 {
-    protected const PLUGIN = "Plugin";
+    protected const PLUGIN = "Plugins";
     protected ilExportHandlerFactoryInterface $export_handler;
     protected ilExportHandlerTargetInterface $export_target;
     protected array $sv;
