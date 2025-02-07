@@ -92,7 +92,7 @@ async function fetchListItemsAndBuildSelector(fullUrl, inputField, config) {
 }
 
 function keyHandler(e, config) {
-  if (e.key === 'Enter') {
+  if (e.key === 'Enter' && e.target.nodeName === 'LI') {
     e.preventDefault();
     onSelectHandler(e, config);
   }
