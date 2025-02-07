@@ -14,12 +14,28 @@
  */
 
 const moreValue = 'more';
+const triggerTimeout = 500;
 
 /**
  *
  * @type {AbortController}
  */
 let controller;
+
+/**
+ *
+ * @type {Number}
+ */
+let timeoutId;
+
+function setAccessibilityAttributesToContainer(container) {
+  const ariaLive = document.createAttribute('role');
+  ariaLive.value = 'status';
+  container.setAttributeNode(ariaLive);
+  const ariaRelevant = document.createAttribute('aria-relevant');
+  ariaRelevant.value = 'additions';
+  container.setAttributeNode(ariaRelevant);
+}
 
 function buildItems(values) {
   if (typeof values.items === 'undefined') {
@@ -46,9 +62,23 @@ function buildListElement(label, value, id) {
   return listElement;
 }
 
+function removeList(inputField) {
+  if (inputField.nextElementSibling?.nodeName === 'UL') {
+    inputField.nextElementSibling.remove();
+  }
+}
+
+function clearTimeout() {
+  if (typeof timeoutId === 'number') {
+    window.clearTimeout(timeoutId);
+    timeoutId = undefined;
+  }
+}
+
 async function fetchListItemsAndBuildSelector(fullUrl, inputField, config) {
   try {
     const { signal } = controller;
+
     const response = await fetch(fullUrl, { signal });
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`);
@@ -58,6 +88,7 @@ async function fetchListItemsAndBuildSelector(fullUrl, inputField, config) {
     const items = buildItems(responseJson);
 
     if (items.length === 0) {
+      removeList(inputField);
       return;
     }
 
@@ -74,15 +105,13 @@ async function fetchListItemsAndBuildSelector(fullUrl, inputField, config) {
     if (responseJson.hasMoreResults) {
       list.appendChild(buildListElement(config.moreText, moreValue));
     }
-    if (list.length === 0) {
+    if (list.children.length === 0) {
       return;
     }
     list.addEventListener('keydown', (e) => { keyHandler(e, config); });
     list.addEventListener('click', (e) => { onSelectHandler(e, config); });
     const activeElementValue = document.activeElement.dataset.value;
-    if (inputField.nextElementSibling?.nodeName === 'UL') {
-      inputField.nextElementSibling.remove();
-    }
+    removeList(inputField);
     inputField.parentNode.appendChild(list);
     if (typeof activeElementValue !== 'undefined') {
       inputField.parentNode.querySelector(`[data-value="${activeElementValue}"]`).focus();
@@ -127,7 +156,8 @@ function onChangeHandler(e, config) {
   }
 
   if (e.target.value.length < config.autocompleteLength) {
-    e.target.nextElementSibling?.remove();
+    clearTimeout();
+    removeList(e.target);
     return;
   }
 
@@ -136,10 +166,16 @@ function onChangeHandler(e, config) {
     term = term.split(config.delimiter).at(-1).trim();
   }
 
-  fetchListItemsAndBuildSelector(
-    `${config.dataSource}&term=${encodeURIComponent(term)}`,
-    e.target,
-    config,
+  clearTimeout();
+  timeoutId = window.setTimeout(
+    () => {
+      fetchListItemsAndBuildSelector(
+        `${config.dataSource}&term=${encodeURIComponent(term)}`,
+        e.target,
+        config,
+      );
+    },
+    triggerTimeout
   );
 }
 
@@ -159,9 +195,9 @@ function onSelectHandler(e, config) {
       .split(config.delimiter);
     let currentValue = '';
     if (currentValueArray.length > 1) {
-      currentValue = currentValueArray.slice(0, -1).join(',') + config.delimiter;
+      currentValue = currentValueArray.slice(0, -1).join(config.delimiter + ' ') + config.delimiter + ' ';
     }
-    value = currentValue + value + config.delimiter;
+    value = currentValue + value + config.delimiter + ' ';
   }
   e.target.parentNode.previousElementSibling.value = value;
   e.target.parentNode.previousElementSibling.focus();
@@ -175,6 +211,7 @@ function onSelectHandler(e, config) {
 
 export default function autocompleteHandler(autocompleteInput, config) {
   controller = new AbortController();
+  setAccessibilityAttributesToContainer(autocompleteInput.parentElement);
   autocompleteInput.addEventListener('keydown', (e) => { keyHandler(e, config); });
   autocompleteInput.addEventListener('keyup', (e) => { onChangeHandler(e, config); });
 }

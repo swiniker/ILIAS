@@ -350,6 +350,7 @@ class ilTextInputGUI extends ilSubEnabledFormPropertyGUI implements ilTableFilte
 
         // use autocomplete feature?
         if ($this->getDataSource()) {
+            $tpl->setVariable('AUTOCOMPLETE', 'autocomplete="off"');
             $this->global_tpl->addJavaScript('assets/js/legacyAutocomplete.js', true, 3);
             $config = json_encode([
                 'delimiter' => $this->ajax_datasource_delimiter,
