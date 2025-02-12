@@ -131,6 +131,13 @@ class ExportFileDBRepository
         );
     }
 
+    public function getFilePath(
+        string $rid
+    ): string
+    {
+        return $this->irss->getResourcePath($rid);
+    }
+
     public function getById(int $object_id, string $rid): ?ExportFile
     {
         $set = $this->db->queryF(
