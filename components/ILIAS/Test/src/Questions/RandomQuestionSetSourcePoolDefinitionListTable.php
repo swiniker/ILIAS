@@ -67,8 +67,9 @@ class RandomQuestionSetSourcePoolDefinitionListTable implements OrderingBinding
             $record = [
                 'sequence_position' => (int) $qp['sequence_position'],
                 'source_pool_label' => $this->title_builder->buildAccessCheckedQuestionpoolTitleAsLink(
-                    $qp['pool_id'],
-                    $qp['source_pool_label']
+                    $qp['ref_id'],
+                    $qp['source_pool_label'],
+                    true
                 ),
                 'taxonomy_filter' => $this->taxonomy_translator->getTaxonomyFilterLabel(
                     $qp['taxonomy_filter'],
@@ -104,7 +105,7 @@ class RandomQuestionSetSourcePoolDefinitionListTable implements OrderingBinding
             $set['type_filter'] = $source_pool_definition->getTypeFilter();
             // fau.
             $set['question_amount'] = $source_pool_definition->getQuestionAmount();
-            $set['pool_id'] = $source_pool_definition->getPoolId();
+            $set['ref_id'] = $source_pool_definition->getPoolRefId();
             $data[] = $set;
         }
 
